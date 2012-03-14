@@ -13,7 +13,7 @@
  * 
  */
 int main(int argc, char** argv) {
-    printf("Hello World, I'm trying to make a commit in GIT!!!");
+    printf("Hello World!!!");
     return (EXIT_SUCCESS);
 }
 
