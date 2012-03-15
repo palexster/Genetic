@@ -1,3 +1,4 @@
+
 #define POP_DIM 100
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,8 +6,11 @@
 #include "colors.h"
 
 struct population_s{
-    char ****matrice_popolazione;
+    char ****vettore_popolazioni;
+    int *fitness;
 };
+
+
 
 
 int **build_colors(int pieces){
@@ -87,4 +91,43 @@ void test_solution(char ***solution,int row,int col){
      }
         printf("\n");
     }
+}
+
+population_t *build_population(int **colors,int pieces,int row,int col){
+    int i;
+    population_t *popolazione_start;
+    popolazione_start=(population_t *)malloc(sizeof(population_t));
+    char ****vettore_popolazione;
+    popolazione_start->vettore_popolazioni=(char ****)malloc(sizeof(char ***)*POP_DIM);
+    popolazione_start->fitness=(int *)malloc(sizeof(int)*POP_DIM);
+    for(i=0;i<POP_DIM;i++){
+        popolazione_start->vettore_popolazioni[i]=build_solution(colors,row,col);
+        random_solution_generation(popolazione_start->vettore_popolazioni[i],colors,row*col,row,col);
+        popolazione_start->fitness[i]=0;
+    }
+    return popolazione_start;
+}
+
+int fitness_solution_evaluation(int **colors,char ***solution,int pieces,int row,int col){
+    int i,j,rot_first,rot_sec,profitto=0,bordo_inferiore,bordo_laterale;
+    for(i=0;i<row;i++)
+        for(j=0;j<col;j++){
+            rot_first=(DESTRA-solution[i][j][1] % 4);
+            rot_sec=(SINISTRA-solution[i][j][1] % 4); 
+            if (i!=(col-1)){
+                if (colors[solution[i][j][0]][rot_first]== colors[solution[i][j+1][0]][rot_sec])
+                profitto++;
+            }
+            rot_first=(SOTTO-solution[i][j][1] % 4);
+            rot_sec=(SOPRA-solution[i][j][1] % 4);
+            if (j!=(row-1)){
+                if (colors[solution[i][j][0]][rot_first]== colors[solution[i][j+1][0]][rot_sec])
+                        profitto++;
+            }
+            return profitto;
+        }
+}
+
+void fitness_popolation_evaluation(popolation_t *pop,char ***solution,int pieces,int row,int col){
+    
 }
