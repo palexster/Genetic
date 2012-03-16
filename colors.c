@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "colors.h"
+#include "sort.h"
 
 struct population_s{
     char ****vettore_popolazioni;
@@ -54,7 +55,6 @@ void random_solution_generation(char ***solution,int **colors,int pieces, int ro
         taken[i]=0;
     }
     n_pieces_taken=0;
-    srand(time(NULL));
     /*Ciclo sulla matrice della soluzione e cerco un pezzo non preso casuale, usando una rotazion
      casuale. Se è preso, vado a quello dopo. Se arrivo al fondo ricomincio dall'inizio. Ci sono
      metodi molto migliori ma poi lo raffiniamo*/
@@ -139,11 +139,23 @@ void test_fitness(population_t *pop){
     int i,max=0,idmax=0;
     printf("Chi è la miglior soluzione?\n");
     for(i=0;i<POP_DIM;i++){
-        if (pop->fitness[i]>max){
+        if ((pop->fitness[i])>max){
             max=pop->fitness[i];
             idmax=i;
         }
         printf("Soluzione %d:\t %d \n",i,pop->fitness[i]);
     }
     printf("Miglior Soluzione n° %d , punti: %d",idmax,pop->fitness[idmax]);
+}
+
+int cmp_fitness(int col1,int col2){
+    if (col1>col2)
+        return 1;
+    if (col1<col2)
+        return -1;
+    return 0;
+}
+
+void sort_popolation(population_t *pop,int **colors){
+
 }
