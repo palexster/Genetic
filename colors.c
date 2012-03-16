@@ -85,6 +85,7 @@ void random_solution_generation(char ***solution,int **colors,int pieces, int ro
 
 void test_solution(char ***solution,int row,int col){
     int i,j;
+    printf("-----------------------------------\n");
     for(i=0;i<row;i++){
         for(j=0;j<col;j++){
                 printf("%d %d \t",solution[i][j][0],solution[i][j][1]);
@@ -97,37 +98,52 @@ population_t *build_population(int **colors,int pieces,int row,int col){
     int i;
     population_t *popolazione_start;
     popolazione_start=(population_t *)malloc(sizeof(population_t));
-    char ****vettore_popolazione;
     popolazione_start->vettore_popolazioni=(char ****)malloc(sizeof(char ***)*POP_DIM);
     popolazione_start->fitness=(int *)malloc(sizeof(int)*POP_DIM);
     for(i=0;i<POP_DIM;i++){
         popolazione_start->vettore_popolazioni[i]=build_solution(colors,row,col);
         random_solution_generation(popolazione_start->vettore_popolazioni[i],colors,row*col,row,col);
-        popolazione_start->fitness[i]=0;
+        //test_solution(popolazione_start->vettore_popolazioni[i],row,col);
+        popolazione_start->fitness[i]=fitness_solution_evaluation(colors,popolazione_start->vettore_popolazioni[i],pieces,row,col);
     }
     return popolazione_start;
 }
 
 int fitness_solution_evaluation(int **colors,char ***solution,int pieces,int row,int col){
-    int i,j,rot_first,rot_sec,profitto=0,bordo_inferiore,bordo_laterale;
+    int i,j,rot_first,rot_sec,profit=0,bordo_inferiore,bordo_laterale;
     for(i=0;i<row;i++)
         for(j=0;j<col;j++){
-            rot_first=(DESTRA-solution[i][j][1] % 4);
-            rot_sec=(SINISTRA-solution[i][j][1] % 4); 
-            if (i!=(col-1)){
+            if (j!=(col-1)){
+                rot_first=abs(DESTRA-solution[i][j][1] % 4);
+                rot_sec=abs(SINISTRA-solution[i][j+1][1] % 4); 
                 if (colors[solution[i][j][0]][rot_first]== colors[solution[i][j+1][0]][rot_sec])
-                profitto++;
+                profit++;
             }
-            rot_first=(SOTTO-solution[i][j][1] % 4);
-            rot_sec=(SOPRA-solution[i][j][1] % 4);
-            if (j!=(row-1)){
-                if (colors[solution[i][j][0]][rot_first]== colors[solution[i][j+1][0]][rot_sec])
-                        profitto++;
+            if (i!=(row-1)){
+                rot_first=abs(SOTTO-solution[i][j][1] % 4);
+                rot_sec=abs(SOPRA-solution[i+1][j][1] % 4);
+                if (colors[solution[i][j][0]][rot_first]== colors[solution[i+1][j][0]][rot_sec])
+                        profit++;
             }
-            return profitto;
+            
         }
+    return profit;
 }
 
-void fitness_popolation_evaluation(popolation_t *pop,char ***solution,int pieces,int row,int col){
+/*void fitness_popolation_evaluation(popolation_t *pop,char ***solution,int pieces,int row,int col){
     
+}
+*/
+
+void test_fitness(population_t *pop){
+    int i,max=0,idmax=0;
+    printf("Chi è la miglior soluzione?\n");
+    for(i=0;i<POP_DIM;i++){
+        if (pop->fitness[i]>max){
+            max=pop->fitness[i];
+            idmax=i;
+        }
+        printf("Soluzione %d:\t %d \n",i,pop->fitness[i]);
+    }
+    printf("Miglior Soluzione n° %d , punti: %d",idmax,pop->fitness[idmax]);
 }
