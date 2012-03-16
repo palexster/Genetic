@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
 
     
     /*Lettura dimensioni della matrice e allocazione del vettore dei pezzi*/
-    fp=fopen("pieces_05x05.txt","r");
+    fp=fopen("pieces_10x10.txt","r");
     fscanf(fp,"%d%d",&row,&col);
     pieces=row*col;
     colors=build_colors(pieces);
@@ -39,10 +39,10 @@ int main(int argc, char** argv) {
     
     /*test_colors(colors,pieces);*/
     population=build_population(colors,pieces,row,col);
-    solution=(char ***)build_solution(colors,row,col);
-    random_solution_generation(solution,colors,pieces,row,col);
-    test_solution(solution,row,col);
-    
+    //solution=(char ***)build_solution(colors,row,col);
+    //random_solution_generation(solution,colors,pieces,row,col);
+    //test_solution(solution,row,col);
+    test_fitness(population);
     
     
     return (EXIT_SUCCESS);
