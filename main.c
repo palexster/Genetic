@@ -18,9 +18,9 @@ int main(int argc, char** argv) {
     FILE *fp;
     int row,col,pieces,i,j;
     int **colors,line[4];
-    char ***solution;
+    char ***solution,***solution1;
     population_t *population;
-
+    srand(time(NULL));
     
     /*Lettura dimensioni della matrice e allocazione del vettore dei pezzi*/
     fp=fopen("pieces_10x10.txt","r");
@@ -43,6 +43,9 @@ int main(int argc, char** argv) {
     //random_solution_generation(solution,colors,pieces,row,col);
     //test_solution(solution,row,col);
     test_fitness(population);
+    //solution1=(char ***)build_solution(colors,row,col);
+    //random_solution_generation(solution1,colors,pieces,row,col);
+    //test_solution(solution1,row,col);
     
     
     return (EXIT_SUCCESS);
