@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "colors.h"
+#include "sort.h"
+#include "popolation.h"
 
 /*
  * 
@@ -19,7 +21,7 @@ int main(int argc, char** argv) {
     int row,col,pieces,i,j;
     int **colors,line[4];
     char ***solution,***solution1;
-    population_t *population;
+    population_t *population,*pop;
     srand(time(NULL));
     
     /*Lettura dimensioni della matrice e allocazione del vettore dei pezzi*/
@@ -46,8 +48,8 @@ int main(int argc, char** argv) {
     //solution1=(char ***)build_solution(colors,row,col);
     //random_solution_generation(solution1,colors,pieces,row,col);
     //test_solution(solution1,row,col);
-    
-    
+    sorted_popolation(population,colors);
+    test_fitness(population);
     return (EXIT_SUCCESS);
 }
 

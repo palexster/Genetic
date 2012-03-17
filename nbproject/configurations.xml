@@ -5,6 +5,8 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>colors.h</itemPath>
+      <itemPath>popolation.h</itemPath>
+      <itemPath>sort.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -15,6 +17,8 @@
                    projectFiles="true">
       <itemPath>colors.c</itemPath>
       <itemPath>main.c</itemPath>
+      <itemPath>popolation.c</itemPath>
+      <itemPath>sort.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
