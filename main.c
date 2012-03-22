@@ -23,8 +23,8 @@ int main(int argc, char** argv) {
     population_t *population,*pop;
  
     srand(time(NULL));
-    pieces=build_pieces("pieces_10x10.txt",&pieces,&row,&col);
-    /*test_pieces(pieces,npieces);*/
+    pieces=build_pieces("pieces_10x10.txt",&npieces,&row,&col);
+    test_pieces(pieces,npieces);
     population=build_population(pieces,npieces,row,col);
     //solution=build_solution(pieces,row,col);
     //random_solution_generation(solution,pieces,npieces,row,col);

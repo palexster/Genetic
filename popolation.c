@@ -15,18 +15,12 @@ population_t *build_population(int **pieces,int npieces,int row,int col){
     for(i=0;i<POP_DIM;i++){
         popolazione_start->soluzioni[i]=build_solution(pieces,row,col);
         random_solution_generation(&popolazione_start->soluzioni[i],pieces,row*col,row,col);
+        test_solution(&popolazione_start->soluzioni[i],row,col);
         fit=fitness_solution_evaluation(pieces,&popolazione_start->soluzioni[i],npieces,row,col);
         popolazione_start->soluzioni[i].fitness=fit;
     }
     return popolazione_start;
 }
-
-
-
-/*void fitness_popolation_evaluation(popolation_t *pop,char ***solution,int npieces,int row,int col){
-    
-}
-*/
 
 void test_fitness(population_t *pop){
     int i,max=0,idmax=0;

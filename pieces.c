@@ -32,18 +32,18 @@ int **build_pieces(char* filename,int* np, int* r, int* c){
         }
   
     /*Riempimento matrice dei pezzi con i colori dei singoli pezzi*/
-    for(i=0;i<npieces;i++){
+    for(i=0;i<100;i++){
         fscanf(fp,"%d%d%d%d",&line[0],&line[1],&line[2],&line[3]);
         for(j=0;j<COLN;j++){
                 mat[i][j]=line[j];
         }
+    }
      *np=npieces;
      *r=row;
      *c=col;
      return mat;
     }
     
-}
 /*verifica caricamento colori*/
 void test_pieces(int **pieces,int npieces){
     int i,j;
@@ -118,14 +118,16 @@ void test_solution(solution_t *solution,int row,int col){
 }
 
 int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,int row,int col){
-    int i,j,rot_first,rot_sec,profit=0,bordo_inferiore,bordo_laterale;
+    int a,b,i,j,rot_first,rot_sec,profit=0,bordo_inferiore,bordo_laterale;
     for(i=0;i<row;i++)
         for(j=0;j<col;j++){
             if (j!=(col-1)){
                 rot_first=abs(DESTRA-solution->matrice_pezzi[i][j][1] % COLN);
-                rot_sec=abs(SINISTRA-solution->matrice_pezzi[i][j+1][1] % COLN); 
-                if (pieces[solution->matrice_pezzi[i][j][0]][rot_first]== pieces[solution->matrice_pezzi[i][j+1][0]][rot_sec])
-                profit++;
+                rot_sec=abs(SINISTRA-solution->matrice_pezzi[i][j+1][1] % COLN);
+                a = pieces[solution->matrice_pezzi[i][j][0]][rot_first];
+                b = pieces[solution->matrice_pezzi[i][j+1][0]][rot_sec];
+                if (a == b)
+                        profit++;
             }
             if (i!=(row-1)){
                 rot_first=abs(SOTTO-solution->matrice_pezzi[i][j][1] % COLN);
