@@ -4,7 +4,6 @@
  *
  * Created on 7 marzo 2012, 16.28
  */
-#define POP_DIM 100
 #include <stdio.h>
 #include <stdlib.h>
 #include "pieces.h"
