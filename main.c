@@ -17,9 +17,12 @@
 int main(int argc, char** argv) {
     /* Dichiarazione variabili */
     
-    FILE *fp;
-    int row,col,pieces,i,j;
-    int **colors,line[4];
+    FILE *fp;//puntatore al file che contiene i pezzi
+    int row,col,//numero righe e colonne matrice dei pezzi
+        pieces,//numero pezzi
+        i,j;//indici della matrice
+    int **colors,//vettore dei colori del pezzo
+        line[4];//vettore temporaneo per caricare i colori
     char ***solution,***solution1;
     population_t *population,*pop;
     srand(time(NULL));
