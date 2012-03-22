@@ -4,7 +4,7 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>colors.h</itemPath>
+      <itemPath>pieces.h</itemPath>
       <itemPath>popolation.h</itemPath>
       <itemPath>sort.h</itemPath>
     </logicalFolder>
@@ -15,8 +15,8 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>colors.c</itemPath>
       <itemPath>main.c</itemPath>
+      <itemPath>pieces.c</itemPath>
       <itemPath>popolation.c</itemPath>
       <itemPath>sort.c</itemPath>
     </logicalFolder>

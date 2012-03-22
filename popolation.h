@@ -16,7 +16,7 @@ typedef struct population_s {
     solution_t *soluzioni;
 } population_t;
     
-population_t *build_population(int **colors,int pieces,int row,int col);
+population_t *build_population(int **pieces,int npieces,int row,int col);
 void test_fitness(population_t *pop);
 
 

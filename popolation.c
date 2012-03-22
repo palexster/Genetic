@@ -3,19 +3,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "colors.h"
+#include "pieces.h"
 #include "popolation.h"
 #include "sort.h"
 
-population_t *build_population(int **colors,int pieces,int row,int col){
+population_t *build_population(int **pieces,int npieces,int row,int col){
     int i,fit;
     population_t *popolazione_start;
     popolazione_start=(population_t *)malloc(sizeof(population_t));
     popolazione_start->soluzioni=(solution_t *)malloc(sizeof(solution_t)*POP_DIM);
     for(i=0;i<POP_DIM;i++){
-        popolazione_start->soluzioni[i]=build_solution(colors,row,col);
-        random_solution_generation(&popolazione_start->soluzioni[i],colors,row*col,row,col);
-        fit=fitness_solution_evaluation(colors,&popolazione_start->soluzioni[i],pieces,row,col);
+        popolazione_start->soluzioni[i]=build_solution(pieces,row,col);
+        random_solution_generation(&popolazione_start->soluzioni[i],pieces,row*col,row,col);
+        fit=fitness_solution_evaluation(pieces,&popolazione_start->soluzioni[i],npieces,row,col);
         popolazione_start->soluzioni[i].fitness=fit;
     }
     return popolazione_start;
@@ -23,7 +23,7 @@ population_t *build_population(int **colors,int pieces,int row,int col){
 
 
 
-/*void fitness_popolation_evaluation(popolation_t *pop,char ***solution,int pieces,int row,int col){
+/*void fitness_popolation_evaluation(popolation_t *pop,char ***solution,int npieces,int row,int col){
     
 }
 */
@@ -52,6 +52,6 @@ int cmp_fitness(void * s1,void *s2){
     return 0;
 }
 
-void sorted_popolation(population_t *pop,int **colors){
+void sorted_popolation(population_t *pop,int **pieces){
   quick_sort((void **)pop->soluzioni,POP_DIM,0,(int)cmp_fitness);  
 }
