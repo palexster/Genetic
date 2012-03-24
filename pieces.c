@@ -1,12 +1,9 @@
 #define COLN 4  //numero di colori per pezzo
-#define POP_DIM 100     //numero di soluzioni considerate (dimensione popolaz)
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include "pieces.h"
 #include "popolation.h"
-#include "sort.h"
 
 /*funzione per l'allocazione del vettore e caricamento dei dati
  Riceve nome del file in ingresso
@@ -59,7 +56,7 @@ void test_pieces(int **pieces,int npieces){
  punta al pezzo nel vettore dei colori e il secondo indica la rotazione del pezzo
  Funzione che alloca la soluzione*/
 solution_t build_solution(int **pieces, int row,int col){
-    solution_t *solution;
+    solution_t *solution; // Puntatore alla soluzione che deve essere allocata
     int i,j;
     solution=(solution_t *)malloc(sizeof(solution_t));
     solution->matrice_pezzi=(char ***)malloc(sizeof(char**)*row);
@@ -71,7 +68,10 @@ solution_t build_solution(int **pieces, int row,int col){
     return *solution;
 }
 void random_solution_generation(solution_t *solution,int **pieces,int npieces, int row, int col){
-    char *taken,n_pieces_taken,random_number,random_rotation;
+    char *taken //vettore dei pezzi già inseriti nella soluzione
+    ,n_pieces_taken, // numero di pezzi già inseriti nella soluzione
+     random_number, // numero pseudocasuale generato per decidere quale pezzo
+            random_rotation;
     int i,j;
     taken=(char *)malloc(sizeof(char)*npieces);
     for(i=0;i<npieces;i++){
@@ -139,3 +139,11 @@ int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,in
         }
     return profit;
 }
+
+void dealloc_soluzioni(solution_t *sol,int row){
+    int count;
+    for (count = 0; count < row; count++)
+                free(sol->matrice_pezzi[count]);
+    free(sol->matrice_pezzi);
+    return;
+} 

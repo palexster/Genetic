@@ -30,6 +30,7 @@ void random_solution_generation(solution_t *solution,int **pieces,int npieces, i
 void test_solution(solution_t *solution,int row,int col);
 int fitness_solution_evaluation(int **pieces,solution_t *sol,int npieces,int row,int col);
 solution_t build_solution(int **pieces,int row,int col);
+void dealloc_soluzioni(solution_t *sol,int row);
 
 #ifdef	__cplusplus
 }

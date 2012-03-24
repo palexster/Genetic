@@ -18,7 +18,8 @@ typedef struct population_s {
     
 population_t *build_population(int **pieces,int npieces,int row,int col);
 void test_fitness(population_t *pop);
-
+void quick_sort(solution_t *array, int l, int r, int (*cmp)(solution_t lv, solution_t rv));
+void dealloc_population(population_t *pop,int row);
 
 #ifdef	__cplusplus
 }

@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "pieces.h"
-#include "sort.h"
 #include "popolation.h"
 
 /*
@@ -23,17 +22,13 @@ int main(int argc, char** argv) {
  
     srand(time(NULL));
     pieces=build_pieces("pieces_10x10.txt",&npieces,&row,&col);
-    test_pieces(pieces,npieces);
+    //test_pieces(pieces,npieces);
     population=build_population(pieces,npieces,row,col);
-    //solution=build_solution(pieces,row,col);
-    //random_solution_generation(solution,pieces,npieces,row,col);
-    //test_solution(solution,row,col);
-    //test_fitness(population);
-    //solution1=build_solution(pieces,row,col);
-    //random_solution_generation(solution1,pieces,npieces,row,col);
-    //test_solution(solution1,row,col);
-    //sorted_popolation(population,pieces);
     test_fitness(population);
+    sorted_popolation(population,pieces);
+    test_fitness(population);
+    dealloc_population(population,row);
+    free(population);
     return (EXIT_SUCCESS);
 }
 
