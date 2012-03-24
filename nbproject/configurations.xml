@@ -38,6 +38,12 @@
         <compilerSet>default</compilerSet>
       </toolsSet>
       <compileType>
+        <cTool>
+          <commandLine>-fopenmp</commandLine>
+        </cTool>
+        <linkerTool>
+          <commandLine>-lgomp -pthread</commandLine>
+        </linkerTool>
       </compileType>
     </conf>
     <conf name="Release" type="1">

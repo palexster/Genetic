@@ -1,7 +1,8 @@
-#define POP_DIM 100
+#define POP_DIM 100000
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <omp.h>
 #include "pieces.h"
 #include "popolation.h"
 
@@ -10,13 +11,17 @@ population_t *build_population(int **pieces,int npieces,int row,int col){
     population_t *popolazione_start;
     popolazione_start=(population_t *)malloc(sizeof(population_t));
     popolazione_start->soluzioni=(solution_t *)malloc(sizeof(solution_t)*POP_DIM);
-    for(i=0;i<POP_DIM;i++){
+    #pragma omp parallel default(none) shared(popolazione_start,col,row,pieces,npieces) private(i,fit)
+    {
+        #pragma omp for
+        for(i=0;i<POP_DIM;i++){
         popolazione_start->soluzioni[i]=build_solution(pieces,row,col);
         random_solution_generation(&popolazione_start->soluzioni[i],pieces,row*col,row,col);
         //test_solution(&popolazione_start->soluzioni[i],row,col);
         fit=fitness_solution_evaluation(pieces,&popolazione_start->soluzioni[i],npieces,row,col);
         popolazione_start->soluzioni[i].fitness=fit;
     }
+}
     return popolazione_start;
 }
 
