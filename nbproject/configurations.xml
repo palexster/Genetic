@@ -6,6 +6,7 @@
                    projectFiles="true">
       <itemPath>pieces.h</itemPath>
       <itemPath>popolation.h</itemPath>
+      <itemPath>sort.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -17,6 +18,7 @@
       <itemPath>main.c</itemPath>
       <itemPath>pieces.c</itemPath>
       <itemPath>popolation.c</itemPath>
+      <itemPath>sort.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"

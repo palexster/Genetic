@@ -11,7 +11,11 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-    
+/*struttura dati per la singola soluzione:
+ *è composta da una matrice di stringhe (in cui l'elemento i j è il pezzo in 
+ * posizione i j nella griglia) da due elementi in cui il primo char è l'indice 
+ * del pezzo nel vettore dei pezzi e il secondo indica la rotazione del pezzo
+ */    
 typedef struct solution_s {
     char ***matrice_pezzi;
     int fitness;

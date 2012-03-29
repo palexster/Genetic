@@ -52,8 +52,9 @@ void test_pieces(int **pieces,int npieces){
     }
 }
 
-/*Ogni soluzione è composta da una matrice di stringhe da due in cui il primo char
- punta al pezzo nel vettore dei colori e il secondo indica la rotazione del pezzo
+/*Ogni soluzione è composta da una matrice di stringhe da due elementi in cui il
+ *primo char è l'indice del pezzo nel vettore dei pezzi e il secondo indica la 
+ *rotazione del pezzo.
  Funzione che alloca la soluzione*/
 solution_t build_solution(int **pieces, int row,int col){
     solution_t *solution; // Puntatore alla soluzione che deve essere allocata
