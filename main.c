@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include "pieces.h"
 #include "popolation.h"
+#include "management.h"
 
 /*
  * 

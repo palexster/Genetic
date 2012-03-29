@@ -11,7 +11,13 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
+#include "pieces.h"
+#include "management.h"
+    
 typedef struct population_s {
     solution_t *soluzioni;
 } population_t;

@@ -1,9 +1,4 @@
 #define POP_DIM 100
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <math.h>
-#include "pieces.h"
 #include "popolation.h"
 
 /*Funzione che crea la popolazione*/
@@ -51,6 +46,10 @@ void test_fitness(population_t *pop){
     printf("Miglior Soluzione n° %d , punti: %d\n",idmax,pop->soluzioni[idmax].fitness);
 }
 
+/*
+ * Funzione di compare del sorting, invertendo l'ordine di 1 e -1 posso ottenere un ordine crescente o decrescente
+ */
+
 int cmp_fitness(solution_t s1cast,solution_t s2cast){
     if (s1cast.fitness>s2cast.fitness)
         return -1;
@@ -59,9 +58,13 @@ int cmp_fitness(solution_t s1cast,solution_t s2cast){
     return 0;
 }
 
+/*Wrapper del Sorting della popolazione*/
+
 void sorted_popolation(population_t *pop,int **pieces){
   quick_sort(pop->soluzioni,0,POP_DIM-1,cmp_fitness);  
 }
+
+/*Sorting ricorsivo della popolazione vero e proprio*/
 
 void quick_sort(solution_t *array, int l, int r, int (*cmp)(solution_t lv, solution_t rv))
 {
@@ -88,12 +91,18 @@ void quick_sort(solution_t *array, int l, int r, int (*cmp)(solution_t lv, solut
    quick_sort(array, j+1, r, cmp);
 }
 
+/*Funzione di deallocazione della popolazione*/
+
 void dealloc_population(population_t *pop,int row){
     dealloc_soluzioni(pop->soluzioni,row);
     free(pop->soluzioni);
     //free(pop);
     return;
 }
+
+/*Funzione che regola l'evoluzione di una popolazione, definendo quali individui 
+ *  devono riprodursi e quali devono essere mantenuti in vita
+ */
 
 void pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
     char chosen[POP_DIM];//vettore di flag per tenere conto che la sol i è già 
@@ -139,6 +148,11 @@ void pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
         crossover(pieces,&pop->soluzioni[gen[1]],&pop->soluzioni[gen[2]],&offspring[i++],&offspring[i++],npieces,row,col);
     }
 }
+
+/* Funzione di Crossover vero e proprio in cui gli individui generano due figli per coppia
+ * con punti di crossing randomizzati per ogni coppia in modo da garantire una buona varianza 
+ */
+
 
 void crossover(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
     // generazione tagli, contatori e indice righe/colonne

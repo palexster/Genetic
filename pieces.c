@@ -2,9 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 #include "pieces.h"
 #include "popolation.h"
 
+    
 /*funzione per l'allocazione del vettore e caricamento dei dati
  Riceve nome del file in ingresso
  Ritorna il vettore dei pezzi(vettore di vettori di 4 interi che rappresentano i colori)*/
