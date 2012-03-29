@@ -106,6 +106,7 @@ void random_solution_generation(solution_t *solution,int **pieces,int npieces, i
             ++taken[random_number];
         }
        }
+    free(taken);
     return;
 }
 
@@ -150,3 +151,11 @@ void dealloc_soluzioni(solution_t *sol,int row){
     free(sol->matrice_pezzi);
     return;
 } 
+
+void dealloc_pieces(int **pieces, int npieces){
+    int i;
+    for(i=0;i<npieces;i++){
+        free(pieces[i]);
+        }
+    free(pieces);
+}

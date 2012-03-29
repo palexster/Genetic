@@ -32,8 +32,10 @@ int main(int argc, char** argv) {
         // o può settare a false la flag se ha trovato la soluzione ottima
         //stop=pop_evolution(pieces,npieces,pop,row,col);
     }
+    //deallocazione memoria heap
     dealloc_population(population,row);
     free(population);
+    dealloc_pieces(pieces,npieces);
     return (EXIT_SUCCESS);
 }
 
