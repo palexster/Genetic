@@ -38,6 +38,10 @@ void test_fitness(population_t *pop){
     printf("Miglior Soluzione n° %d , punti: %d\n",idmax,pop->soluzioni[idmax].fitness);
 }
 
+/* Funzione di compare per ordinamento decrescente. Per avere un ordinamento crescente
+ è sufficiente scambiare i valori di return 1 e -1*/
+
+
 int cmp_fitness(solution_t s1cast,solution_t s2cast){
     if (s1cast.fitness>s2cast.fitness)
         return -1;
@@ -49,6 +53,10 @@ int cmp_fitness(solution_t s1cast,solution_t s2cast){
 void sorted_popolation(population_t *pop,int **pieces){
   quick_sort(pop->soluzioni,0,POP_DIM-1,cmp_fitness);  
 }
+
+/*
+ Sorting di una popolazione
+ */
 
 void quick_sort(solution_t *array, int l, int r, int (*cmp)(solution_t lv, solution_t rv))
 {
@@ -81,3 +89,17 @@ void dealloc_population(population_t *pop,int row){
     //free(pop);
     return;
 }
+
+/*
+ Crossover di una popolazione. Tre fasi:
+ * 1) Selezione dei genitori 
+ *      - Il 25% migliore
+ *      - Il 25% random
+ * 2) Riproduzione vera e propria (Crossover)
+ * 3) Selezione nuova popolazione
+ */
+
+void evoluzione_pop(population_t *pop,int *pieces,int npieces,int row,int col){
+    //while(TRUE){
+}
+
