@@ -6,7 +6,6 @@
                    projectFiles="true">
       <itemPath>pieces.h</itemPath>
       <itemPath>popolation.h</itemPath>
-      <itemPath>sort.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -18,7 +17,6 @@
       <itemPath>main.c</itemPath>
       <itemPath>pieces.c</itemPath>
       <itemPath>popolation.c</itemPath>
-      <itemPath>sort.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -29,9 +27,12 @@
                    displayName="Important Files"
                    projectFiles="false"
                    kind="IMPORTANT_FILES_FOLDER">
-      <itemPath>Makefile</itemPath>
+      <itemPath>nbproject/Makefile-impl.mk</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="Debug" type="1">
