@@ -20,6 +20,7 @@ population_t *build_population(int **pieces,int npieces,int row,int col);
 void test_fitness(population_t *pop);
 void quick_sort(solution_t *array, int l, int r, int (*cmp)(solution_t lv, solution_t rv));
 void dealloc_population(population_t *pop,int row);
+void crossover(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col);
 
 #ifdef	__cplusplus
 }
