@@ -24,9 +24,10 @@ int main(int argc, char** argv) {
     #ifdef _OPENMP
    (void) omp_set_dynamic(TRUE);
    if (omp_get_dynamic()) {printf("Warning: dynamic adjustment of threads has been set\n");}
-   (void) omp_set_num_threads(2);
+   //(void) omp_set_num_threads(2);
     #endif
     /* Dichiarazione variabili */
+   int flag; // flag di fine ciclo;
     int row,col,//numero righe e colonne matrice dei pezzi
         npieces;//numero pezzi    
     int **pieces;//vettore dei colori del pezzo
@@ -40,6 +41,12 @@ int main(int argc, char** argv) {
     test_fitness(population);
     sorted_popolation(population,pieces);
     test_fitness(population);
+    flag=1;
+    while (flag){
+        evoluzione_pop(pop,pieces,npieces,row,col);
+    
+    }
+    
     dealloc_population(population,row);
     free(population);
     return (EXIT_SUCCESS);

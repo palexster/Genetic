@@ -60,11 +60,16 @@ solution_t build_solution(int **pieces, int row,int col){
     int i,j;
     solution=(solution_t *)malloc(sizeof(solution_t));
     solution->matrice_pezzi=(char ***)malloc(sizeof(char**)*row);
+    #pragma omp parallel default(none) shared(solution,col,row) private(i,j)
+{
+    //#pragma omp for
     for(i=0;i<row;i++){
         solution->matrice_pezzi[i]=(char **)malloc(sizeof(char *)*col);
+        //#pragma omp for
         for(j=0;j<col;j++)
             solution->matrice_pezzi[i][j]=(char *)malloc(sizeof(char)*2);
     }
+}
     return *solution;
 }
 void random_solution_generation(solution_t *solution,int **pieces,int npieces, int row, int col){
