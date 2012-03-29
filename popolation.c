@@ -1,7 +1,10 @@
 #define POP_DIM 100
 #include "popolation.h"
 
-/*Funzione che crea la popolazione*/
+/*Funzione che crea la popolazione
+ *  
+ */
+
 population_t *build_population(int **pieces,int npieces,int row,int col){
     int i,fit;
     population_t *popolazione_start;
@@ -25,9 +28,8 @@ population_t *build_population(int **pieces,int npieces,int row,int col){
  */
 
 void test_fitness(population_t *pop){
-    int totale=0;
+    int totale=0,i,idmax,max;
     float media,varianza;
-    int i,max=0,idmax=0;
     //printf("Qual è la miglior soluzione?\n");
     for(i=0;i<POP_DIM;i++){
         if ((pop->soluzioni[i].fitness)>max){
@@ -150,14 +152,20 @@ void pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
 }
 
 /* Funzione di Crossover vero e proprio in cui gli individui generano due figli per coppia
- * con punti di crossing randomizzati per ogni coppia in modo da garantire una buona varianza 
+ * con punti di crossing randomizzati per ogni coppia in modo da garantire una buona esplorazione
+ * dello spazio delle soluzioni.
+ * Il crossover si basa su due tagli generando tre partizioni di dimensioni variabili. La generazione
+ * dei figli avviene in modalità PMX, appoggiandosi su un doppio vettore per tenere traccia 
+ * dei pezzi già utilizzati. 
  */
 
 
 void crossover(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
     // generazione tagli, contatori e indice righe/colonne
     int taglio1,taglio2,i,r,c,c1,r1,j,flag;
-    // confronto pezzi dentro il kernel
+    // confronto pezzi dentro il kernel, kernelPieces serve a tenere traccia di quali pezzi
+    // sono presenti dentro il kernel dei figli e devono essere rimpiazzati.
+    // L'allocazione dei due figli è parallelizzata
     char pezzoDaControllare,**kernelPieces;
     //allocazione vettori per il confronto ottimizzato del kernel
     kernelPieces=(char **)malloc(sizeof(char*)*npieces);

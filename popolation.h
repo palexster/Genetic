@@ -16,7 +16,7 @@ extern "C" {
 #include <time.h>
 #include <math.h>
 #include "pieces.h"
-#include "management.h"
+
     
 typedef struct population_s {
     solution_t *soluzioni;
