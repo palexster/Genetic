@@ -5,6 +5,7 @@
 #include <math.h>
 #include "pieces.h"
 #include "popolation.h"
+#define GREY 0
 
     
 /*funzione per l'allocazione del vettore e caricamento dei dati
@@ -150,7 +151,7 @@ int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,in
                 //    printf("Out of bounds reading secondo pezzo orizzontale");
                 a = pieces[solution->matrice_pezzi[i][j][0]][rot_first];
                 b = pieces[solution->matrice_pezzi[i][j+1][0]][rot_sec];
-                if (a == b)
+                if (a == b && a != GREY)
                         profit++;
             }
             // se è l'ultima riga non controlla il profit orizzontale
@@ -171,7 +172,7 @@ int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,in
 */
                 a=pieces[solution->matrice_pezzi[i][j][0]][rot_first];
                 b=pieces[solution->matrice_pezzi[i+1][j][0]][rot_sec];
-                if (a==b)
+                if (a==b &&  a != GREY )
                         profit++;
             }
             
