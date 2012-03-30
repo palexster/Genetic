@@ -129,21 +129,46 @@ int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,in
     // a e b sono utilizzate per memorizzare i colori da confrontare dei due pezzi
     // rot_first e rot_sec per memorizzare la rotazione dei due pezzi considerando 
     // la rotazione del pezzo nella soluzione
-    int a,b,i,j,rot_first,rot_sec,profit=0;
+    int a,b,i,j,rot_first,rot_sec,profit=0,test;
     for(i=0;i<row;i++)
         for(j=0;j<col;j++){
-            if (j!=(col-1)){
+            // se è l'ultima colonna non controlla il profit laterale
+            if (j<(col-1)){
                 // l'ultimo indice 1 indica la rotazione, 0 il numero del pezzo
-                rot_first=abs(DESTRA-solution->matrice_pezzi[i][j][1] % COLN);
-                rot_sec=abs(SINISTRA-solution->matrice_pezzi[i][j+1][1] % COLN);
+                test=DESTRA;
+                rot_first=DESTRA-solution->matrice_pezzi[i][j][1];
+                if (rot_first<0)
+                    rot_first=4+rot_first;
+                // Controllo bounding del pezzo, utile solo in fase di backup
+                //if (rot_first<0 || rot_first>4)
+                //    printf("Out of bounds reading primo pezzo orizzontale");
+                rot_sec=SINISTRA-solution->matrice_pezzi[i][j+1][1];
+                if (rot_sec<0)
+                    rot_sec=4+rot_sec;
+                // Controllo bounding del pezzo, utile solo in fase di backup
+                //if (rot_sec<0 || rot_sec>4)
+                //    printf("Out of bounds reading secondo pezzo orizzontale");
                 a = pieces[solution->matrice_pezzi[i][j][0]][rot_first];
                 b = pieces[solution->matrice_pezzi[i][j+1][0]][rot_sec];
                 if (a == b)
                         profit++;
             }
-            if (i!=(row-1)){
-                rot_first=abs(SOTTO-solution->matrice_pezzi[i][j][1] % COLN);
-                rot_sec=abs(SOPRA-solution->matrice_pezzi[i+1][j][1] % COLN);
+            // se è l'ultima riga non controlla il profit orizzontale
+            if (i<(row-1)){
+                rot_first=SOTTO-solution->matrice_pezzi[i][j][1];
+                if (rot_first<0)
+                    rot_first=4+rot_first;
+/*
+                if (rot_first<0 || rot_first>4)
+                    printf("Out of bounds reading primo pezzo verticale");
+*/
+                rot_sec=SOPRA-solution->matrice_pezzi[i+1][j][1];
+                if (rot_sec<0)
+                    rot_sec=4+rot_sec;
+/*
+                if (rot_sec<0 || rot_sec>4)
+                    printf("Out of bounds reading secondo pezzo orizzontale");
+*/
                 a=pieces[solution->matrice_pezzi[i][j][0]][rot_first];
                 b=pieces[solution->matrice_pezzi[i+1][j][0]][rot_sec];
                 if (a==b)
