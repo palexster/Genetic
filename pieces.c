@@ -43,7 +43,7 @@ int **build_pieces(char* filename,int* np, int* r, int* c){
      return mat;
     }
     
-/*verifica caricamento colori*/
+/*verifica caricamento corretto del vettore dei colori*/
 void test_pieces(int **pieces,int npieces){
     int i,j;
     for(i=0;i<npieces;i++){
@@ -70,6 +70,10 @@ solution_t build_solution(int **pieces, int row,int col){
     }
     return *solution;
 }
+/*
+ * Funziona che riempie una soluzione iniziale con i pezzi del vettore pieces in
+ * maniera casuale
+ */
 void random_solution_generation(solution_t *solution,int **pieces,int npieces, int row, int col){
     char *taken //vettore dei pezzi già inseriti nella soluzione
     ,n_pieces_taken, // numero di pezzi già inseriti nella soluzione
@@ -122,10 +126,14 @@ void test_solution(solution_t *solution,int row,int col){
 }
 
 int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,int row,int col){
-    int a,b,i,j,rot_first,rot_sec,profit=0,bordo_inferiore,bordo_laterale;
+    // a e b sono utilizzate per memorizzare i colori da confrontare dei due pezzi
+    // rot_first e rot_sec per memorizzare la rotazione dei due pezzi considerando 
+    // la rotazione del pezzo nella soluzione
+    int a,b,i,j,rot_first,rot_sec,profit=0;
     for(i=0;i<row;i++)
         for(j=0;j<col;j++){
             if (j!=(col-1)){
+                // l'ultimo indice 1 indica la rotazione, 0 il numero del pezzo
                 rot_first=abs(DESTRA-solution->matrice_pezzi[i][j][1] % COLN);
                 rot_sec=abs(SINISTRA-solution->matrice_pezzi[i][j+1][1] % COLN);
                 a = pieces[solution->matrice_pezzi[i][j][0]][rot_first];
@@ -136,7 +144,9 @@ int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,in
             if (i!=(row-1)){
                 rot_first=abs(SOTTO-solution->matrice_pezzi[i][j][1] % COLN);
                 rot_sec=abs(SOPRA-solution->matrice_pezzi[i+1][j][1] % COLN);
-                if (pieces[solution->matrice_pezzi[i][j][0]][rot_first]== pieces[solution->matrice_pezzi[i+1][j][0]][rot_sec])
+                a=pieces[solution->matrice_pezzi[i][j][0]][rot_first];
+                b=pieces[solution->matrice_pezzi[i+1][j][0]][rot_sec];
+                if (a==b)
                         profit++;
             }
             

@@ -23,10 +23,10 @@ typedef struct solution_s {
 } solution_t;
 
 typedef enum {
+SOTTO,
+SINISTRA,
 SOPRA,
 DESTRA,
-SOTTO,
-SINISTRA
 } faces_t;
 
 int **build_pieces(char* filename,int* np, int* r, int* c);

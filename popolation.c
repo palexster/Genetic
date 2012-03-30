@@ -1,4 +1,4 @@
-#define POP_DIM 100
+#define POP_DIM 100000
 #include "popolation.h"
 
 /*Funzione che crea la popolazione
