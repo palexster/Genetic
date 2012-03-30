@@ -46,6 +46,7 @@ void test_fitness(population_t *pop){
     varianza = varianza / POP_DIM;
     printf("Media Popolazione: %f \t Varianza Popolazione: %f\n",media,varianza);
     printf("Miglior Soluzione n° %d , punti: %d\n",idmax,pop->soluzioni[idmax].fitness);
+    return;
 }
 
 /*
@@ -245,4 +246,13 @@ void crossover(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1
         }
         }
     }
+}
+
+void write_best_solution(char *nomefile,population_t *pop,int row,int col) {
+    int i,j; // contatori nel ciclo 
+    FILE *fp;//puntatore al file  di pezzi
+     fp=fopen(nomefile,"w");
+     for(i=0;i<row;i++)
+         for(j=0;j<col;j++)
+        fprintf(fp,"%d %d \n",pop->soluzioni[0].matrice_pezzi[i][j][0],pop->soluzioni[0].matrice_pezzi[i][j][1]);
 }

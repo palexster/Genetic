@@ -159,3 +159,5 @@ void dealloc_pieces(int **pieces, int npieces){
         }
     free(pieces);
 }
+
+
