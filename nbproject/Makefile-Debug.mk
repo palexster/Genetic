@@ -35,7 +35,6 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/pieces.o \
-	${OBJECTDIR}/sort.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/popolation.o
 
@@ -68,11 +67,6 @@ ${OBJECTDIR}/pieces.o: pieces.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/pieces.o pieces.c
-
-${OBJECTDIR}/sort.o: sort.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/sort.o sort.c
 
 ${OBJECTDIR}/main.o: main.c 
 	${MKDIR} -p ${OBJECTDIR}

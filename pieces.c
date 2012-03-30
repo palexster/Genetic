@@ -119,7 +119,7 @@ void test_solution(solution_t *solution,int row,int col){
 }
 
 int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,int row,int col){
-    int a,b,i,j,rot_first,rot_sec,profit=0,bordo_inferiore,bordo_laterale;
+    int a,b,i,j,rot_first,rot_sec,profit=0;//,bordo_inferiore,bordo_laterale;
     for(i=0;i<row;i++)
         for(j=0;j<col;j++){
             if (j!=(col-1)){
