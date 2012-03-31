@@ -16,13 +16,15 @@ extern "C" {
 #include <time.h>
 #include "pieces.h"
 #include <math.h>
-    
+#define OPT_SOL 0
+#define EVOLVI_ANCORA 1
 typedef struct population_s {
     solution_t *soluzioni;
 } population_t;
 
 //boolean val
 enum{FALSE,TRUE};
+
     
 population_t *build_population(int **pieces,int *border,int npieces,int row,int col);
 void test_fitness(population_t *pop);
