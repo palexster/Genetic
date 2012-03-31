@@ -1,23 +1,26 @@
-#define POP_DIM 100000
+#define POP_DIM 1000000
 #include "popolation.h"
 
 /*Funzione che crea la popolazione
  *  
  */
 
-population_t *build_population(int **pieces,int npieces,int row,int col){
-    int i,fit;
+population_t *build_population(int **pieces,int *border,int npieces,int row,int col){
+    int i,fit,nfeasible=0;
     population_t *popolazione_start;
     popolazione_start=(population_t *)malloc(sizeof(population_t));
     popolazione_start->soluzioni=(solution_t *)malloc(sizeof(solution_t)*POP_DIM);
     for(i=0;i<POP_DIM;i++){
         popolazione_start->soluzioni[i]=build_solution(pieces,row,col);
         //genera una popolazione di soluzioni casuali
-        random_solution_generation(&popolazione_start->soluzioni[i],pieces,row*col,row,col);
+        random_solution_generation(&popolazione_start->soluzioni[i],border,pieces,row*col,row,col);
         //test_solution(&popolazione_start->soluzioni[i],row,col);
         fit=fitness_solution_evaluation(pieces,&popolazione_start->soluzioni[i],npieces,row,col);
+        if (popolazione_start->soluzioni[i].feasible==FEASIBLE)
+            nfeasible++;
         popolazione_start->soluzioni[i].fitness=fit;
     }
+    printf("N° soluzioni feasible: %d\n", nfeasible);
     return popolazione_start;
 }
 
@@ -43,8 +46,9 @@ void test_fitness(population_t *pop){
     for(i=0;i<POP_DIM;i++){
     varianza += pow((pop->soluzioni[i].fitness - media),2); 
     }
-    varianza = varianza / POP_DIM;
-    printf("Media Popolazione: %f \t Varianza Popolazione: %f\n",media,varianza);
+    varianza = varianza / (POP_DIM-1);
+    printf("Dimensione popolazione: %d\n", POP_DIM);
+    printf("Media Popolazione: %f \t Varianza Popolazione: %f \n",media,varianza);
     printf("Miglior Soluzione n° %d , punti: %d\n",idmax,pop->soluzioni[idmax].fitness);
     return;
 }

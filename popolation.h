@@ -14,9 +14,8 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <math.h>
 #include "pieces.h"
-
+#include <math.h>
     
 typedef struct population_s {
     solution_t *soluzioni;
@@ -25,7 +24,7 @@ typedef struct population_s {
 //boolean val
 enum{FALSE,TRUE};
     
-population_t *build_population(int **pieces,int npieces,int row,int col);
+population_t *build_population(int **pieces,int *border,int npieces,int row,int col);
 void test_fitness(population_t *pop);
 void quick_sort(solution_t *array, int l, int r, int (*cmp)(solution_t lv, solution_t rv));
 void dealloc_population(population_t *pop,int row);

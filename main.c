@@ -14,13 +14,14 @@ int main(int argc, char** argv) {
     /* Dichiarazione variabili */
     int row,col,//numero righe e colonne matrice dei pezzi
         npieces,//numero pezzi
-        stop=1;// flag di fine generazione
+        stop=1,// flag di fine generazione
+        corner[4],*border;// indice dei pezzi di bordo
     int **pieces;//vettore dei colori del pezzo
     solution_t solution,solution1;
     population_t *population;
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
-    pieces=build_pieces("pieces_10x10.txt",&npieces,&row,&col);
-    population=build_population(pieces,npieces,row,col);
+    pieces=build_pieces("pieces_05x05.txt",border,&npieces,&row,&col);
+    population=build_population(pieces,border,npieces,row,col);
     sorted_popolation(population,pieces);
     test_fitness(population);
     // comincia l'evoluzione... i criteri di stop

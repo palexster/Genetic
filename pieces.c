@@ -5,14 +5,14 @@
 #include <math.h>
 #include "pieces.h"
 #include "popolation.h"
-#define GREY 0
+#define GRAY 0
 
     
 /*funzione per l'allocazione del vettore e caricamento dei dati
  Riceve nome del file in ingresso
  Ritorna il vettore dei pezzi(vettore di vettori di 4 interi che rappresentano i colori)*/
-int **build_pieces(char* filename,int* np, int* r, int* c){
-    int **mat;//matrice di interi per allocare la struttura dati dei pezzi
+int **build_pieces(char* filename, int *border,int* np, int* r, int* c){
+    int **mat,perimetro,nbordo=0;//matrice di interi per allocare la struttura dati dei pezzi
     FILE *fp;//puntatore al file che contiene i pezzi
     int row,col,//numero righe e colonne matrice dei pezzi
         npieces,//numero pezzi
@@ -23,20 +23,31 @@ int **build_pieces(char* filename,int* np, int* r, int* c){
         fprintf(stderr,"impossibile aprire il file.");
         exit(2);
     }
-    fscanf(fp,"%d%d",&row,&col);
+    if ((fscanf(fp,"%d%d",&row,&col))==EOF)
+        return 1;
     npieces=row*col;
-    
+    border=(int *)malloc(sizeof(int)*npieces);
+    for(i=0;i<npieces;i++){
+        border[i]=0; // 4 colori per pezzo
+        }
     mat=(int **)malloc(sizeof(int*)*npieces); // Allocazione numero di colori
     for(i=0;i<npieces;i++){
         mat[i]=(int *)malloc(sizeof(int)*COLN); // 4 colori per pezzo
         }
-  
+    
     /*Riempimento matrice dei pezzi con i colori dei singoli pezzi*/
-    for(i=0;i<100;i++){
-        fscanf(fp,"%d%d%d%d",&line[0],&line[1],&line[2],&line[3]);
+    for(i=0;i<npieces;i++){
+        if ((fscanf(fp,"%d%d%d%d",&line[0],&line[1],&line[2],&line[3]))==EOF)
+            return 1;
+        nbordo=0;
         for(j=0;j<COLN;j++){
-                mat[i][j]=line[j];
+            if (line[j]==0){
+                nbordo++;
+            }
+                mat[i][j]=line[j];     
         }
+        if (nbordo>0)
+                border[i]=nbordo;
     }
      *np=npieces;
      *r=row;
@@ -69,13 +80,14 @@ solution_t build_solution(int **pieces, int row,int col){
         for(j=0;j<col;j++)
             solution->matrice_pezzi[i][j]=(char *)malloc(sizeof(char)*2);
     }
+    solution->feasible=FEASIBLE;
     return *solution;
 }
 /*
  * Funziona che riempie una soluzione iniziale con i pezzi del vettore pieces in
  * maniera casuale
  */
-void random_solution_generation(solution_t *solution,int **pieces,int npieces, int row, int col){
+void random_solution_generation(solution_t *solution,int *border,int **pieces,int npieces, int row, int col){
     char *taken //vettore dei pezzi già inseriti nella soluzione
     ,n_pieces_taken, // numero di pezzi già inseriti nella soluzione
      random_number, // numero pseudocasuale generato per decidere quale pezzo
@@ -86,12 +98,13 @@ void random_solution_generation(solution_t *solution,int **pieces,int npieces, i
         taken[i]=0;
     }
     n_pieces_taken=0;
+    perimetro=(row+col)*2;
     /*Ciclo sulla matrice della soluzione e cerco un pezzo non preso casuale, usando una rotazion
      casuale. Se è preso, vado a quello dopo. Se arrivo al fondo ricomincio dall'inizio. Ci sono
      metodi molto migliori ma poi lo raffiniamo*/
     for(i=0;i<row;i++)
        for(j=0;j<col;j++){
-        random_number = rand() % npieces;
+              random_number = rand() % npieces;
         if (!taken[random_number]){
             ++taken[random_number];
             solution->matrice_pezzi[i][j][0]=(char)random_number;
@@ -151,8 +164,10 @@ int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,in
                 //    printf("Out of bounds reading secondo pezzo orizzontale");
                 a = pieces[solution->matrice_pezzi[i][j][0]][rot_first];
                 b = pieces[solution->matrice_pezzi[i][j+1][0]][rot_sec];
-                if (a == b && a != GREY)
+                if (a == b && a != GRAY)
                         profit++;
+                if (a == GRAY || b == GRAY)
+                    solution->feasible=UNFEASIBLE;
             }
             // se è l'ultima riga non controlla il profit orizzontale
             if (i<(row-1)){
@@ -172,10 +187,11 @@ int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,in
 */
                 a=pieces[solution->matrice_pezzi[i][j][0]][rot_first];
                 b=pieces[solution->matrice_pezzi[i+1][j][0]][rot_sec];
-                if (a==b &&  a != GREY )
+                if (a==b &&  a != GRAY )
                         profit++;
-            }
-            
+                if (a == GRAY || b == GRAY)
+                    solution->feasible=UNFEASIBLE;
+            }            
         }
     return profit;
 }
