@@ -90,7 +90,7 @@ solution_t build_solution(int **pieces, int row,int col){
 void random_solution_generation(solution_t *solution,int *border,int **pieces,int npieces, int row, int col){
     char *taken //vettore dei pezzi già inseriti nella soluzione
     ,n_pieces_taken, // numero di pezzi già inseriti nella soluzione
-     random_number, // numero pseudocasuale generato per decidere quale pezzo
+     random_number,perimetro, // numero pseudocasuale generato per decidere quale pezzo
             random_rotation;
     int i,j;
     taken=(char *)malloc(sizeof(char)*npieces);

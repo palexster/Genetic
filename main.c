@@ -8,14 +8,15 @@
 #include <stdlib.h>
 #include "pieces.h"
 #include "popolation.h"
-
+#define MAX_ITERATIONS 100
 
 int main(int argc, char** argv) {
     /* Dichiarazione variabili */
     int row,col,//numero righe e colonne matrice dei pezzi
         npieces,//numero pezzi
         stop=1,// flag di fine generazione
-        corner[4],*border;// indice dei pezzi di bordo
+        *border,// vettore dei pezzi di bordo
+        i;
     int **pieces;//vettore dei colori del pezzo
     solution_t solution,solution1;
     population_t *population;
@@ -27,12 +28,12 @@ int main(int argc, char** argv) {
     // comincia l'evoluzione... i criteri di stop
     // 1) Soluzione Ottima
     // 2) Troppe epoche
-    while (!stop){
-        // pop evolution dovrebbe dire al main se vuole ancora andare avanti
-        // ad ogni generazione va avanti e incrementa il valore di stop
-        // o può settare a false la flag se ha trovato la soluzione ottima
-        //stop=pop_evolution(pieces,npieces,pop,row,col);
-    }
+     for(i=0;pop_evolution(pieces,npieces,population,row,col)!=OPT_SOL&&(i<MAX_ITERATIONS);i++){
+       test_fitness(population);
+       //DEBUG
+       //int a;
+       //scanf("%d",&a);	
+   }
     //deallocazione memoria heap
     write_best_solution("Output.txt",population,row,col);
     dealloc_population(population,row);

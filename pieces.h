@@ -20,6 +20,7 @@ extern "C" {
 typedef struct solution_s {
     char ***matrice_pezzi;
     int fitness;
+    int feasible;
 } solution_t;
 
 typedef enum {
@@ -29,9 +30,14 @@ SOPRA,
 DESTRA,
 } faces_t;
 
-int **build_pieces(char* filename,int* np, int* r, int* c);
+typedef enum {
+    FEASIBLE,
+    UNFEASIBLE,
+} feasible_t;
+
+int **build_pieces(char* filename,int* np,int *border, int* r, int* c);
 void test_pieces(int **pieces,int npieces);
-void random_solution_generation(solution_t *solution,int **pieces,int npieces, int row, int col);
+void random_solution_generation(solution_t *solution,int *border,int **pieces,int npieces, int row, int col);
 void test_solution(solution_t *solution,int row,int col);
 int fitness_solution_evaluation(int **pieces,solution_t *sol,int npieces,int row,int col);
 solution_t build_solution(int **pieces,int row,int col);

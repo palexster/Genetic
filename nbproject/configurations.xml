@@ -49,9 +49,6 @@
         <compilerSet>default</compilerSet>
       </toolsSet>
       <compileType>
-        <cTool>
-          <developmentMode>5</developmentMode>
-        </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
         </ccTool>

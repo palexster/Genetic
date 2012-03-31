@@ -1,4 +1,4 @@
-#define POP_DIM 1000000
+#define POP_DIM 100
 #include "popolation.h"
 
 /*Funzione che crea la popolazione
@@ -176,7 +176,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
         chosen[tmp]=TRUE;//segna come selezionato
     }
     //DEBUG
-    for(i=0;i<POP_DIM/2;i++,printf("parent%d:%d\n",i,parents[i]));
+    for(i=0;i<POP_DIM/2;i++,printf("parent%ld:%ld\n",i,parents[i]));
     /*Accoppiamento:
      seleziona 2 genitori a caso e li passa all funz di crossover per generare
      2 figli*/
@@ -191,7 +191,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
                 gen[cnt]=tmp;
         }
         //DEBUG
-        printf("gen:%d %d\n",gen[0],gen[1]);
+        printf("gen:%ld %ld\n",gen[0],gen[1]);
         offspring[i++].fitness=-1;
         offspring[i++].fitness=-1;
         //END DEBUG
