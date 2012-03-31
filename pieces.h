@@ -11,6 +11,7 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
+
 /*struttura dati per la singola soluzione:
  *è composta da una matrice di stringhe (in cui l'elemento i j è il pezzo in 
  * posizione i j nella griglia) da due elementi in cui il primo char è l'indice 
@@ -22,10 +23,10 @@ typedef struct solution_s {
 } solution_t;
 
 typedef enum {
+SOTTO,
+SINISTRA,
 SOPRA,
 DESTRA,
-SOTTO,
-SINISTRA
 } faces_t;
 
 int **build_pieces(char* filename,int* np, int* r, int* c);
@@ -35,6 +36,7 @@ void test_solution(solution_t *solution,int row,int col);
 int fitness_solution_evaluation(int **pieces,solution_t *sol,int npieces,int row,int col);
 solution_t build_solution(int **pieces,int row,int col);
 void dealloc_soluzioni(solution_t *sol,int row);
+void dealloc_pieces(int **pieces, int npieces);
 
 #ifdef	__cplusplus
 }

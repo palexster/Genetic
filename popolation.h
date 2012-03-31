@@ -11,12 +11,20 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
+#include "pieces.h"
 
 #define OPT_SOL 0
 #define EVOLVI_ANCORA 1
 typedef struct population_s {
     solution_t *soluzioni;
 } population_t;
+
+//boolean val
+enum{FALSE,TRUE};
     
 population_t *build_population(int **pieces,int npieces,int row,int col);
 void test_fitness(population_t *pop);
@@ -26,6 +34,7 @@ void crossover(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1
 int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col);
 int get_best(population_t* pop);
 
+void write_best_solution(char *nomefile,population_t *pop,int row,int col);
 #ifdef	__cplusplus
 }
 #endif
