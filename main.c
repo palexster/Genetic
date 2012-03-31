@@ -19,6 +19,11 @@ int main(int argc, char** argv) {
         i;
     int **pieces;//vettore dei colori del pezzo
     solution_t solution,solution1;
+    population_t *population,*pop;
+    long max_iterations,i;
+ 
+    srand(time(NULL));
+
     population_t *population;
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
     pieces=build_pieces("pieces_05x05.txt",border,&npieces,&row,&col);
@@ -36,6 +41,7 @@ int main(int argc, char** argv) {
    }
     //deallocazione memoria heap
     write_best_solution("Output.txt",population,row,col);
+
     dealloc_population(population,row);
     free(population);
     dealloc_pieces(pieces,npieces);

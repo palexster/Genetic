@@ -32,6 +32,8 @@ void quick_sort(solution_t *array, int l, int r, int (*cmp)(solution_t lv, solut
 void dealloc_population(population_t *pop,int row);
 void crossover(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col);
 int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col);
+int get_best(population_t* pop);
+
 void write_best_solution(char *nomefile,population_t *pop,int row,int col);
 #ifdef	__cplusplus
 }
