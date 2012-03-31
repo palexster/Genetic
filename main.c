@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include "pieces.h"
 #include "popolation.h"
-#define MAX_ITERATIONS 100
+#define MAX_ITERATIONS 1
 
 int main(int argc, char** argv) {
     /* Dichiarazione variabili */
@@ -25,12 +25,12 @@ int main(int argc, char** argv) {
     pieces=build_pieces("pieces_05x05.txt",border,&npieces,&row,&col);
     population=build_population(pieces,border,npieces,row,col);
     sorted_popolation(population,pieces);
-    test_fitness(population);
+    //test_fitness(population);
     // comincia l'evoluzione... i criteri di stop
     // 1) Soluzione Ottima
     // 2) Troppe epoche
      for(i=0;pop_evolution(pieces,npieces,population,row,col)!=OPT_SOL&&(i<MAX_ITERATIONS);i++){
-       test_fitness(population);
+       //test_fitness(population);
        //DEBUG
        //int a;
        //scanf("%d",&a);	
