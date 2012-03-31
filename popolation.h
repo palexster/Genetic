@@ -11,11 +11,6 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <math.h>
-#include "pieces.h"
 
 #define OPT_SOL 0
 #define EVOLVI_ANCORA 1
