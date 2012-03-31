@@ -140,7 +140,7 @@ void test_solution(solution_t *solution,int row,int col){
 }
 
 int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,int row,int col){
-    int a,b,i,j,rot_first,rot_sec,profit=0;//,bordo_inferiore,bordo_laterale;
+    //,bordo_inferiore,bordo_laterale;
 
     // a e b sono utilizzate per memorizzare i colori da confrontare dei due pezzi
     // rot_first e rot_sec per memorizzare la rotazione dei due pezzi considerando 
