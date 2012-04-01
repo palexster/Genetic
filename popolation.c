@@ -1,9 +1,9 @@
-#define POP_DIM 5000
+#define POP_DIM 100
 #define GEN_N POP_DIM/2+(POP_DIM%2)//numero genitori è metà della popolazione
                                    //deve essere pari percui se è dispari somma 1
-#define ELITE GEN_N/2+(GEN_N%2)//numero di migliori tra i genitori (è pari)
-#define CASUALI GEN_N-ELITE//genitori da scegliere a caso (sol 0-elite)
-#define RANGE_CAS POP_DIM-ELITE//numero di valori tra cui estrarre gli el casuali
+#define ELITE (POP_DIM/4)//numero di migliori tra i genitori (è pari)
+//#define CASUALI (GEN_N-ELITE)//genitori da scegliere a caso (sol 0-elite)
+#define RANGE_CAS (POP_DIM-ELITE)//numero di valori tra cui estrarre gli el casuali
                                //evitando di estrarre le sol tra 0 ed elite
 
 #include "popolation.h"
@@ -105,7 +105,16 @@ void dealloc_population(population_t *pop,int row){
 int get_best(population_t* pop){
     return(pop->soluzioni[0].fitness);
 }
-
+/*ritorna vero se la pop contienen una sol ottima altrimenti falso*/
+int is_best(population_t* pop,int row,int col){
+     const int MAX_PT=(row-1)*col+(col-1)*row;//costante di punti max dipende 
+                                               //da dimensione matr del gioco
+                                               //1° addendo collegamenti oriz.
+                                               //2°verticali (colleg=coppia di
+                                               //pezzi con colori uguali su giuntura)
+     if(get_best(pop)==MAX_PT)return(TRUE);
+     return(FALSE);
+}
 /*funzione che genera nuova popolazione a partire dalla corrente
  * input:popolazione corrente, e parametri per per funz crossover(vet pezzi,
  * npezzi,row,col).
@@ -144,11 +153,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
     double  tmp_rnd,//tmp_rnd per estraz in sostituzione
             sum_inv_fit,//somma di 1/fitness per sol nella pop
             pi;// pi=(1/fitness)/sum_inv_fit prob con cui el è sostituito
-    /*static*/int MAX_PT;//costante di punti max dipende da dimensione matr del
-                         //gioco          
-    MAX_PT=(row-1)*col+(col-1)*row;//1° addendo collegamenti oriz.
-                                   //2°verticali (colleg=coppia di
-                                   //pezzi con colori uguali su giuntura)
+   
     /*inizializzazione flag*/
     for(i=0;i<POP_DIM;i++)
         chosen[i]=FALSE;
@@ -156,13 +161,14 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
     for(i=0;i<ELITE;i++)
         parents[i]=i;
     /*estrae un altro 25% a caso*/
-    for(;i<CASUALI;i++){
+    for(;i<GEN_N;i++){
         tmp=rand()%(RANGE_CAS)+ELITE;//tira a caso tra il 75% rimanente della pop
                                     //(esclude il 25% migliore gia selezionato)
         //se l'el. estratto e già stato scelto come genitore
         //prova con il successivo finchè non trova un el. non ancora sel.
-        while(!chosen[tmp])
-            tmp++;
+        while(chosen[tmp])
+            tmp=(tmp+1)%POP_DIM+(ELITE*tmp/POP_DIM);//ultimo addendo per saltare
+                                                    //quando ricomincia
         parents[i]=tmp;//segna come genitore
         chosen[tmp]=TRUE;//segna come selezionato
     }
@@ -178,8 +184,9 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
                 //se l'el. estratto e già stato accoppiato
                 //prova con il successivo finchè non trova un el.da accoppiare.
                 while(parents[tmp]<0)
-                        tmp++;
+                        tmp=(tmp+1)%GEN_N;
                 gen[cnt]=tmp;
+                parents[tmp]*=-1;
         }
         //DEBUG
         printf("gen:%ld %ld\n",gen[0],gen[1]);
@@ -235,9 +242,9 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
          tmp_rnd=(double)rand()/(double)RAND_MAX;
          pi=((double)1/(double)pop->soluzioni[i].fitness)/sum_inv_fit;
          if(tmp_rnd<pi]){
-                //se già sostituito prova col sucessivo finchè non trova uno vecchio el
-                while(!chosen[tmp])
-                        tmp++;
+                //se già sostituito prova col successivo finchè non trova uno vecchio el
+                while(chosen[tmp])
+                         tmp=(tmp+1)%POP_DIM;
                 //sostituisce in ogni caso(non considera fitness el corrente)
                 pop->soluzioni[tmp]=offspring[i];
          }     
@@ -248,7 +255,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
             printf("%d",pop->soluzioni[i].fitness);
     }
         //END DEBUG
-    if(get_best(pop)==MAX_PT){
+    if(is_best(pop,row,col)){
         return(OPT_SOL);
     }
     return(EVOLVI_ANCORA);

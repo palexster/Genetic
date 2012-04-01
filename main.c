@@ -12,14 +12,14 @@
 
 int main(int argc, char** argv) {
     /* Dichiarazione variabili */
-    int row,col,//numero righe e colonne matrice dei pezzi
-        npieces,//numero pezzi
+    int row,col;//numero righe e colonne matrice dei pezzi
+    int npieces,//numero pezzi
         stop=1,// flag di fine generazione
         *border,// vettore dei pezzi di bordo
         i;
     int **pieces;//vettore dei colori del pezzo
     solution_t solution,solution1;
-    population_t *population,*pop;
+    population_t *population;
     long max_iterations;
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
     pieces=build_pieces("pieces_05x05.txt",border,&npieces,&row,&col);
@@ -29,12 +29,15 @@ int main(int argc, char** argv) {
     // comincia l'evoluzione... i criteri di stop
     // 1) Soluzione Ottima
     // 2) Troppe epoche
-     for(i=0;pop_evolution(pieces,npieces,population,row,col)!=OPT_SOL&&(i<MAX_ITERATIONS);i++){
+    //se la prima sol non itera neanche
+    if(!(is_best(population,row,col))){
+        for(i=0;pop_evolution(pieces,npieces,population,row,col)!=OPT_SOL&&(i<MAX_ITERATIONS);i++){
        //test_fitness(population);
        //DEBUG
        //int a;
-       //scanf("%d",&a);	
-   }
+       //scanf("%d",&a);
+        }
+    }
     //deallocazione memoria heap
     write_best_solution("Output.txt",population,row,col);
 
