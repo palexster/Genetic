@@ -38,9 +38,8 @@ int main(int argc, char** argv) {
        //scanf("%d",&a);
         }
     }
+    //write_best_solution("Output.txt",population,row,col);
     //deallocazione memoria heap
-    write_best_solution("Output.txt",population,row,col);
-
     dealloc_population(population,row);
     free(population);
     dealloc_pieces(pieces,npieces);

@@ -1,5 +1,5 @@
-#define POP_DIM 100
-#define GEN_N POP_DIM/2+(POP_DIM%2)//numero genitori è metà della popolazione
+#define POP_DIM 100000
+#define GEN_N (POP_DIM/2+(POP_DIM%2))//numero genitori è metà della popolazione
                                    //deve essere pari percui se è dispari somma 1
 #define ELITE (POP_DIM/4)//numero di migliori tra i genitori (è pari)
 //#define CASUALI (GEN_N-ELITE)//genitori da scegliere a caso (sol 0-elite)
@@ -25,7 +25,7 @@ population_t *build_population(int **pieces,int *border,int npieces,int row,int 
         fit=fitness_solution_evaluation(pieces,&popolazione_start->soluzioni[i],npieces,row,col);
         if (popolazione_start->soluzioni[i].feasible==FEASIBLE)
             nfeasible++;
-        popolazione_start->soluzioni[i].fitness=fit;
+        popolazione_start->soluzioni[i].fitness=fit+1;
     }
     printf("N° soluzioni feasible: %d\n", nfeasible);
     return popolazione_start;
@@ -140,7 +140,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
                              //avere di sicuro dimensione di 4 byte (e poter 
                              //rappresentare tutti gli indici senza overflow)
                              //E' usata nche per tenere conto dell'estarazione 
-                             //per la scelta degli accoppiamenti se val negativo
+                             //per la scelta degli accoppiamenti se val positivo
                              //allora già estratto
     long i,tmp;//indice su pop e var temp per memorizzare il val estratto a caso
     solution_t offspring[GEN_N];//vettore dei figli
@@ -159,7 +159,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
         chosen[i]=FALSE;
     /*sceglie i migliori come genitori (sceglie il 25% della popolazione)*/
     for(i=0;i<ELITE;i++)
-        parents[i]=i;
+        parents[i]=-i-1;//salva (indice_negato+1) per controllare estraz gen
     /*estrae un altro 25% a caso*/
     for(;i<GEN_N;i++){
         tmp=rand()%(RANGE_CAS)+ELITE;//tira a caso tra il 75% rimanente della pop
@@ -167,13 +167,14 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
         //se l'el. estratto e già stato scelto come genitore
         //prova con il successivo finchè non trova un el. non ancora sel.
         while(chosen[tmp])
-            tmp=(tmp+1)%POP_DIM+(ELITE*tmp/POP_DIM);//ultimo addendo per saltare
+            tmp=((tmp+1)%POP_DIM)+(ELITE*(tmp/POP_DIM));//ultimo addendo per saltare
                                                     //quando ricomincia
-        parents[i]=tmp;//segna come genitore
+        parents[i]=-(tmp+1);//segna come genitore in range [1-gen_n] (evita zero)
+                            //perchè cambia segno in estraz gen se selez
         chosen[tmp]=TRUE;//segna come selezionato
     }
-    //DEBUG
-    for(i=0;i<GEN_N;i++,printf("parent%ld:%ld\n",i,parents[i]));
+    /*DEBUG
+    for(i=0;i<GEN_N;printf("parent%ld:%ld\n",i,parents[i++]));*/
     /*Accoppiamento:
      seleziona 2 genitori a caso e li passa all funz di crossover per generare
      2 figli*/
@@ -183,20 +184,20 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
                 tmp=rand()%GEN_N;
                 //se l'el. estratto e già stato accoppiato
                 //prova con il successivo finchè non trova un el.da accoppiare.
-                while(parents[tmp]<0)
-                        tmp=(tmp+1)%GEN_N;
+                while(parents[tmp]>0)
+                        tmp=((tmp+1)%GEN_N);
                 gen[cnt]=tmp;
                 parents[tmp]*=-1;
         }
         //DEBUG
-        printf("gen:%ld %ld\n",gen[0],gen[1]);
+        //printf("gen:%ld %ld\n",gen[0],gen[1]);
         offspring[i++].fitness=-1;
         offspring[i++].fitness=-1;
         //END DEBUG
         
-        //crossover(pieces,&pop[gen[1]],&pop[gen[2]],&offspring[i],&offspring[i+1],npieces,row,col);
-        //offspring[i++]fitness_solution_evaluation(pieces,&offspring[i-2],npieces,row,col);
-        //offspring[i++]fitness_solution_evaluation(pieces,&offspring[i-1],npieces,row,col);
+        crossover(pieces,&pop[parents[gen[0]]-1],&pop[parents[gen[1]]-1],&offspring[i],&offspring[i+1],npieces,row,col);
+        fitness_solution_evaluation(pieces,&offspring[i++],npieces,row,col);
+        fitness_solution_evaluation(pieces,&offspring[i++],npieces,row,col);
     }
     /*inizializzazione flag e calcolo somma inversi della fitness*/
     sum_inv_fit=0;
@@ -213,16 +214,15 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
      continua finchè ci sono figli da inserire, se necessario scorre + volte
      la popolazione incrementando con modulo su DIM_POP(se molte estraz hanno esito negativo può capitare che a fine
      di una scansione ci siano ancora figli da inserire)*/
-    curr_best=get_best(pop);//work in progress!->da vedere come usare
     cnt=0;
     for(i=0;cnt<GEN_N;i=((i+1)%POP_DIM)){
-        tmp_rnd=(double)rand()/(double)RAND_MAX;
+        tmp_rnd=(double)rand()/(double)RAND_MAX/sum_inv_fit;
         pi=((double)1/(double)pop->soluzioni[i].fitness)/sum_inv_fit;
         if((!chosen[i])&&(tmp_rnd<pi))
             pop->soluzioni[i]=offspring[cnt++];
     }
     //DEBUG
-    test_fitness(pop);
+    //test_fitness(pop);
     /*Varinte
      Anziché scorrere vecchia pop e sostituire el con p(i)=1/fitness(i)
      estrae un el a caso lo sostituisce con probabilità p(i)(se non risultato 
@@ -250,11 +250,6 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
          }     
     }*/
     //sorted_popolation(pop,pieces);
-    //DEBUG
-        for(i=0;i<POP_DIM;i++){
-            printf("%d",pop->soluzioni[i].fitness);
-    }
-        //END DEBUG
     if(is_best(pop,row,col)){
         return(OPT_SOL);
     }
