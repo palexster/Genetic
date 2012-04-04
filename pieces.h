@@ -35,7 +35,7 @@ typedef enum {
     UNFEASIBLE,
 } feasible_t;
 
-int **build_pieces(char* filename,int* np,int *border, int* r, int* c);
+int **build_pieces(char* filename,int* np,int **border, int* r, int* c);
 void test_pieces(int **pieces,int npieces);
 void random_solution_generation(solution_t *solution,int *border,int **pieces,int npieces, int row, int col);
 void test_solution(solution_t *solution,int row,int col);

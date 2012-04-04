@@ -256,7 +256,15 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
 }
 
 void crossover(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
-    // generazione tagli, contatori e indice righe/colonne
+    
+    *fig1=build_solution(pieces,row,col);
+    *fig2=build_solution(pieces,row,col);
+    crossover_centro(pieces,sol1,sol2,fig1,fig2,npieces,row,col);
+    
+    
+    
+    
+    /* // generazione tagli, contatori e indice righe/colonne
     int taglio1,taglio2,i,r,c,c1,r1,j,flag;
     // confronto pezzi dentro il kernel, kernelPieces serve a tenere traccia di quali pezzi
     // sono presenti dentro il kernel dei figli e devono essere rimpiazzati.
@@ -340,6 +348,53 @@ void crossover(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1
         }
         }
     }
+ }controllare parentesi(in particolare ultime graffe) se si rimette sto codice!*/
+}
+
+/*funzione per il crossover tr i pezzi della matrice che non sono di bordo 
+ * ie indice_riga € [1,row-2] e indice_col€[1,col-2]*/
+void crossover(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
+    // generazione tagli, contatori e indice righe/colonne
+    int taglio1,taglio2,i,r,c,c1,r1,j,flag;
+    // confronto pezzi dentro il kernel, kernelPieces serve a tenere traccia di quali pezzi
+    // sono presenti dentro il kernel dei figli e devono essere rimpiazzati.
+    // L'allocazione dei due figli è parallelizzata
+    char pezzoDaControllare,**kernelPieces;
+    //allocazione vettori per il confronto ottimizzato del kernel
+    kernelPieces=(char **)malloc(sizeof(char*)*(row-1)*(col-1));
+    for(i=0;i<npieces;i++){
+        kernelPieces[i]=(char *)malloc(sizeof(char)*2);
+        kernelPieces[i][0]=-1;
+        kernelPieces[i][1]=-1;
+    }
+    /*così vincoli il kernel sempre a cavallo della metà. io lascerei + libertà
+      al max fissiamo una dim minima cioè farei:
+        taglio1=rand()%npieces+(col+1)
+        taglio2=rand()%(npieces-(taglio1+1)-(col+1))+taglio1+LENKERMIN
+     evitando anche il controllo di tagli uguali*/
+    taglio1=rand() % npieces/2 +(col+1);//col+1 fa si che min(taglio1) è 2° el 2^riga(evita 1^riga e almeno un el prima del taglio)
+    //col+1=numero di pezzi nell'ultima riga + l'ultimo pezzo della panultima
+    //cioè il bordo destro della penultima riga
+    taglio2=rand() % (npieces/2-(col+1)) + npieces/2;
+    if (taglio2=taglio1)
+        taglio2=taglio2 + npieces/10;
+    // Generazione kernel della prole
+    for(r=taglio1/col;(r<(row-2))&&(i<taglio2);r++){
+        //verificare inizializzaz c e assegnare val a i nel ciclo!
+        for(c=taglio1%col;(c<(col-2))&&(i<taglio2);c++){
+            r = i/col;
+        c = i % col;
+        // figlio 1
+        fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
+        fig1->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r][c][1];
+        kernelPieces[sol1->matrice_pezzi[r][c][0]][0]=i;
+        // figlio 2
+        fig2->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
+        fig2->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r][c][1];
+        kernelPieces[sol2->matrice_pezzi[r][c][0]][1]=i;
+        }
+    }
+    
 }
 
 void write_best_solution(char *nomefile,population_t *pop,int row,int col) {
@@ -348,5 +403,6 @@ void write_best_solution(char *nomefile,population_t *pop,int row,int col) {
      fp=fopen(nomefile,"w");
      for(i=0;i<row;i++)
          for(j=0;j<col;j++)
-        fprintf(fp,"%d %d \n",pop->soluzioni[0].matrice_pezzi[i][j][0],pop->soluzioni[0].matrice_pezzi[i][j][1]);
+                fprintf(fp,"%d %d \n",pop->soluzioni[0].matrice_pezzi[i][j][0],pop->soluzioni[0].matrice_pezzi[i][j][1]);
+
 }
