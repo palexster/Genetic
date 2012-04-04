@@ -23,11 +23,6 @@ int main(int argc, char** argv) {
     long max_iterations;
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
     pieces=build_pieces("pieces_05x05.txt",&border,&npieces,&row,&col);
-/*
-        for(i=0;i<npieces;i++){
-        printf("Pezzo numero %d vale %d\n",i,border[i]);
-        }
-*/
     population=build_population(pieces,border,npieces,row,col);
     sorted_popolation(population,pieces);
     //test_fitness(population);

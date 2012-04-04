@@ -1,4 +1,4 @@
-#define POP_DIM 10
+#define POP_DIM 100
 #define GEN_N (POP_DIM/2+(POP_DIM%2))//numero genitori è metà della popolazione
                                    //deve essere pari percui se è dispari somma 1
 #define ELITE (POP_DIM/4)//numero di migliori tra i genitori (è pari)
@@ -194,7 +194,6 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
         offspring[i++].fitness=-1;
         offspring[i++].fitness=-1;
         //END DEBUG
-        // di preciso qui cosa diamine stai chiamando? :-D
         crossover(pieces,&pop->soluzioni[parents[gen[0]]-1],&pop->soluzioni[parents[gen[1]]-1],&offspring[i],&offspring[i+1],npieces,row,col);
         fitness_solution_evaluation(pieces,&offspring[i++],npieces,row,col);
         fitness_solution_evaluation(pieces,&offspring[i++],npieces,row,col);

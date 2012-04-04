@@ -131,28 +131,32 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
         if (i==npieces)
             i=0;
     }
-    k=0;
+    // Riempimento angoli
+    //Angolo alto-sinistra;
+    solution->matrice_pezzi[0][0][0]=get_right_corner(pieces,corner_taken);
+    solution->matrice_pezzi[0][0][1]=get_corner_fitting_rotation(pieces,solution->matrice_pezzi[0][0][0],SINISTRA,SOPRA);
+    //Angolo alto-destra;
+    solution->matrice_pezzi[0][col-1][0]=get_right_corner(pieces,corner_taken);
+    solution->matrice_pezzi[0][col-1][1]=get_corner_fitting_rotation(pieces,solution->matrice_pezzi[0][col-1][0],SOPRA,DESTRA);
+    //Angolo basso-destra;
+    solution->matrice_pezzi[row-1][col-1][0]=get_right_corner(pieces,corner_taken);
+    solution->matrice_pezzi[row-1][col-1][1]=get_corner_fitting_rotation(pieces,solution->matrice_pezzi[row-1][col-1][0],SOPRA,DESTRA);
+    //Angolo basso-sinistra;
+    solution->matrice_pezzi[row-1][0][0]=get_right_corner(pieces,corner_taken);
+    solution->matrice_pezzi[row-1][0][1]=get_corner_fitting_rotation(pieces,solution->matrice_pezzi[row-1][col-1][0],SOPRA,DESTRA);
+    for(i=0;i<row;i++){
+        get_right_border(pieces,solution,border_taken,perimetro,i,0,SOPRA);
+        get_right_border(pieces,solution,border_taken,perimetro,i,col-1,SOPRA);
+    }
+    for(j=0;j<col;j++){
+        get_right_border(pieces,solution,border_taken,perimetro,0,j,SOPRA);
+        get_right_border(pieces,solution,border_taken,perimetro,row-1,j,SOPRA);
+    }
     /*Ciclo sulla matrice della soluzione e cerco un pezzo non preso casuale, usando una rotazion
      casuale. Se è preso, vado a quello dopo. Se arrivo al fondo ricomincio dall'inizio. Ci sono
      metodi molto migliori ma poi lo raffiniamo*/
-    for(i=0;i<row;i++)
-       for(j=0;j<col;j++){
-           if (i==0){
-               get_right_border(pieces,solution,border_taken,perimetro,i,j,SOPRA);
-               continue;
-           }
-           if (j==0) { //bordo sinistro
-               get_right_border(pieces,solution,border_taken,perimetro,i,j,SINISTRA);
-               continue;
-           }
-           if (i==(row-1)){
-               get_right_border(pieces,solution,border_taken,perimetro,i,j,SOTTO);
-               continue;
-           }
-           if (j==(col-1)){
-               get_right_border(pieces,solution,border_taken,perimetro,i,j,DESTRA);
-               continue;
-           }   
+    for(i=1;i<(row-1);i++)
+       for(j=1;j<(col-1);j++){
            random_number = rand() % npieces;
         if (!taken[random_number]){
             ++taken[random_number];
@@ -314,4 +318,46 @@ void get_right_border(int **pieces,solution_t *solution,char *border_taken,int p
                 ++random_number;
     }
     return;
+}
+
+
+int get_right_corner(int **pieces,int *corner_taken){
+    int random_number;
+    random_number= rand() % 4;
+    while (corner_taken[random_number]){
+        random_number= (random_number+1)%4;
+    }
+    ++corner_taken[random_number];
+    return random_number;
+}
+
+/*Seleziona la rotazione giusta per un pezzo d'angolo
+ * Corner index è il pezzo selezionato all'interno del vettore pieces per essere
+ * messo nell'angolo, i e j caratterizzano la posizione dell'angolo (alto-destra...)
+ */
+
+int get_corner_fitting_rotation(int **pieces,int corner_index,int i,int j){
+    int rotation=0,k,l;
+    for(k=0;k<3;k++){
+        if (pieces[corner_index][k] == GRAY){
+            if (pieces[corner_index][k+1] == GRAY){
+            l=k+1;
+            break;
+            }
+            else {
+                l=k;
+                --k;
+                if (k<0)
+                    k=4-k;
+                break;
+            }
+        }
+           }
+    // bisogna che il pezzo corner sia ruotato affinchè il grigio sia esterno
+    // bordo mi dà la posizione del grigio
+    // in i memorizzo l'indice del colore grigio nel pezzo
+    while (((((k+rotation)%4) != i) || (((l+rotation)%4) != j)) && ((((k+rotation)%4) !=j) || (((l+rotation)%4) != i) )){
+        ++rotation;
+    }
+    return rotation;
 }
