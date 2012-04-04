@@ -353,7 +353,7 @@ void crossover(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1
 
 /*funzione per il crossover tr i pezzi della matrice che non sono di bordo 
  * ie indice_riga € [1,row-2] e indice_col€[1,col-2]*/
-void crossover(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
+void crossover_centro(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
     // generazione tagli, contatori e indice righe/colonne
     int taglio1,taglio2,i,r,c,c1,r1,j,flag;
     // confronto pezzi dentro il kernel, kernelPieces serve a tenere traccia di quali pezzi
