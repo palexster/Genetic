@@ -4,7 +4,7 @@
 #define ELITE (POP_DIM/4)//numero di migliori tra i genitori (è pari)
 //#define CASUALI (GEN_N-ELITE)//genitori da scegliere a caso (sol 0-elite)
 #define RANGE_CAS (POP_DIM-ELITE)//numero di valori tra cui estrarre gli el casuali
-                               //evitando di estrarre le sol tra 0 ed elite
+                               //evitando di estrarre le sol tra 0 ed elite 
 
 #include "popolation.h"
 
@@ -16,7 +16,15 @@ population_t *build_population(int **pieces,int *border,int npieces,int row,int 
     int i,fit,nfeasible=0;
     population_t *popolazione_start;
     popolazione_start=(population_t *)malloc(sizeof(population_t));
+    if(popolazione_start==NULL){
+        fprintf(stderr,"build_population()-errore in malloc() di popolazione_start.\n");
+        exit(2);
+    }
     popolazione_start->soluzioni=(solution_t *)malloc(sizeof(solution_t)*POP_DIM);
+    if(popolazione_start->soluzioni==NULL){
+        fprintf(stderr,"build_population()-errore in malloc() di popolazione_start->soluzioni.\n");
+        exit(2);
+    }
     for(i=0;i<POP_DIM;i++){
         popolazione_start->soluzioni[i]=build_solution(pieces,row,col);
         //genera una popolazione di soluzioni casuali
@@ -356,42 +364,55 @@ void crossover(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1
 void crossover_centro(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
     // generazione tagli, contatori e indice righe/colonne
     int taglio1,taglio2,i,r,c,c1,r1,j,flag;
+    const char ker_len_min;//lunghezza minima kernel
+    
+    ker_len_min=(char)npieces/10;//10% num pezzi(approx. all'intero inferiore) conta anche bordo anche se lavora su centro
     // confronto pezzi dentro il kernel, kernelPieces serve a tenere traccia di quali pezzi
     // sono presenti dentro il kernel dei figli e devono essere rimpiazzati.
     // L'allocazione dei due figli è parallelizzata
     char pezzoDaControllare,**kernelPieces;
     //allocazione vettori per il confronto ottimizzato del kernel
     kernelPieces=(char **)malloc(sizeof(char*)*(row-1)*(col-1));
+    if(kernelPieces==NULL){
+        fprintf(stderr,"build_population()-errore in malloc() di kernelPieces.\n");
+        exit(2);
+    }
     for(i=0;i<npieces;i++){
         kernelPieces[i]=(char *)malloc(sizeof(char)*2);
+        if(kernelPieces[i]==NULL){
+                fprintf(stderr,"crossover_centro()-errore in malloc() di kernelPieces[%d].\n",i);
+                exit(2);
+        }
         kernelPieces[i][0]=-1;
         kernelPieces[i][1]=-1;
     }
-    /*così vincoli il kernel sempre a cavallo della metà. io lascerei + libertà
-      al max fissiamo una dim minima cioè farei:
-        taglio1=rand()%npieces+(col+1)
-        taglio2=rand()%(npieces-(taglio1+1)-(col+1))+taglio1+LENKERMIN
-     evitando anche il controllo di tagli uguali*/
-    taglio1=rand() % npieces/2 +(col+1);//col+1 fa si che min(taglio1) è 2° el 2^riga(evita 1^riga e almeno un el prima del taglio)
-    //col+1=numero di pezzi nell'ultima riga + l'ultimo pezzo della panultima
-    //cioè il bordo destro della penultima riga
+    //col+2 fa si che min(taglio1) è 3° el 2^riga per evitare bordo
+    //(evita 1^riga e almeno un el prima del taglio) e avere almeno un el prima del taglio
+    taglio1=rand()%npieces+(col+2)
+    //col+1=numero di pezzi nell'ultima riga + l'ultimo pezzo della penultima
+    //cioè il bordo destro della penultima riga e il bordo inferiore
+    //npieces-taglio1+1=num el rimanenti
+    //taglio1+1 per essere>taglio1
+    //kerlen min=min num el in kernel
+    taglio2=rand()%(npieces-(taglio1+1)-(col+1))+taglio1+ker_len_min;
+    //così vincoli il kernel sempre a cavallo della metà.
+    /*taglio1=rand() % npieces/2 +(col+1);
     taglio2=rand() % (npieces/2-(col+1)) + npieces/2;
     if (taglio2=taglio1)
-        taglio2=taglio2 + npieces/10;
+        taglio2=taglio2 + npieces/10;*/
     // Generazione kernel della prole
     for(r=taglio1/col;(r<(row-2))&&(i<taglio2);r++){
-        //verificare inizializzaz c e assegnare val a i nel ciclo!
         for(c=taglio1%col;(c<(col-2))&&(i<taglio2);c++){
-            r = i/col;
-        c = i % col;
-        // figlio 1
-        fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
-        fig1->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r][c][1];
-        kernelPieces[sol1->matrice_pezzi[r][c][0]][0]=i;
-        // figlio 2
-        fig2->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
-        fig2->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r][c][1];
-        kernelPieces[sol2->matrice_pezzi[r][c][0]][1]=i;
+            //??? col o col meno 1 capire bene kernelPieces!
+            i=r*col+c;
+            // figlio 1
+            fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
+            fig1->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r][c][1];
+            kernelPieces[sol1->matrice_pezzi[r][c][0]][0]=i;
+            // figlio 2
+            fig2->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
+            fig2->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r][c][1];
+            kernelPieces[sol2->matrice_pezzi[r][c][0]][1]=i;
         }
     }
     
