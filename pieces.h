@@ -43,8 +43,8 @@ int fitness_solution_evaluation(int **pieces,solution_t *sol,int npieces,int row
 solution_t build_solution(int **pieces,int row,int col);
 void dealloc_soluzioni(solution_t *sol,int row);
 void dealloc_pieces(int **pieces, int npieces);
-int get_corner_fitting_rotation(int **pieces,int corner_index,int i,int j);
-int get_right_corner(int **pieces,int *corner_taken);
+char get_corner_fitting_rotation(int **pieces,char corner_index,int i,int j);
+char get_right_corner(int **pieces,char *corner_taken);
 void get_right_border(int **pieces,solution_t *solution,char *border_taken,int perimetro,int i,int j,int posizione);
 int get_border_fitting_rotation(int **pieces,int border_index, int bordo);
 
