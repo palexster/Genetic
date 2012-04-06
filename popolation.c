@@ -267,7 +267,7 @@ void crossover(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1
     
     *fig1=build_solution(pieces,row,col);
     *fig2=build_solution(pieces,row,col);
-    crossover_centro(pieces,sol1,sol2,fig1,fig2,npieces,row,col);
+    //crossover_centro(pieces,sol1,sol2,fig1,fig2,npieces,row,col);
     
     
     
@@ -364,7 +364,7 @@ void crossover(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1
 void crossover_centro(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
     // generazione tagli, contatori e indice righe/colonne
     int taglio1,taglio2,i,r,c,c1,r1,j,flag;
-    const char ker_len_min;//lunghezza minima kernel
+    char ker_len_min;//lunghezza minima kernel
     
     ker_len_min=(char)npieces/10;//10% num pezzi(approx. all'intero inferiore) conta anche bordo anche se lavora su centro
     // confronto pezzi dentro il kernel, kernelPieces serve a tenere traccia di quali pezzi
@@ -388,7 +388,7 @@ void crossover_centro(int **pieces,solution_t *sol1, solution_t *sol2, solution_
     }
     //col+2 fa si che min(taglio1) è 3° el 2^riga per evitare bordo
     //(evita 1^riga e almeno un el prima del taglio) e avere almeno un el prima del taglio
-    taglio1=rand()%npieces+(col+2)
+    taglio1=rand()%npieces+(col+2);
     //col+1=numero di pezzi nell'ultima riga + l'ultimo pezzo della penultima
     //cioè il bordo destro della penultima riga e il bordo inferiore
     //npieces-taglio1+1=num el rimanenti

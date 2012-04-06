@@ -148,8 +148,13 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
         fprintf(stderr,"random_solution_generation()-errore in malloc() di border_taken.\n");
         exit(2);
     }
+    for(i=0;i<4;i++){
+        corner_taken[i]=0;
+    }
     for(i=0;i<npieces;i++){
         taken[i]=0;
+    }
+    for(i=0;i<perimetro;i++){
         border_taken[i]=0;
     }
     n_pieces_taken=0;
@@ -188,11 +193,11 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
     //Angolo basso-sinistra;
     solution->matrice_pezzi[row-1][0][0]=get_right_corner(pieces,corner_taken);
     solution->matrice_pezzi[row-1][0][1]=get_corner_fitting_rotation(pieces,solution->matrice_pezzi[row-1][col-1][0],SOPRA,DESTRA);
-    for(i=0;i<row;i++){
+    for(i=1;i<(row-1);i++){
         get_right_border(pieces,solution,border_taken,perimetro,i,0,SOPRA);
         get_right_border(pieces,solution,border_taken,perimetro,i,col-1,SOPRA);
     }
-    for(j=0;j<col;j++){
+    for(j=1;j<(col-1);j++){
         get_right_border(pieces,solution,border_taken,perimetro,0,j,SOPRA);
         get_right_border(pieces,solution,border_taken,perimetro,row-1,j,SOPRA);
     }
@@ -222,9 +227,9 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
         }
        }
     //per ora ti ho messo le free qua!
-    free(border_taken);
-    free(border_pieces);
-    free(taken);
+   // free(border_taken);
+    //free(border_pieces);
+    //free(taken);
     return;
 }
 
