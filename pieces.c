@@ -54,7 +54,7 @@ int **build_pieces(char* filename, int **border,int* np, int* r, int* c){
             fprintf(stderr,"file corrotto.\n");
             exit(2);
         }
-                    nbordo=0;
+         nbordo=0;
         for(j=0;j<COLN;j++){
             if (line[j]==GRAY){
                 nbordo++;
@@ -63,6 +63,7 @@ int **build_pieces(char* filename, int **border,int* np, int* r, int* c){
         }
         if (nbordo>0){
                 b[i]=nbordo;
+                printf("Grigio Trovato in %d facce nel pezzo %d\n",nbordo,i);
         }
         //printf("Il pezzo %d ha %d volte il grigio. Ripeto %d volte\n",i,nbordo,border[i]);
      }
@@ -148,6 +149,7 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
         fprintf(stderr,"random_solution_generation()-errore in malloc() di border_taken.\n");
         exit(2);
     }
+    // azzeramento delle matrice allocate per contare i pezzi
     for(i=0;i<4;i++){
         corner_taken[i]=0;
     }
@@ -170,36 +172,52 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
             border_pieces[j]=i;
             n_pieces_taken++;
             j++;
+            printf("Pezzo di bordo in %d\n",i);
         }
         if (border[i] == 2){
             corners[k]=i;
             n_pieces_taken++;
             k++;
+            printf("Pezzo di angolo in %d\n",i);
         }
         i++;
         if (i==npieces)
             i=0;
     }
+    // Controllo Che il vettore taken sia a 0
+    // Bordi e angoli finiti, quali sono stati presi?
+     for(j=1;j<npieces;j++){
+         printf("Pezzo %d: %d\n",j,taken[j]);
+    }
     // Riempimento angoli
     //Angolo alto-sinistra;
-    solution->matrice_pezzi[0][0][0]=get_right_corner(pieces,corner_taken);
+    solution->matrice_pezzi[0][0][0]=get_right_corner(pieces,corner_taken,corners);
     solution->matrice_pezzi[0][0][1]=get_corner_fitting_rotation(pieces,solution->matrice_pezzi[0][0][0],SINISTRA,SOPRA);
+    ++taken[solution->matrice_pezzi[0][0][0]];
     //Angolo alto-destra;
-    solution->matrice_pezzi[0][col-1][0]=get_right_corner(pieces,corner_taken);
+    solution->matrice_pezzi[0][col-1][0]=get_right_corner(pieces,corner_taken,corners);
     solution->matrice_pezzi[0][col-1][1]=get_corner_fitting_rotation(pieces,solution->matrice_pezzi[0][col-1][0],SOPRA,DESTRA);
+    ++taken[solution->matrice_pezzi[0][col-1][0]];
     //Angolo basso-destra;
-    solution->matrice_pezzi[row-1][col-1][0]=get_right_corner(pieces,corner_taken);
+    solution->matrice_pezzi[row-1][col-1][0]=get_right_corner(pieces,corner_taken,corners);
     solution->matrice_pezzi[row-1][col-1][1]=get_corner_fitting_rotation(pieces,solution->matrice_pezzi[row-1][col-1][0],SOPRA,DESTRA);
+    ++taken[solution->matrice_pezzi[row-1][col-1][0]];
     //Angolo basso-sinistra;
-    solution->matrice_pezzi[row-1][0][0]=get_right_corner(pieces,corner_taken);
+    solution->matrice_pezzi[row-1][0][0]=get_right_corner(pieces,corner_taken,corners);
     solution->matrice_pezzi[row-1][0][1]=get_corner_fitting_rotation(pieces,solution->matrice_pezzi[row-1][col-1][0],SOPRA,DESTRA);
+    ++taken[solution->matrice_pezzi[row-1][0][0]];
+    //Riempimento pezzi di bordo
     for(i=1;i<(row-1);i++){
-        get_right_border(pieces,solution,border_taken,perimetro,i,0,SOPRA);
-        get_right_border(pieces,solution,border_taken,perimetro,i,col-1,SOPRA);
+        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro,i,0,SOPRA);
+        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro,i,col-1,SOPRA);
     }
     for(j=1;j<(col-1);j++){
-        get_right_border(pieces,solution,border_taken,perimetro,0,j,SOPRA);
-        get_right_border(pieces,solution,border_taken,perimetro,row-1,j,SOPRA);
+        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro,0,j,SOPRA);
+        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro,row-1,j,SOPRA);
+    }
+    // Bordi e angoli finiti, quali sono stati presi?
+     for(j=0;j<npieces;j++){
+         printf("Pezzo %d: %d\n",j,taken[j]);
     }
     /*Ciclo sulla matrice della soluzione e cerco un pezzo non preso casuale, usando una rotazion
      casuale. Se è preso, vado a quello dopo. Se arrivo al fondo ricomincio dall'inizio. Ci sono
@@ -213,6 +231,7 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
             ++n_pieces_taken;
             random_rotation= rand() % COLN;
             solution->matrice_pezzi[i][j][1]=random_rotation;
+            //printf("Pezzo preso  numero %d in posizione %d %d\n",random_number,i,j);
         }
         else {
             while (taken[random_number]){
@@ -227,9 +246,9 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
         }
        }
     //per ora ti ho messo le free qua!
-   // free(border_taken);
-    //free(border_pieces);
-    //free(taken);
+   //free(border_taken);
+    free(border_pieces);
+    free(taken);
     return;
 }
 
@@ -338,17 +357,19 @@ int get_border_fitting_rotation(int **pieces,int border_index, int bordo){
     return rotation;
 }       
 
-void get_right_border(int **pieces,solution_t *solution,char *border_taken,int perimetro,int i,int j,int posizione)
+void get_right_border(int **pieces,solution_t *solution,char *taken,char *border_taken,char *border_pieces,int perimetro,int i,int j,int posizione)
 {
-    int random_rotation,random_number,fine; 
+    int random_rotation,pezzo,random_number,fine; 
     random_number = rand() % perimetro;
     fine=random_number;
      if (!border_taken[random_number]){
                    ++border_taken[random_number];
-                   solution->matrice_pezzi[i][j][0]=(char)random_number;
-                   random_rotation=get_border_fitting_rotation(pieces,random_number,posizione);
+                   pezzo=border_pieces[random_number];
+                   ++taken[pezzo];
+                   //printf("Preso il pezzo numero %d come bordo %d\n",pezzo,posizione);
+                   solution->matrice_pezzi[i][j][0]=(char)pezzo;;
+                   random_rotation=get_border_fitting_rotation(pieces,pezzo,posizione);
                    solution->matrice_pezzi[i][j][1]=random_rotation;
-                   ++random_number;
      }
     else {
                 while (border_taken[random_number] ){
@@ -363,24 +384,26 @@ void get_right_border(int **pieces,solution_t *solution,char *border_taken,int p
 */
                 //++border_taken[random_number];
                }
-                ++border_taken[random_number];
-                solution->matrice_pezzi[i][j][0]=random_number;
-                random_rotation=get_border_fitting_rotation(pieces,random_number,posizione);
-                solution->matrice_pezzi[i][j][1]=random_rotation;
-                ++random_number;
+                 ++border_taken[random_number];
+                   pezzo=border_pieces[random_number];
+                   ++taken[pezzo];
+                   //printf("Preso il pezzo numero %d come bordo %d\n",pezzo,posizione);
+                   solution->matrice_pezzi[i][j][0]=(char)pezzo;;
+                   random_rotation=get_border_fitting_rotation(pieces,pezzo,posizione);
+                   solution->matrice_pezzi[i][j][1]=random_rotation;
     }
     return;
 }
 
 
-char get_right_corner(int **pieces,char *corner_taken){
+char get_right_corner(int **pieces,char *corner_taken,char *corners){
     char random_number;
     random_number= (char)(rand() % 4);
     while (corner_taken[random_number]){
         random_number= (char)((random_number+1)%4);
     }
     ++corner_taken[random_number];
-    return random_number;
+    return corners[random_number];
 }
 
 /*Seleziona la rotazione giusta per un pezzo d'angolo
