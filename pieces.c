@@ -63,10 +63,12 @@ int **build_pieces(char* filename, int **border,int* np, int* r, int* c){
         }
         if (nbordo>0){
                 b[i]=nbordo;
-                printf("Grigio Trovato in %d facce nel pezzo %d\n",nbordo,i);
+                //printf("Grigio Trovato in %d facce nel pezzo %d\n",nbordo,i);
         }
         //printf("Il pezzo %d ha %d volte il grigio. Ripeto %d volte\n",i,nbordo,border[i]);
      }
+     const int MAX_PT=(row-1)*col+(col-1)*row;//costante di punti max dipende 
+     printf("Punteggio Massimo: %d\n",MAX_PT);
      *border=b;
      *np=npieces;
      *r=row;
@@ -124,8 +126,8 @@ solution_t build_solution(int **pieces, int row,int col){
  * maniera casuale
  */
 void random_solution_generation(solution_t *solution,int *border,int **pieces,int npieces, int row, int col){
-    char *taken //vettore dei pezzi già inseriti nella soluzione
-    ,n_pieces_taken, // numero di pezzi già inseriti nella soluzione
+    char *taken, //vettore dei pezzi già inseriti nella soluzione
+    n_pieces_taken, // numero di pezzi già inseriti nella soluzione
      random_number, // numero pseudocasuale generato per decidere quale pezzo
             perimetro,//bordo della matrice che rappresenta la soluzione
             random_rotation,
@@ -203,35 +205,39 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
     ++taken[solution->matrice_pezzi[0][col-1][0]];
     //Angolo basso-destra;
     solution->matrice_pezzi[row-1][col-1][0]=get_right_corner(pieces,corner_taken,corners);
-    solution->matrice_pezzi[row-1][col-1][1]=get_corner_fitting_rotation(pieces,solution->matrice_pezzi[row-1][col-1][0],SOPRA,DESTRA);
+    solution->matrice_pezzi[row-1][col-1][1]=get_corner_fitting_rotation(pieces,solution->matrice_pezzi[row-1][col-1][0],SOTTO,DESTRA);
     ++taken[solution->matrice_pezzi[row-1][col-1][0]];
     //Angolo basso-sinistra;
     solution->matrice_pezzi[row-1][0][0]=get_right_corner(pieces,corner_taken,corners);
-    solution->matrice_pezzi[row-1][0][1]=get_corner_fitting_rotation(pieces,solution->matrice_pezzi[row-1][col-1][0],SOPRA,DESTRA);
+    solution->matrice_pezzi[row-1][0][1]=get_corner_fitting_rotation(pieces,solution->matrice_pezzi[row-1][col-1][0],SOTTO,SINISTRA);
     ++taken[solution->matrice_pezzi[row-1][0][0]];
     // Bordi e angoli finiti, quali sono stati presi?
-    printf("--Tutti a 0 dovrebbero essere tranne angoli a 1---\n");
+    /* printf("--Tutti a 0 dovrebbero essere tranne angoli a 1---\n");
+       //Codice utilizzato per il il debugging
      for(j=0;j<npieces;j++){
          if (taken[j]>1)
              fprintf(stderr,"Pezzo %d DUPLICATO!!!\n",j);
          //printf("Pezzo %d: %d\n",j,taken[j]);
     }
+*/
     //Riempimento pezzi di bordo
     for(i=1;i<(row-1);i++){
-        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro-4,i,0,SOPRA);
-        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro-4,i,col-1,SOPRA);
+        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro-4,i,0,SINISTRA);
+        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro-4,i,col-1,DESTRA);
     }
     for(j=1;j<(col-1);j++){
         get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro-4,0,j,SOPRA);
-        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro-4,row-1,j,SOPRA);
+        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro-4,row-1,j,SOTTO);
     }
     // Bordi e angoli finiti, quali sono stati presi?
+/*
     printf("--Tutti a 0 dovrebbero essere tranne angoli a 1---\n");
      for(j=0;j<npieces;j++){
          if (taken[j]>1)
              fprintf(stderr,"Pezzo %d DUPLICATO!!!\n",j);
         // printf("Pezzo %d: %d\n",j,taken[j]);
     }
+*/
     /*Ciclo sulla matrice della soluzione e cerco un pezzo non preso casuale, usando una rotazion
      casuale. Se è preso, vado a quello dopo. Se arrivo al fondo ricomincio dall'inizio. Ci sono
      metodi molto migliori ma poi lo raffiniamo*/
@@ -258,11 +264,13 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
             ++taken[random_number];
         }
        }
+/*Codice per il debugging e la rilevazione di estrazioni duplicate!
     for(j=0;j<npieces;j++){
          if (taken[j]>1)
              fprintf(stderr,"Pezzo %d DUPLICATO!!!\n",j);
          //printf("Pezzo %d: %d\n",j,taken[j]);
     }
+*/
     //per ora ti ho messo le free qua!
     free(border_pieces);
     free(taken);
@@ -287,55 +295,53 @@ int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,in
     // a e b sono utilizzate per memorizzare i colori da confrontare dei due pezzi
     // rot_first e rot_sec per memorizzare la rotazione dei due pezzi considerando 
     // la rotazione del pezzo nella soluzione
-    int a,b,i,j,rot_first,rot_sec,profit=0,test;
-
+    int a,b,i,j,rot_first,rot_sec,profit=0;
+    //test_solution(solution,row,col);
     for(i=0;i<row;i++)
         for(j=0;j<col;j++){
+            ///printf("Coordinate %d\t %d\n",i,j);
             // se è l'ultima colonna non controlla il profit laterale
             if (j<(col-1)){
                 // l'ultimo indice 1 indica la rotazione, 0 il numero del pezzo
-                test=DESTRA;
-                rot_first=DESTRA-solution->matrice_pezzi[i][j][1];
+                 //printf("A --> Pezzo Numero: %d,ruotato di %d\n",solution->matrice_pezzi[i][j][0],solution->matrice_pezzi[i][j][1]);
+                rot_first=DESTRA-(solution->matrice_pezzi[i][j][1]);
                 if (rot_first<0)
                     rot_first=4+rot_first;
-                // Controllo bounding del pezzo, utile solo in fase di backup
-                //if (rot_first<0 || rot_first>4)
-                //    printf("Out of bounds reading primo pezzo orizzontale");
-                rot_sec=SINISTRA-solution->matrice_pezzi[i][j+1][1];
+                rot_sec=SINISTRA-(solution->matrice_pezzi[i][j+1][1]);
+               // printf("A --> Pezzo Numero: %d,ruotato di %d\n",solution->matrice_pezzi[i][j+1][0],solution->matrice_pezzi[i][j+1][1]);
                 if (rot_sec<0)
                     rot_sec=4+rot_sec;
-                // Controllo bounding del pezzo, utile solo in fase di backup
-                //if (rot_sec<0 || rot_sec>4)
-                //    printf("Out of bounds reading secondo pezzo orizzontale");
                 a = pieces[solution->matrice_pezzi[i][j][0]][rot_first];
                 b = pieces[solution->matrice_pezzi[i][j+1][0]][rot_sec];
-                if (a == b && a != GRAY)
+/*
+                printf("A --> Pezzo Numero: %d,ruotato di %d, A vale %d\n",solution->matrice_pezzi[i][j][0],rot_first,a);
+                printf("B --> Pezzo Numero: %d,ruotato di %d, B vale %d\n",solution->matrice_pezzi[i][j+1][0],rot_sec,b);
+*/
+                if (a == b)
                         profit++;
-                if (a == GRAY || b == GRAY)
-                    solution->feasible=UNFEASIBLE;
+/*
+               if (a == GRAY || b == GRAY)
+                    printf("Sto confrontando colori di cui uno è GRAY: A--> %d\t B --> %d\n",a,b);
+*/
             }
             // se è l'ultima riga non controlla il profit orizzontale
             if (i<(row-1)){
-                rot_first=SOTTO-solution->matrice_pezzi[i][j][1];
+                rot_first=SOTTO-(solution->matrice_pezzi[i][j][1]);
                 if (rot_first<0)
                     rot_first=4+rot_first;
-/*
-                if (rot_first<0 || rot_first>4)
-                    printf("Out of bounds reading primo pezzo verticale");
-*/
-                rot_sec=SOPRA-solution->matrice_pezzi[i+1][j][1];
+                rot_sec=SOPRA-(solution->matrice_pezzi[i+1][j][1]);
                 if (rot_sec<0)
                     rot_sec=4+rot_sec;
-/*
-                if (rot_sec<0 || rot_sec>4)
-                    printf("Out of bounds reading secondo pezzo orizzontale");
-*/
                 a=pieces[solution->matrice_pezzi[i][j][0]][rot_first];
                 b=pieces[solution->matrice_pezzi[i+1][j][0]][rot_sec];
-                if (a==b &&  a != GRAY )
+                //printf("A --> Pezzo Numero: %d,ruotato di %d,A vale %d\n",solution->matrice_pezzi[i][j][0],rot_first,a);
+                //printf("B --> Pezzo Numero: %d,ruotato di %d,B vale %d\n",solution->matrice_pezzi[i+1][j][0],rot_sec,b);
+                if (a==b )
                         profit++;
+/*
                 if (a == GRAY || b == GRAY)
-                    solution->feasible=UNFEASIBLE;
+                    printf("Sto confrontando colori di cui uno è GRAY: A--> %d\t B --> %d\n",a,b);
+*/
             }            
         }
     return profit;
@@ -375,8 +381,7 @@ int get_border_fitting_rotation(int **pieces,int border_index, int bordo){
     return rotation;
 }       
 
-void get_right_border(int **pieces,solution_t *solution,char *taken,char *border_taken,char *border_pieces,int perimetro,int i,int j,int posizione)
-{
+void get_right_border(int **pieces,solution_t *solution,char *taken,char *border_taken,char *border_pieces,int perimetro,int i,int j,int posizione){
     int random_rotation,pezzo,random_number,fine; 
     random_number = rand() % perimetro;
     fine=random_number;

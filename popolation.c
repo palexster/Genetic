@@ -1,4 +1,4 @@
-#define POP_DIM 10000
+#define POP_DIM 100000
 #define GEN_N (POP_DIM/2+(POP_DIM%2))//numero genitori è metà della popolazione
                                    //deve essere pari percui se è dispari somma 1
 #define ELITE (POP_DIM/4)//numero di migliori tra i genitori (è pari)
@@ -13,7 +13,7 @@
  */
 
 population_t *build_population(int **pieces,int *border,int npieces,int row,int col){
-    int i,fit,nfeasible=0;
+    int i,fit;
     population_t *popolazione_start;
     popolazione_start=(population_t *)malloc(sizeof(population_t));
     if(popolazione_start==NULL){
@@ -28,15 +28,13 @@ population_t *build_population(int **pieces,int *border,int npieces,int row,int 
     for(i=0;i<POP_DIM;i++){
         popolazione_start->soluzioni[i]=build_solution(pieces,row,col);
         //genera una popolazione di soluzioni casuali
-        printf("Allocazione soluzione numero %d\n",i);
+        //printf("Allocazione soluzione numero %d\n",i);
         random_solution_generation(&popolazione_start->soluzioni[i],border,pieces,row*col,row,col);
         //test_solution(&popolazione_start->soluzioni[i],row,col);
         fit=fitness_solution_evaluation(pieces,&popolazione_start->soluzioni[i],npieces,row,col);
-        if (popolazione_start->soluzioni[i].feasible==FEASIBLE)
-            nfeasible++;
-        popolazione_start->soluzioni[i].fitness=fit+1;
+        popolazione_start->soluzioni[i].fitness=fit;
     }
-    printf("N° soluzioni feasible: %d\n", nfeasible);
+    //printf("N° soluzioni feasible: %d\n", nfeasible);
     return popolazione_start;
 }
 
@@ -49,7 +47,8 @@ void test_fitness(population_t *pop){
             max=pop->soluzioni[i].fitness;
             idmax=i;
         }
-        printf("Soluzione %d:\t %d \n",i,pop->soluzioni[i].fitness);
+        totale+=pop->soluzioni[i].fitness;
+        //printf("Soluzione %d:\t %d \n",i,pop->soluzioni[i].fitness);
     }
     media =(float) totale / POP_DIM;
     for(i=0;i<POP_DIM;i++){
@@ -58,7 +57,7 @@ void test_fitness(population_t *pop){
     varianza = varianza / (POP_DIM-1);
     printf("Dimensione popolazione: %d\n", POP_DIM);
     printf("Media Popolazione: %f \t Varianza Popolazione: %f \n",media,varianza);
-    printf("Miglior Soluzione n° %d , punti: %d\n",idmax,pop->soluzioni[idmax].fitness);
+    printf("Miglior Soluzione punti: %d\n",pop->soluzioni[idmax].fitness);
 }
 
 int cmp_fitness(solution_t s1cast,solution_t s2cast){
@@ -121,7 +120,7 @@ int is_best(population_t* pop,int row,int col){
                                                //1° addendo collegamenti oriz.
                                                //2°verticali (colleg=coppia di
                                                //pezzi con colori uguali su giuntura)
-     if(get_best(pop)==MAX_PT)return(TRUE);
+     if(get_best(pop)==MAX_PT) return(TRUE);
      return(FALSE);
 }
 /*funzione che genera nuova popolazione a partire dalla corrente
@@ -426,5 +425,5 @@ void write_best_solution(char *nomefile,population_t *pop,int row,int col) {
      for(i=0;i<row;i++)
          for(j=0;j<col;j++)
                 fprintf(fp,"%d %d \n",pop->soluzioni[0].matrice_pezzi[i][j][0],pop->soluzioni[0].matrice_pezzi[i][j][1]);
-
+     printf("Soluzione scritta su file %s",nomefile);
 }
