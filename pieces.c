@@ -134,17 +134,19 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
             *border_taken,
             corner_taken[4];
     int i,j,k;
+    perimetro=(row-1+col-1)*2;
     taken=(char *)malloc(sizeof(char)*npieces);
     if(taken==NULL){
         fprintf(stderr,"random_solution_generation()-errore in malloc() di taken.\n");
         exit(2);
     }
-    border_pieces=(char *)malloc(sizeof(char)*perimetro);
+    // Perimetro -4 per non considerare gli angoli!
+    border_pieces=(char *)malloc(sizeof(char)*(perimetro-4));
     if(border_pieces==NULL){
         fprintf(stderr,"random_solution_generation()-errore in malloc() di border_pieces.\n");
         exit(2);
     }
-    border_taken=(char *)malloc(sizeof(char)*perimetro);
+    border_taken=(char *)malloc(sizeof(char)*(perimetro-4));
     if(border_taken==NULL){
         fprintf(stderr,"random_solution_generation()-errore in malloc() di border_taken.\n");
         exit(2);
@@ -156,12 +158,10 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
     for(i=0;i<npieces;i++){
         taken[i]=0;
     }
-    for(i=0;i<perimetro;i++){
+    for(i=0;i<perimetro-4;i++){
         border_taken[i]=0;
     }
     n_pieces_taken=0;
-    perimetro=(row-1+col-1)*2;
-
     i=0;
     j=0;
     n_pieces_taken=0;
@@ -172,13 +172,13 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
             border_pieces[j]=i;
             n_pieces_taken++;
             j++;
-            printf("Pezzo di bordo in %d\n",i);
+            //printf("Pezzo di bordo in %d\n",i);
         }
         if (border[i] == 2){
             corners[k]=i;
             n_pieces_taken++;
             k++;
-            printf("Pezzo di angolo in %d\n",i);
+            //printf("Pezzo di angolo in %d\n",i);
         }
         i++;
         if (i==npieces)
@@ -186,9 +186,12 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
     }
     // Controllo Che il vettore taken sia a 0
     // Bordi e angoli finiti, quali sono stati presi?
-     for(j=1;j<npieces;j++){
+/*
+    printf("--Tutti a 0 dovrebbero essere---\n");
+     for(j=1;j<npieces;j++){    
          printf("Pezzo %d: %d\n",j,taken[j]);
     }
+*/
     // Riempimento angoli
     //Angolo alto-sinistra;
     solution->matrice_pezzi[0][0][0]=get_right_corner(pieces,corner_taken,corners);
@@ -206,18 +209,28 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
     solution->matrice_pezzi[row-1][0][0]=get_right_corner(pieces,corner_taken,corners);
     solution->matrice_pezzi[row-1][0][1]=get_corner_fitting_rotation(pieces,solution->matrice_pezzi[row-1][col-1][0],SOPRA,DESTRA);
     ++taken[solution->matrice_pezzi[row-1][0][0]];
+    // Bordi e angoli finiti, quali sono stati presi?
+    printf("--Tutti a 0 dovrebbero essere tranne angoli a 1---\n");
+     for(j=0;j<npieces;j++){
+         if (taken[j]>1)
+             fprintf(stderr,"Pezzo %d DUPLICATO!!!\n",j);
+         //printf("Pezzo %d: %d\n",j,taken[j]);
+    }
     //Riempimento pezzi di bordo
     for(i=1;i<(row-1);i++){
-        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro,i,0,SOPRA);
-        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro,i,col-1,SOPRA);
+        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro-4,i,0,SOPRA);
+        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro-4,i,col-1,SOPRA);
     }
     for(j=1;j<(col-1);j++){
-        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro,0,j,SOPRA);
-        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro,row-1,j,SOPRA);
+        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro-4,0,j,SOPRA);
+        get_right_border(pieces,solution,taken,border_taken,border_pieces,perimetro-4,row-1,j,SOPRA);
     }
     // Bordi e angoli finiti, quali sono stati presi?
+    printf("--Tutti a 0 dovrebbero essere tranne angoli a 1---\n");
      for(j=0;j<npieces;j++){
-         printf("Pezzo %d: %d\n",j,taken[j]);
+         if (taken[j]>1)
+             fprintf(stderr,"Pezzo %d DUPLICATO!!!\n",j);
+        // printf("Pezzo %d: %d\n",j,taken[j]);
     }
     /*Ciclo sulla matrice della soluzione e cerco un pezzo non preso casuale, usando una rotazion
      casuale. Se è preso, vado a quello dopo. Se arrivo al fondo ricomincio dall'inizio. Ci sono
@@ -245,10 +258,15 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
             ++taken[random_number];
         }
        }
+    for(j=0;j<npieces;j++){
+         if (taken[j]>1)
+             fprintf(stderr,"Pezzo %d DUPLICATO!!!\n",j);
+         //printf("Pezzo %d: %d\n",j,taken[j]);
+    }
     //per ora ti ho messo le free qua!
-   //free(border_taken);
     free(border_pieces);
     free(taken);
+    free(border_taken);
     return;
 }
 
@@ -398,9 +416,11 @@ void get_right_border(int **pieces,solution_t *solution,char *taken,char *border
 
 char get_right_corner(int **pieces,char *corner_taken,char *corners){
     char random_number;
-    random_number= (char)(rand() % 4);
+    random_number= rand() % 4;
     while (corner_taken[random_number]){
-        random_number= (char)((random_number+1)%4);
+        random_number= (random_number+1);
+        if (random_number >= 4)
+            random_number=0;
     }
     ++corner_taken[random_number];
     return corners[random_number];

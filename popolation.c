@@ -1,4 +1,4 @@
-#define POP_DIM 1000
+#define POP_DIM 10000
 #define GEN_N (POP_DIM/2+(POP_DIM%2))//numero genitori è metà della popolazione
                                    //deve essere pari percui se è dispari somma 1
 #define ELITE (POP_DIM/4)//numero di migliori tra i genitori (è pari)
@@ -28,6 +28,7 @@ population_t *build_population(int **pieces,int *border,int npieces,int row,int 
     for(i=0;i<POP_DIM;i++){
         popolazione_start->soluzioni[i]=build_solution(pieces,row,col);
         //genera una popolazione di soluzioni casuali
+        printf("Allocazione soluzione numero %d\n",i);
         random_solution_generation(&popolazione_start->soluzioni[i],border,pieces,row*col,row,col);
         //test_solution(&popolazione_start->soluzioni[i],row,col);
         fit=fitness_solution_evaluation(pieces,&popolazione_start->soluzioni[i],npieces,row,col);
