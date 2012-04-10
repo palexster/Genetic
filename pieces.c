@@ -16,7 +16,7 @@ int **build_pieces(char* filename, int **border,int* np, int* r, int* c){
     FILE *fp;//puntatore al file che contiene i pezzi
     int row,col,//numero righe e colonne matrice dei pezzi
         npieces,//numero pezzi
-        line[4],//vettore temporaneo per caricare i colori
+        line[COLN],//vettore temporaneo per caricare i colori
             *b,
         i,j;//indici della matrice
     /*Lettura dimensioni della matrice e allocazione del vettore dei pezzi*/
@@ -91,7 +91,7 @@ void test_pieces(int **pieces,int npieces){
  *primo char è l'indice del pezzo nel vettore dei pezzi e il secondo indica la 
  *rotazione del pezzo.
  Funzione che alloca la soluzione*/
-solution_t build_solution(int **pieces, int row,int col){
+solution_t build_solution(int row,int col){
     solution_t *solution; // Puntatore alla soluzione che deve essere allocata
     int i,j;
     solution=(solution_t *)malloc(sizeof(solution_t));
