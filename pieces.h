@@ -40,7 +40,7 @@ void test_pieces(int **pieces,int npieces);
 void random_solution_generation(solution_t *solution,int *border,int **pieces,int npieces, int row, int col);
 void test_solution(solution_t *solution,int row,int col);
 int fitness_solution_evaluation(int **pieces,solution_t *sol,int npieces,int row,int col);
-solution_t build_solution(int **pieces,int row,int col);
+solution_t build_solution(int row,int col);
 void dealloc_soluzioni(solution_t *sol,int row);
 void dealloc_pieces(int **pieces, int npieces);
 char get_corner_fitting_rotation(int **pieces,char corner_index,int i,int j);
