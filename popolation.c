@@ -26,7 +26,7 @@ population_t *build_population(int **pieces,int *border,int npieces,int row,int 
         exit(2);
     }
     for(i=0;i<POP_DIM;i++){
-        popolazione_start->soluzioni[i]=build_solution(pieces,row,col);
+        popolazione_start->soluzioni[i]=build_solution(row,col);
         //genera una popolazione di soluzioni casuali
         //printf("Allocazione soluzione numero %d\n",i);
         random_solution_generation(&popolazione_start->soluzioni[i],border,pieces,row*col,row,col);
@@ -202,7 +202,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
         offspring[i++].fitness=-1;
         offspring[i++].fitness=-1;
         //END DEBUG
-        crossover(pieces,&pop->soluzioni[parents[gen[0]]-1],&pop->soluzioni[parents[gen[1]]-1],&offspring[i],&offspring[i+1],npieces,row,col);
+        crossover(&pop->soluzioni[parents[gen[0]]-1],&pop->soluzioni[parents[gen[1]]-1],&offspring[i],&offspring[i+1],npieces,row,col);
         fitness_solution_evaluation(pieces,&offspring[i++],npieces,row,col);
         fitness_solution_evaluation(pieces,&offspring[i++],npieces,row,col);
     }
@@ -263,12 +263,32 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
     return(EVOLVI_ANCORA);
 }
 
-void crossover(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
-    
-    *fig1=build_solution(pieces,row,col);
-    *fig2=build_solution(pieces,row,col);
-    //crossover_centro(pieces,sol1,sol2,fig1,fig2,npieces,row,col);
-    
+void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
+    int i;
+    *fig1=build_solution(row,col);
+    *fig2=build_solution(row,col);
+    // confronto pezzi dentro il kernel, kernelPieces serve a tenere traccia di quali pezzi
+    // sono presenti dentro il kernel dei figli e devono essere rimpiazzati.
+    // L'allocazione dei due figli è parallelizzata
+    char **kernelPieces;
+    //char pezzoDaControllare;->dovrebbe essere inutile
+    //allocazione vettori per il confronto ottimizzato del kernel
+    //pezzi di bordo in realtà mai usati quindi alcuni el del vet mai usati
+    kernelPieces=(char **)malloc(sizeof(char*)*npieces);
+    if(kernelPieces==NULL){
+        fprintf(stderr,"build_population()-errore in malloc() di kernelPieces.\n");
+        exit(2);
+    }
+   for(i=0;i<npieces;i++){
+        kernelPieces[i]=(char *)malloc(sizeof(char)*2);
+        if(kernelPieces[i]==NULL){
+                fprintf(stderr,"crossover_centro()-errore in malloc() di kernelPieces[%d].\n",i);
+                exit(2);
+        }
+        kernelPieces[i][0]=-1;
+        kernelPieces[i][1]=-1;
+    }
+    crossover_centro(kernelPieces,sol1,sol2,fig1,fig2,npieces,row,col);
     
     
     
@@ -361,31 +381,12 @@ void crossover(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1
 
 /*funzione per il crossover tr i pezzi della matrice che non sono di bordo 
  * ie indice_riga € [1,row-2] e indice_col€[1,col-2]*/
-void crossover_centro(int **pieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
+void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
     // generazione tagli, contatori e indice righe/colonne
-    int taglio1,taglio2,i,r,c,c1,r1,j,flag;
+    int taglio1,taglio2,i,r,c,c1,r1,j;
     char ker_len_min;//lunghezza minima kernel
     
     ker_len_min=(char)npieces/10;//10% num pezzi(approx. all'intero inferiore) conta anche bordo anche se lavora su centro
-    // confronto pezzi dentro il kernel, kernelPieces serve a tenere traccia di quali pezzi
-    // sono presenti dentro il kernel dei figli e devono essere rimpiazzati.
-    // L'allocazione dei due figli è parallelizzata
-    char pezzoDaControllare,**kernelPieces;
-    //allocazione vettori per il confronto ottimizzato del kernel
-    kernelPieces=(char **)malloc(sizeof(char*)*(row-1)*(col-1));
-    if(kernelPieces==NULL){
-        fprintf(stderr,"build_population()-errore in malloc() di kernelPieces.\n");
-        exit(2);
-    }
-    for(i=0;i<npieces;i++){
-        kernelPieces[i]=(char *)malloc(sizeof(char)*2);
-        if(kernelPieces[i]==NULL){
-                fprintf(stderr,"crossover_centro()-errore in malloc() di kernelPieces[%d].\n",i);
-                exit(2);
-        }
-        kernelPieces[i][0]=-1;
-        kernelPieces[i][1]=-1;
-    }
     //col+2 fa si che min(taglio1) è 3° el 2^riga per evitare bordo
     //(evita 1^riga e almeno un el prima del taglio) e avere almeno un el prima del taglio
     taglio1=rand()%npieces+(col+2);
@@ -400,11 +401,29 @@ void crossover_centro(int **pieces,solution_t *sol1, solution_t *sol2, solution_
     taglio2=rand() % (npieces/2-(col+1)) + npieces/2;
     if (taglio2=taglio1)
         taglio2=taglio2 + npieces/10;*/
-    // Generazione kernel della prole
-    for(r=taglio1/col;(r<(row-2))&&(i<taglio2);r++){
-        for(c=taglio1%col;(c<(col-2))&&(i<taglio2);c++){
-            //??? col o col meno 1 capire bene kernelPieces!
-            i=r*col+c;
+    
+    /*Generazione kernel della prole
+     i tagli operano su matrice linearizzata:i indice della mat linearizzata
+     r e c sono gli indici della mat delle sol in realtà scorrono solo sulla parte
+     interna, evitando bordi:r€[1,col-2] e c€[1,row-2]*/
+    //prima riga su cui operare (che può essere non completa,cioè c>1) è gestita a parte
+    r=taglio1/col;
+    i=r*col;
+    for(c=taglio1%col;(c<(col-1))&&(i<taglio2);c++,i++){
+        fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
+        fig1->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r][c][1];
+        kernelPieces[sol1->matrice_pezzi[r][c][0]][0]=i;
+        // figlio 2
+        fig2->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
+        fig2->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r][c][1];
+        kernelPieces[sol2->matrice_pezzi[r][c][0]][1]=i;
+    }
+    //se kernel su + righe continua a scorrere matrice interna fino a taglio2
+    i+=3;//considera su matrice linearizzata le posizioni saltate quando finisce
+         //di scorrere el interni
+    r++;
+    for(;(r<(row-1))&&(i<taglio2);r++,i+=3){
+        for(c=1;(c<(col-1))&&(i<taglio2);c++,i++){
             // figlio 1
             fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
             fig1->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r][c][1];
@@ -416,6 +435,84 @@ void crossover_centro(int **pieces,solution_t *sol1, solution_t *sol2, solution_
         }
     }
     
+    /*Generazione lato sinistro della prole*/
+    for(i=r=1;(r<(row-1))&&(i<taglio1);r++,i+=3){
+        for(c=1;(c<(col-1))&&(i<taglio1);c++,i++){
+                // se il pezzo non è già presente nel kernel
+            if (kernelPieces[sol1->matrice_pezzi[r][c][0]][0]<0)
+                fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
+            // se il pezzo è già presente nel kernel
+            else {
+                j=kernelPieces[sol1->matrice_pezzi[r][c][0]][0];
+                r1 = j/col;
+                c1 = j % col;
+                fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r1][c1][0];
+            }
+            if (kernelPieces[sol2->matrice_pezzi[r][c][0]][1]<0)
+                fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
+            // se il pezzo è già presente nel kernel
+            else {
+                j=kernelPieces[sol2->matrice_pezzi[r][c][0]][1];
+                r1 = j/col;
+                c1 = j % col;
+                fig2->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r1][c1][0];
+            }
+        }
+    }
+    /*Generazione lato detro della prole*/
+    r=taglio2/col;
+    i=r*col;
+    //prima riga su cui operare a parte come per kernel
+    //npieces-col limita ciclo al penultimo el della peunltima riga (evita bordo
+    //inferiore e el di bordo destro sull'ultima riga interna)
+    for(c=taglio2%col;(c<(col-1))&&(i<(npieces-col));c++,i++){
+       // se il pezzo non è già presente nel kernel
+        if (kernelPieces[sol1->matrice_pezzi[r][c][0]][0]<0)
+            fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
+        // se il pezzo è già presente nel kernel
+        else {
+            j=kernelPieces[sol1->matrice_pezzi[r][c][0]][0];
+            r1 = j/col;
+            c1 = j % col;
+            fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r1][c1][0];
+        }
+        if (kernelPieces[sol2->matrice_pezzi[r][c][0]][1]<0)
+            fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
+        // se il pezzo è già presente nel kernel
+        else {
+            j=kernelPieces[sol2->matrice_pezzi[r][c][0]][1];
+            r1 = j/col;
+            c1 = j % col;
+            fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r1][c1][0];
+        }
+    }
+    r++;
+    i+=3;
+    //npieces-col limita ciclo al penultimo el della peunltima riga (evita bordo
+    //inferiore e el di bordo destro sull'ultima riga interna)
+    for(;(r<(row-1))&&(i<(npieces-col));r++,i+=3){
+        for(c=1;(c<(col-1))&&(i<taglio1);c++,i++){
+                // se il pezzo non è già presente nel kernel
+            if (kernelPieces[sol1->matrice_pezzi[r][c][0]][0]<0)
+                fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
+            // se il pezzo è già presente nel kernel
+            else {
+                j=kernelPieces[sol1->matrice_pezzi[r][c][0]][0];
+                r1 = j/col;
+                c1 = j % col;
+                fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r1][c1][0];
+            }
+            if (kernelPieces[sol2->matrice_pezzi[r][c][0]][1]<0)
+                fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
+            // se il pezzo è già presente nel kernel
+            else {
+                j=kernelPieces[sol2->matrice_pezzi[r][c][0]][1];
+                r1 = j/col;
+                c1 = j % col;
+                fig2->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r1][c1][0];
+            }
+        }
+    }
 }
 
 void write_best_solution(char *nomefile,population_t *pop,int row,int col) {
