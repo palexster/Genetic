@@ -522,5 +522,5 @@ void write_best_solution(char *nomefile,population_t *pop,int row,int col) {
      for(i=0;i<row;i++)
          for(j=0;j<col;j++)
                 fprintf(fp,"%d %d \n",pop->soluzioni[0].matrice_pezzi[i][j][0],pop->soluzioni[0].matrice_pezzi[i][j][1]);
-     printf("Soluzione scritta su file %s",nomefile);
+
 }
