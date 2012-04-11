@@ -303,12 +303,18 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
     //col+2 fa si che min(taglio1) è 3° el 2^riga per evitare bordo
     //(evita 1^riga e almeno un el prima del taglio) e avere almeno un el prima del taglio
     taglio1=rand()%(npieces-(col+1)-(col+2)-ker_len_min)+(col+2);
+    while((taglio1%col==0)||(taglio1%col)==(col-1))
+        ++taglio1;
     //col+1=numero di pezzi nell'ultima riga + l'ultimo pezzo della penultima
     //cioè il bordo destro della penultima riga e il bordo inferiore
     //npieces-taglio1+1=num el rimanenti
     //taglio1+1 per essere>taglio1
     //kerlen min=min num el in kernel
     taglio2=rand()%(npieces-taglio1-ker_len_min-(col+2))+taglio1+ker_len_min;
+    //se kernel su + righe i pezzi di bordo(ultimo di una riga e primo della 
+    //successiva) contano nella distanza tra i tagli quindi per garantire min 
+    //aumenta taglio2 del n° pezzi inclusi (2*ogni salto di riga)
+    taglio2+=2*(taglio2-taglio1)/col;
     printf("t1=%d,t2=%d,kerlenmin=%d\n",taglio1,taglio2,ker_len_min);
     //così vincoli il kernel sempre a cavallo della metà.
     /*taglio1=rand() % npieces/2 +(col+1);
@@ -322,11 +328,11 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
      interna, evitando bordi:r€[1,col-2] e c€[1,row-2]*/
     //prima riga su cui operare (che può essere non completa,cioè c>1) è gestita a parte
     r=taglio1/col;
-    i=r*col;
     c=taglio1%col;
     //controlli per saltare i bordi se taglio è su essi
     if(c==0)//bordo sin-> salta pezzo (controllo bordo dx nel for)
-        ++c;    
+        ++c;
+     i=r*col+c;
     for(;(c<(col-1))&&(i<taglio2);c++,i++){
         fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
         fig1->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r][c][1];
@@ -337,8 +343,9 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
         kernelPieces[sol2->matrice_pezzi[r][c][0]][1]=i;
     }
     //se kernel su + righe continua a scorrere matrice interna fino a taglio2
-    i+=3;//considera su matrice linearizzata le posizioni saltate quando finisce
-         //di scorrere el interni
+    i+=2;//considera su matrice linearizzata le posizioni saltate quando finisce
+         //di scorrere el interni(3 el ma i già incremantata una volta alla fine
+         //del for per la 1^riga)
     r++;
     for(;(r<(row-1))&&(i<taglio2);r++,i+=3){
         for(c=1;(c<(col-1))&&(i<taglio2);c++,i++){
@@ -352,9 +359,11 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
             kernelPieces[sol2->matrice_pezzi[r][c][0]][1]=i;
         }
     }
-    
+    test_solution(fig1,row,col);
+    test_solution(fig2,row,col);
     /*Generazione lato sinistro della prole*/
-    for(i=r=1;(r<(row-1))&&(i<taglio1);r++,i+=3){
+    i=col+1;//i=r*col+c,r=c=1
+    for(r=1;(r<(row-1))&&(i<taglio1);r++,i+=3){
         for(c=1;(c<(col-1))&&(i<taglio1);c++,i++){
                 // se il pezzo non è già presente nel kernel
             if (kernelPieces[sol1->matrice_pezzi[r][c][0]][0]<0){
@@ -383,16 +392,18 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
             }
         }
     }
+     test_solution(fig1,row,col);
+    test_solution(fig2,row,col);
     /*Generazione lato detro della prole*/
     //prima riga su cui operare a parte come per kernel
     //npieces-col limita ciclo al penultimo el della peunltima riga (evita bordo
     //inferiore e el di bordo destro sull'ultima riga interna)
     r=taglio2/col;
-    i=r*col;
     c=taglio2%col;
     //controlli per saltare i bordi se taglio è su essi
     if(c==0)//bordo sin-> salta pezzo
         ++c;
+     i=r*col+c;
     for(;(c<(col-1))&&(i<(npieces-col));c++,i++){
        // se il pezzo non è già presente nel kernel
         if (kernelPieces[sol1->matrice_pezzi[r][c][0]][0]<0){
@@ -421,10 +432,10 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
             }
     }
     r++;
-    i+=3;
+    i+=2;
     //npieces-col limita ciclo al penultimo el della peunltima riga (evita bordo
     //inferiore e el di bordo destro sull'ultima riga interna)
-    for(;(r<(row-1))&&(i<(npieces-col));r++,i+=3){
+    for(;(r<(row-1))&&(i<(npieces-col));r++,i+=2){
         for(c=1;(c<(col-1))&&(npieces-col);c++,i++){
                 // se il pezzo non è già presente nel kernel
             if (kernelPieces[sol1->matrice_pezzi[r][c][0]][0]<0){
