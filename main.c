@@ -10,14 +10,6 @@
 #include "popolation.h"
 #define MAX_ITERATIONS 1
 
-#ifdef _OPENMP
-   #define TRUE  1
-   #define FALSE 0
-#else
-   #define omp_get_thread_num() 0
-#endif
-
-
 int main(int argc, char** argv) {
     /* Dichiarazione variabili */
     int row,col,a;//numero righe e colonne matrice dei pezzi
