@@ -282,8 +282,8 @@ void test_solution(solution_t *solution,int row,int col){
     printf("-----------------------------------\n");
     for(i=0;i<row;i++){
         for(j=0;j<col;j++){
-                printf("%d %d \t",solution->matrice_pezzi[i][j][0],solution->matrice_pezzi[i][j][1]);
-     }
+                printf("%d-%d\t",(int)solution->matrice_pezzi[i][j][0],(int)solution->matrice_pezzi[i][j][1]);
+        }
         printf("\n");
     }
 }

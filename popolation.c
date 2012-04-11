@@ -290,93 +290,6 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
     }
     crossover_centro(kernelPieces,sol1,sol2,fig1,fig2,npieces,row,col);
     
-    
-    
-    /* // generazione tagli, contatori e indice righe/colonne
-    int taglio1,taglio2,i,r,c,c1,r1,j,flag;
-    // confronto pezzi dentro il kernel, kernelPieces serve a tenere traccia di quali pezzi
-    // sono presenti dentro il kernel dei figli e devono essere rimpiazzati.
-    // L'allocazione dei due figli è parallelizzata
-    char pezzoDaControllare,**kernelPieces;
-    //allocazione vettori per il confronto ottimizzato del kernel
-    kernelPieces=(char **)malloc(sizeof(char*)*npieces);
-    for(i=0;i<npieces;i++){
-        kernelPieces[i]=(char *)malloc(sizeof(char)*2);
-        kernelPieces[i][0]=-1;
-        kernelPieces[i][1]=-1;
-    }
-    taglio1=rand() % npieces/2 +1 ;
-    taglio2=rand() % npieces/2 + npieces/2;
-    if (taglio2=taglio1)
-        taglio2=taglio2 + npieces/10;
-    *fig1=build_solution(pieces,row,col);
-    *fig2=build_solution(pieces,row,col);
-    // Generazione kernel della prole
-    for(i=taglio1;i<taglio2;i++){
-        r = i/col;
-        c = i % col;
-        // figlio 1
-        fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
-        fig1->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r][c][1];
-        kernelPieces[sol1->matrice_pezzi[r][c][0]][0]=i;
-        // figlio 2
-        fig2->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
-        fig2->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r][c][1];
-        kernelPieces[sol2->matrice_pezzi[r][c][0]][1]=i;
-    }
-    // Generazione lato sinistro della prole
-    for(i=0;i<taglio1;i++){
-        r = i/col;
-        c = i % col;
-        flag=0;
-        j=taglio1;
-        // se il pezzo non è già presente nel kernel
-        if (kernelPieces[sol1->matrice_pezzi[r][c][0]][0]<0)
-            fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
-        // se il pezzo è già presente nel kernel
-        else {
-            j=kernelPieces[sol1->matrice_pezzi[r][c][0]][0];
-            r1 = j/col;
-            c1 = j % col;
-            fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r1][c1][0];
-        if (kernelPieces[sol2->matrice_pezzi[r][c][0]][1]<0)
-            fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
-        // se il pezzo è già presente nel kernel
-        else {
-            j=kernelPieces[sol2->matrice_pezzi[r][c][0]][1];
-            r1 = j/col;
-            c1 = j % col;
-            fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r1][c1][0];
-        }
-        }
-    }
-    //Generazione lato destro della prole
-    for(i=taglio2;i<npieces;i++){
-        r = i/col;
-        c = i % col;
-        flag=0;
-        j=taglio1;
-        // se il pezzo non è già presente nel kernel
-        if (kernelPieces[sol1->matrice_pezzi[r][c][0]][0]<0)
-            fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
-        // se il pezzo è già presente nel kernel
-        else {
-            j=kernelPieces[sol1->matrice_pezzi[r][c][0]][0];
-            r1 = j/col;
-            c1 = j % col;
-            fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r1][c1][0];
-        if (kernelPieces[sol2->matrice_pezzi[r][c][0]][1]<0)
-            fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
-        // se il pezzo è già presente nel kernel
-        else {
-            j=kernelPieces[sol2->matrice_pezzi[r][c][0]][1];
-            r1 = j/col;
-            c1 = j % col;
-            fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r1][c1][0];
-        }
-        }
-    }
- }controllare parentesi(in particolare ultime graffe) se si rimette sto codice!*/
 }
 
 /*funzione per il crossover tr i pezzi della matrice che non sono di bordo 
@@ -389,13 +302,14 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
     ker_len_min=(char)npieces/10;//10% num pezzi(approx. all'intero inferiore) conta anche bordo anche se lavora su centro
     //col+2 fa si che min(taglio1) è 3° el 2^riga per evitare bordo
     //(evita 1^riga e almeno un el prima del taglio) e avere almeno un el prima del taglio
-    taglio1=rand()%npieces+(col+2);
+    taglio1=rand()%(npieces-(col+1)-(col+2)-ker_len_min)+(col+2);
     //col+1=numero di pezzi nell'ultima riga + l'ultimo pezzo della penultima
     //cioè il bordo destro della penultima riga e il bordo inferiore
     //npieces-taglio1+1=num el rimanenti
     //taglio1+1 per essere>taglio1
     //kerlen min=min num el in kernel
-    taglio2=rand()%(npieces-(taglio1+1)-(col+1))+taglio1+ker_len_min;
+    taglio2=rand()%(npieces-taglio1-ker_len_min-(col+2))+taglio1+ker_len_min;
+    printf("t1=%d,t2=%d,kerlenmin=%d\n",taglio1,taglio2,ker_len_min);
     //così vincoli il kernel sempre a cavallo della metà.
     /*taglio1=rand() % npieces/2 +(col+1);
     taglio2=rand() % (npieces/2-(col+1)) + npieces/2;
@@ -409,7 +323,11 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
     //prima riga su cui operare (che può essere non completa,cioè c>1) è gestita a parte
     r=taglio1/col;
     i=r*col;
-    for(c=taglio1%col;(c<(col-1))&&(i<taglio2);c++,i++){
+    c=taglio1%col;
+    //controlli per saltare i bordi se taglio è su essi
+    if(c==0)//bordo sin-> salta pezzo (controllo bordo dx nel for)
+        ++c;    
+    for(;(c<(col-1))&&(i<taglio2);c++,i++){
         fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
         fig1->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r][c][1];
         kernelPieces[sol1->matrice_pezzi[r][c][0]][0]=i;
@@ -439,77 +357,99 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
     for(i=r=1;(r<(row-1))&&(i<taglio1);r++,i+=3){
         for(c=1;(c<(col-1))&&(i<taglio1);c++,i++){
                 // se il pezzo non è già presente nel kernel
-            if (kernelPieces[sol1->matrice_pezzi[r][c][0]][0]<0)
+            if (kernelPieces[sol1->matrice_pezzi[r][c][0]][0]<0){
                 fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
+                fig1->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r][c][1];
+            }
             // se il pezzo è già presente nel kernel
             else {
                 j=kernelPieces[sol1->matrice_pezzi[r][c][0]][0];
                 r1 = j/col;
                 c1 = j % col;
                 fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r1][c1][0];
+                fig1->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r1][c1][1];
             }
-            if (kernelPieces[sol2->matrice_pezzi[r][c][0]][1]<0)
+            if (kernelPieces[sol2->matrice_pezzi[r][c][0]][1]<0){
                 fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
+                fig2->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r][c][1];
+            }
             // se il pezzo è già presente nel kernel
             else {
                 j=kernelPieces[sol2->matrice_pezzi[r][c][0]][1];
                 r1 = j/col;
                 c1 = j % col;
                 fig2->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r1][c1][0];
+                fig2->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r1][c1][1];
             }
         }
     }
     /*Generazione lato detro della prole*/
-    r=taglio2/col;
-    i=r*col;
     //prima riga su cui operare a parte come per kernel
     //npieces-col limita ciclo al penultimo el della peunltima riga (evita bordo
     //inferiore e el di bordo destro sull'ultima riga interna)
-    for(c=taglio2%col;(c<(col-1))&&(i<(npieces-col));c++,i++){
+    r=taglio2/col;
+    i=r*col;
+    c=taglio2%col;
+    //controlli per saltare i bordi se taglio è su essi
+    if(c==0)//bordo sin-> salta pezzo
+        ++c;
+    for(;(c<(col-1))&&(i<(npieces-col));c++,i++){
        // se il pezzo non è già presente nel kernel
-        if (kernelPieces[sol1->matrice_pezzi[r][c][0]][0]<0)
-            fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
-        // se il pezzo è già presente nel kernel
-        else {
-            j=kernelPieces[sol1->matrice_pezzi[r][c][0]][0];
-            r1 = j/col;
-            c1 = j % col;
-            fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r1][c1][0];
-        }
-        if (kernelPieces[sol2->matrice_pezzi[r][c][0]][1]<0)
-            fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
-        // se il pezzo è già presente nel kernel
-        else {
-            j=kernelPieces[sol2->matrice_pezzi[r][c][0]][1];
-            r1 = j/col;
-            c1 = j % col;
-            fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r1][c1][0];
-        }
+        if (kernelPieces[sol1->matrice_pezzi[r][c][0]][0]<0){
+                fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
+                fig1->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r][c][1];
+            }
+            // se il pezzo è già presente nel kernel
+            else {
+                j=kernelPieces[sol1->matrice_pezzi[r][c][0]][0];
+                r1 = j/col;
+                c1 = j % col;
+                fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r1][c1][0];
+                fig1->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r1][c1][1];
+            }
+            if (kernelPieces[sol2->matrice_pezzi[r][c][0]][1]<0){
+                fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
+                fig2->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r][c][1];
+            }
+            // se il pezzo è già presente nel kernel
+            else {
+                j=kernelPieces[sol2->matrice_pezzi[r][c][0]][1];
+                r1 = j/col;
+                c1 = j % col;
+                fig2->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r1][c1][0];
+                fig2->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r1][c1][1];
+            }
     }
     r++;
     i+=3;
     //npieces-col limita ciclo al penultimo el della peunltima riga (evita bordo
     //inferiore e el di bordo destro sull'ultima riga interna)
     for(;(r<(row-1))&&(i<(npieces-col));r++,i+=3){
-        for(c=1;(c<(col-1))&&(i<taglio1);c++,i++){
+        for(c=1;(c<(col-1))&&(npieces-col);c++,i++){
                 // se il pezzo non è già presente nel kernel
-            if (kernelPieces[sol1->matrice_pezzi[r][c][0]][0]<0)
+            if (kernelPieces[sol1->matrice_pezzi[r][c][0]][0]<0){
                 fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
+                fig1->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r][c][1];
+            }
             // se il pezzo è già presente nel kernel
             else {
                 j=kernelPieces[sol1->matrice_pezzi[r][c][0]][0];
                 r1 = j/col;
                 c1 = j % col;
                 fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r1][c1][0];
+                fig1->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r1][c1][1];
             }
-            if (kernelPieces[sol2->matrice_pezzi[r][c][0]][1]<0)
+            if (kernelPieces[sol2->matrice_pezzi[r][c][0]][1]<0){
                 fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
+                fig2->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r][c][1];
+            }
             // se il pezzo è già presente nel kernel
             else {
                 j=kernelPieces[sol2->matrice_pezzi[r][c][0]][1];
                 r1 = j/col;
                 c1 = j % col;
                 fig2->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r1][c1][0];
+                fig2->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r1][c1][1];
             }
         }
     }
