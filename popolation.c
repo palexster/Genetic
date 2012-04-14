@@ -296,7 +296,7 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
  * ie indice_riga € [1,row-2] e indice_col€[1,col-2]*/
 void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
     // generazione tagli, contatori e indice righe/colonne
-    int taglio1,taglio2,i,r,c,c1,r1,nval;
+    int taglio1,taglio2,i,r,c,c1,r1,nval,tmp;
     char ker_len_min;//lunghezza minima kernel
     
     ker_len_min=(char)npieces/10;//10% num pezzi(approx. all'intero inferiore) conta anche bordo anche se lavora su centro
@@ -317,7 +317,7 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
     //se kernel su + righe i pezzi di bordo(ultimo di una riga e primo della 
     //successiva) contano nella distanza tra i tagli quindi per garantire min 
     //aumenta taglio2 del n° pezzi inclusi (2*ogni salto di riga)
-    taglio2+=2*(taglio2-taglio1)/col;
+    taglio2+=2*(taglio2-taglio1+1)/col;
     printf("t1=%d,t2=%d,kerlenmin=%d\n",taglio1,taglio2,ker_len_min);
     //così vincoli il kernel sempre a cavallo della metà.
     /*taglio1=rand() % npieces/2 +(col+1);
@@ -381,8 +381,11 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
                 do{
                     //ottieni la posizione in cui è stato messo per prendere 
                     //l'elemento dell'altro genitore nella stessa posiz(applica il PMX)
-                    r1 = kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]/col;
-                    c1 = kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0] % col;
+                    //se r1=r e c=c1 punta all'el che non è stato messo che ha val =
+                    //a quello già nel kernel
+                    tmp=kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0];
+                    r1 = tmp/col;
+                    c1 = tmp % col;
                     //nelle prossime iteraz controlla che il pezzo sostituito
                     //non sia nel kernel.se si ripete il tutto finche non trova una
                     //sostituzione con un pezzo non nel kernel
@@ -406,8 +409,9 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
                 do{
                     //ottieni la posizione in cui è stato messo per prendere 
                     //l'elemento dell'altro genitore nella stessa posiz(applica il PMX)
-                    r1 = kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]/col;
-                    c1 = kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0] % col;
+                    tmp=kernelPieces[sol1->matrice_pezzi[r1][c1][0]][1];
+                    r1 = tmp/col;
+                    c1 = tmp % col;
                     //nelle prossime iteraz controlla che il pezzo sostituito
                     //non sia nel kernel.se si ripete il tutto finche non trova una
                     //sostituzione con un pezzo non nel kernel
@@ -442,8 +446,9 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
             do{
                 //ottieni la posizione in cui è stato messo per prendere 
                 //l'elemento dell'altro genitore nella stessa posiz(applica il PMX)
-                r1 = kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]/col;
-                c1 = kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0] % col;
+                tmp=kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0];
+                r1 = tmp/col;
+                c1 = tmp % col;
                 //nelle prossime iteraz controlla che il pezzo sostituito
                 //non sia nel kernel.se si ripete il tutto finche non trova una
                 //sostituzione con un pezzo non nel kernel              
@@ -467,8 +472,9 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
             do{
                 //ottieni la posizione in cui è stato messo per prendere 
                 //l'elemento dell'altro genitore nella stessa posiz(applica il PMX)
-                r1 = kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]/col;
-                c1 = kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0] % col;
+                tmp=kernelPieces[sol1->matrice_pezzi[r1][c1][0]][1];
+                r1 = tmp/col;
+                c1 = tmp % col;
                 //nelle prossime iteraz controlla che il pezzo sostituito
                 //non sia nel kernel.se si ripete il tutto finche non trova una
                 //sostituzione con un pezzo non nel kernel
@@ -497,8 +503,9 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
                 do{
                     //ottieni la posizione in cui è stato messo per prendere 
                     //l'elemento dell'altro genitore nella stessa posiz(applica il PMX)
-                    r1 = kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]/col;
-                    c1 = kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0] % col;
+                    tmp=kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0];
+                    r1 = tmp/col;
+                    c1 = tmp % col;
                     //nelle prossime iteraz controlla che il pezzo sostituito
                     //non sia nel kernel.se si ripete il tutto finche non trova una
                     //sostituzione con un pezzo non nel kernel
@@ -522,8 +529,9 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
                 do{
                     //ottieni la posizione in cui è stato messo per prendere 
                     //l'elemento dell'altro genitore nella stessa posiz(applica il PMX)
-                    r1 = kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]/col;
-                    c1 = kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0] % col;
+                    tmp=kernelPieces[sol1->matrice_pezzi[r1][c1][0]][1];
+                    r1 = tmp/col;
+                    c1 = tmp % col;
                     //nelle prossime iteraz controlla che il pezzo sostituito
                     //non sia nel kernel.se si ripete il tutto finche non trova una
                     //sostituzione con un pezzo non nel kernel

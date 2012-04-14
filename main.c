@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     population_t *population;
     long max_iterations;
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
-    pieces=build_pieces("pieces_05x05.txt",&border,&npieces,&row,&col);
+    pieces=build_pieces("pieces_10x10.txt",&border,&npieces,&row,&col);
     population=build_population(pieces,border,npieces,row,col);
     i=rand()%100000;
     a=rand()%100000;
