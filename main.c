@@ -24,14 +24,16 @@ int main(int argc, char** argv) {
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
     pieces=build_pieces("pieces_05x05.txt",&border,&npieces,&row,&col);
     population=build_population(pieces,border,npieces,row,col);
+/*
     test_solution(&population->soluzioni[0],row,col);
     test_solution(&population->soluzioni[1],row,col);
     crossover(&population->soluzioni[0],&population->soluzioni[1],&solution,&solution1,npieces,row,col);
     test_solution(&solution,row,col);
     test_solution(&solution1,row,col);
 /*
+*/
     sorted_popolation(population,pieces);
-    test_fitness(population);
+    test_evolution(population);
     // comincia l'evoluzione... i criteri di stop
     // 1) Soluzione Ottima
     // 2) Troppe epoche
@@ -44,8 +46,8 @@ int main(int argc, char** argv) {
        scanf("%d",&a);
         }
     }
+ */   
     write_best_solution("Output.txt",population,row,col);
-*/
     //deallocazione memoria heap
     dealloc_population(population,row);
     free(population);

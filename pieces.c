@@ -118,7 +118,6 @@ solution_t build_solution(int row,int col){
             }
         }
     }
-    solution->feasible=FEASIBLE;
     return *solution;
 }
 /*
