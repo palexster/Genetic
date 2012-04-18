@@ -291,7 +291,7 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
  * ie indice_riga € [1,row-2] e indice_col€[1,col-2]*/
 void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
     // generazione tagli, contatori e indice righe/colonne
-    int taglio1,taglio2,i,r,c,c1,r1,j;
+    int taglio1,taglio2,i,r,c,c1,r1,nval,tmp;
     char ker_len_min;//lunghezza minima kernel
     
     ker_len_min=(char)npieces/10;//10% num pezzi(approx. all'intero inferiore) conta anche bordo anche se lavora su centro
@@ -305,11 +305,14 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
     //npieces-taglio1+1=num el rimanenti
     //taglio1+1 per essere>taglio1
     //kerlen min=min num el in kernel
-    taglio2=rand()%(npieces-taglio1-ker_len_min-(col+2))+taglio1+ker_len_min;
+    if((nval=npieces-taglio1-ker_len_min-(col+2)))
+        taglio2=rand()%nval+taglio1+ker_len_min;
+    else
+        taglio2=taglio1+ker_len_min;
     //se kernel su + righe i pezzi di bordo(ultimo di una riga e primo della 
     //successiva) contano nella distanza tra i tagli quindi per garantire min 
     //aumenta taglio2 del n° pezzi inclusi (2*ogni salto di riga)
-    taglio2+=2*(taglio2-taglio1)/col;
+    taglio2+=2*(taglio2-taglio1+1)/col;
     printf("t1=%d,t2=%d,kerlenmin=%d\n",taglio1,taglio2,ker_len_min);
     //così vincoli il kernel sempre a cavallo della metà.
     /*taglio1=rand() % npieces/2 +(col+1);
@@ -342,7 +345,7 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
          //di scorrere el interni(3 el ma i già incremantata una volta alla fine
          //del for per la 1^riga)
     r++;
-    for(;(r<(row-1))&&(i<taglio2);r++,i+=3){
+    for(;(r<(row-1))&&(i<taglio2);r++,i+=2){
         for(c=1;(c<(col-1))&&(i<taglio2);c++,i++){
             // figlio 1
             fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
@@ -358,37 +361,62 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
     test_solution(fig2,row,col);
     /*Generazione lato sinistro della prole*/
     i=col+1;//i=r*col+c,r=c=1
-    for(r=1;(r<(row-1))&&(i<taglio1);r++,i+=3){
+    for(r=1;(r<(row-1))&&(i<taglio1);r++,i+=2){
         for(c=1;(c<(col-1))&&(i<taglio1);c++,i++){
-                // se il pezzo non è già presente nel kernel
-            if (kernelPieces[sol1->matrice_pezzi[r][c][0]][0]<0){
+            if (kernelPieces[sol2->matrice_pezzi[r][c][0]][0]<0){
                 fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
                 fig1->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r][c][1];
             }
             // se il pezzo è già presente nel kernel
             else {
-                j=kernelPieces[sol1->matrice_pezzi[r][c][0]][0];
-                r1 = j/col;
-                c1 = j % col;
-                fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r1][c1][0];
-                fig1->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r1][c1][1];
+                 //figlio1
+                r1=r;
+                c1=c;
+                //controlla che quell'elemento non sia nel kernel
+                do{
+                    //ottieni la posizione in cui è stato messo per prendere 
+                    //l'elemento dell'altro genitore nella stessa posiz(applica il PMX)
+                    //se r1=r e c=c1 punta all'el che non è stato messo che ha val =
+                    //a quello già nel kernel
+                    tmp=kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0];
+                    r1 = tmp/col;
+                    c1 = tmp % col;
+                    //nelle prossime iteraz controlla che il pezzo sostituito
+                    //non sia nel kernel.se si ripete il tutto finche non trova una
+                    //sostituzione con un pezzo non nel kernel
+                }while(kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]>0);
+                //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
+                fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r1][c1][0];
+                fig1->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r1][c1][1];
             }
-            if (kernelPieces[sol2->matrice_pezzi[r][c][0]][1]<0){
+            if (kernelPieces[sol1->matrice_pezzi[r][c][0]][1]<0){
                 fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
                 fig2->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r][c][1];
             }
             // se il pezzo è già presente nel kernel
             else {
-                j=kernelPieces[sol2->matrice_pezzi[r][c][0]][1];
-                r1 = j/col;
-                c1 = j % col;
-                fig2->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r1][c1][0];
-                fig2->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r1][c1][1];
+                //figlio1
+                //inizialmente punta all'elemento che si vuole copiare ma c'è già
+                //cioè punta all'el non del kernel di sol1
+                r1=r;
+                c1=c;
+                //controlla che quell'elemento non sia nel kernel
+                do{
+                    //ottieni la posizione in cui è stato messo per prendere 
+                    //l'elemento dell'altro genitore nella stessa posiz(applica il PMX)
+                    tmp=kernelPieces[sol1->matrice_pezzi[r1][c1][0]][1];
+                    r1 = tmp/col;
+                    c1 = tmp % col;
+                    //nelle prossime iteraz controlla che il pezzo sostituito
+                    //non sia nel kernel.se si ripete il tutto finche non trova una
+                    //sostituzione con un pezzo non nel kernel
+                }while(kernelPieces[sol1->matrice_pezzi[r1][c1][0]][1]>0);
+                //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
+                fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r1][c1][0];
+                fig2->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r1][c1][1];
             }
-        }
+        }      
     }
-     test_solution(fig1,row,col);
-    test_solution(fig2,row,col);
     /*Generazione lato detro della prole*/
     //prima riga su cui operare a parte come per kernel
     //npieces-col limita ciclo al penultimo el della peunltima riga (evita bordo
@@ -400,31 +428,56 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
         ++c;
      i=r*col+c;
     for(;(c<(col-1))&&(i<(npieces-col));c++,i++){
-       // se il pezzo non è già presente nel kernel
-        if (kernelPieces[sol1->matrice_pezzi[r][c][0]][0]<0){
-                fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
-                fig1->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r][c][1];
-            }
-            // se il pezzo è già presente nel kernel
-            else {
-                j=kernelPieces[sol1->matrice_pezzi[r][c][0]][0];
-                r1 = j/col;
-                c1 = j % col;
-                fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r1][c1][0];
-                fig1->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r1][c1][1];
-            }
-            if (kernelPieces[sol2->matrice_pezzi[r][c][0]][1]<0){
-                fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
-                fig2->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r][c][1];
-            }
-            // se il pezzo è già presente nel kernel
-            else {
-                j=kernelPieces[sol2->matrice_pezzi[r][c][0]][1];
-                r1 = j/col;
-                c1 = j % col;
-                fig2->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r1][c1][0];
-                fig2->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r1][c1][1];
-            }
+       if (kernelPieces[sol2->matrice_pezzi[r][c][0]][0]<0){
+            fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
+            fig1->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r][c][1];
+        }
+        // se il pezzo è già presente nel kernel
+        else {
+             //figlio1
+            r1=r;
+            c1=c;
+            //controlla che quell'elemento non sia nel kernel
+            do{
+                //ottieni la posizione in cui è stato messo per prendere 
+                //l'elemento dell'altro genitore nella stessa posiz(applica il PMX)
+                tmp=kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0];
+                r1 = tmp/col;
+                c1 = tmp % col;
+                //nelle prossime iteraz controlla che il pezzo sostituito
+                //non sia nel kernel.se si ripete il tutto finche non trova una
+                //sostituzione con un pezzo non nel kernel              
+            }while(kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]>0);
+            //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
+            fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r1][c1][0];
+            fig1->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r1][c1][1];
+        }
+        if (kernelPieces[sol1->matrice_pezzi[r][c][0]][1]<0){
+            fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
+            fig2->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r][c][1];
+        }
+        // se il pezzo è già presente nel kernel
+        else {
+            //figlio1
+            //inizialmente punta all'elemento che si vuole copiare ma c'è già
+            //cioè punta all'el non del kernel di sol1
+            r1=r;
+            c1=c;
+            //controlla che quell'elemento non sia nel kernel
+            do{
+                //ottieni la posizione in cui è stato messo per prendere 
+                //l'elemento dell'altro genitore nella stessa posiz(applica il PMX)
+                tmp=kernelPieces[sol1->matrice_pezzi[r1][c1][0]][1];
+                r1 = tmp/col;
+                c1 = tmp % col;
+                //nelle prossime iteraz controlla che il pezzo sostituito
+                //non sia nel kernel.se si ripete il tutto finche non trova una
+                //sostituzione con un pezzo non nel kernel
+            }while(kernelPieces[sol1->matrice_pezzi[r1][c1][0]][1]>0);
+            //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
+            fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r1][c1][0];
+            fig2->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r1][c1][1];
+        }
     }
     r++;
     i+=2;
@@ -432,30 +485,55 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
     //inferiore e el di bordo destro sull'ultima riga interna)
     for(;(r<(row-1))&&(i<(npieces-col));r++,i+=2){
         for(c=1;(c<(col-1))&&(npieces-col);c++,i++){
-                // se il pezzo non è già presente nel kernel
-            if (kernelPieces[sol1->matrice_pezzi[r][c][0]][0]<0){
+            if (kernelPieces[sol2->matrice_pezzi[r][c][0]][0]<0){
                 fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
                 fig1->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r][c][1];
             }
             // se il pezzo è già presente nel kernel
             else {
-                j=kernelPieces[sol1->matrice_pezzi[r][c][0]][0];
-                r1 = j/col;
-                c1 = j % col;
-                fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r1][c1][0];
-                fig1->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r1][c1][1];
+                 //figlio1
+                r1=r;
+                c1=c;
+                //controlla che quell'elemento non sia nel kernel
+                do{
+                    //ottieni la posizione in cui è stato messo per prendere 
+                    //l'elemento dell'altro genitore nella stessa posiz(applica il PMX)
+                    tmp=kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0];
+                    r1 = tmp/col;
+                    c1 = tmp % col;
+                    //nelle prossime iteraz controlla che il pezzo sostituito
+                    //non sia nel kernel.se si ripete il tutto finche non trova una
+                    //sostituzione con un pezzo non nel kernel
+                }while(kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]>0);
+                //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
+                fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r1][c1][0];
+                fig1->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r1][c1][1];
             }
-            if (kernelPieces[sol2->matrice_pezzi[r][c][0]][1]<0){
+            if (kernelPieces[sol1->matrice_pezzi[r][c][0]][1]<0){
                 fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
                 fig2->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r][c][1];
             }
             // se il pezzo è già presente nel kernel
             else {
-                j=kernelPieces[sol2->matrice_pezzi[r][c][0]][1];
-                r1 = j/col;
-                c1 = j % col;
-                fig2->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r1][c1][0];
-                fig2->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r1][c1][1];
+                //figlio1
+                //inizialmente punta all'elemento che si vuole copiare ma c'è già
+                //cioè punta all'el non del kernel di sol1
+                r1=r;
+                c1=c;
+                //controlla che quell'elemento non sia nel kernel
+                do{
+                    //ottieni la posizione in cui è stato messo per prendere 
+                    //l'elemento dell'altro genitore nella stessa posiz(applica il PMX)
+                    tmp=kernelPieces[sol1->matrice_pezzi[r1][c1][0]][1];
+                    r1 = tmp/col;
+                    c1 = tmp % col;
+                    //nelle prossime iteraz controlla che il pezzo sostituito
+                    //non sia nel kernel.se si ripete il tutto finche non trova una
+                    //sostituzione con un pezzo non nel kernel
+                }while(kernelPieces[sol1->matrice_pezzi[r1][c1][0]][1]>0);
+                //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
+                fig2->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r1][c1][0];
+                fig2->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r1][c1][1];
             }
         }
     }
