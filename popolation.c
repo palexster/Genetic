@@ -284,10 +284,33 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
         kernelPieces[i][1]=-1;
     }
     crossover_centro(kernelPieces,sol1,sol2,fig1,fig2,npieces,row,col);
-    
+    crossover_bordo(kernelPieces,sol1,sol2,fig1,fig2,npieces,row,col);
 }
 
-/*funzione per il crossover tr i pezzi della matrice che non sono di bordo 
+/*funzione per il crossover tra i pezzi di bordo.
+ * riceve 2 soluzioni(genitori) e genera 2 figli
+ * bordo linearizzato in senso orario a partire da pos 0,0, cioè:
+ * riga0,coln,rigan,col0 conisiderando una matrice n*n.*/
+void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
+    // generazione tagli, contatori e indice righe/colonne
+    int taglio1,taglio2,i,r,c,c1,r1,nval,tmp,perimetro;
+    char ker_len_min;//lunghezza minima kernel
+    const int TOP,BOTTOM,LEFT,RIGHT;
+    
+    perimetro=(row-1+col-1)*2;
+    ker_len_min=(char)perimetro/10;//10% num pezzi(approx. all'intero inferiore)
+    taglio1=rand()%(perimetro-ker_len_min);
+    if((nval=perimetro-taglio1-ker_len_min))
+        taglio2=rand()%nval+taglio1+ker_len_min;//se taglio1<max val possibile taglio2 èrandom,cioè lunghezza kernel è casuale
+    else
+        taglio2=taglio1+ker_len_min;//se taglio1 è val max possibile taglio2 è vincolato da kerlenmin
+    /*generazione kernel*/
+    for(i=0;(i<){
+        
+    }
+}
+
+/*funzione per il crossover tra i pezzi della matrice che non sono di bordo 
  * ie indice_riga € [1,row-2] e indice_col€[1,col-2]*/
 void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
     // generazione tagli, contatori e indice righe/colonne
@@ -306,14 +329,15 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
     //taglio1+1 per essere>taglio1
     //kerlen min=min num el in kernel
     if((nval=npieces-taglio1-ker_len_min-(col+2)))
-        taglio2=rand()%nval+taglio1+ker_len_min;
+        taglio2=rand()%nval+taglio1+ker_len_min;//se taglio1<max val possibile taglio2 èrandom,cioè lunghezza kernel è casuale
     else
-        taglio2=taglio1+ker_len_min;
+        taglio2=taglio1+ker_len_min;//se taglio1 è val max possibile taglio2 è vincolato da kerlenmin
     //se kernel su + righe i pezzi di bordo(ultimo di una riga e primo della 
     //successiva) contano nella distanza tra i tagli quindi per garantire min 
     //aumenta taglio2 del n° pezzi inclusi (2*ogni salto di riga)
     taglio2+=2*(taglio2-taglio1+1)/col;
-    printf("t1=%d,t2=%d,kerlenmin=%d\n",taglio1,taglio2,ker_len_min);
+    //DEBUG
+    //printf("t1=%d,t2=%d,kerlenmin=%d\n",taglio1,taglio2,ker_len_min);
     //così vincoli il kernel sempre a cavallo della metà.
     /*taglio1=rand() % npieces/2 +(col+1);
     taglio2=rand() % (npieces/2-(col+1)) + npieces/2;
@@ -357,8 +381,9 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
             kernelPieces[sol2->matrice_pezzi[r][c][0]][1]=i;
         }
     }
-    test_solution(fig1,row,col);
-    test_solution(fig2,row,col);
+    //DEBUG
+    //test_solution(fig1,row,col);
+    //test_solution(fig2,row,col);
     /*Generazione lato sinistro della prole*/
     i=col+1;//i=r*col+c,r=c=1
     for(r=1;(r<(row-1))&&(i<taglio1);r++,i+=2){

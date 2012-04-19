@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
     int row,col,a;//numero righe e colonne matrice dei pezzi
     int npieces,//numero pezzi
         stop=1,// flag di fine generazione
-        *border,// vettore dei pezzi di bordo
+        *border,// vettore dei pezzi di bordo di npieces el.per ogni pezzo dice se è di bordo.val è pari al num di trinagoli grigi(0=centro,1=bordo,2=angolo)
         i;
     int **pieces;//vettore dei colori del pezzo
     solution_t solution,solution1;
@@ -24,7 +24,6 @@ int main(int argc, char** argv) {
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
     pieces=build_pieces("pieces_10x10.txt",&border,&npieces,&row,&col);
     population=build_population(pieces,border,npieces,row,col);
-<<<<<<< HEAD
 /*
     test_solution(&population->soluzioni[0],row,col);
     test_solution(&population->soluzioni[1],row,col);
