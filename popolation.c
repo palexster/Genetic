@@ -305,7 +305,7 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
     else
         taglio2=taglio1+ker_len_min;//se taglio1 è val max possibile taglio2 è vincolato da kerlenmin
     /*generazione kernel*/
-    for(i=0;(i<){
+    for(i=taglio1;(i<taglio2);i++){
         
     }
 }
