@@ -293,10 +293,12 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
  * riga0,coln,rigan,col0 conisiderando una matrice n*n.*/
 void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
     // generazione tagli, contatori e indice righe/colonne
-    int taglio1,taglio2,i,r,c,c1,r1,nval,tmp,perimetro;
+    int taglio1,taglio2,i,j,r,c,c1,r1,perimetro,nval,tmp;
     char ker_len_min;//lunghezza minima kernel
     const int TOP,BOTTOM,LEFT,RIGHT;
     
+    BOTTOM=row-1;
+    RIGHT=col-1;
     perimetro=(row-1+col-1)*2;
     ker_len_min=(char)perimetro/10;//10% num pezzi(approx. all'intero inferiore)
     taglio1=rand()%(perimetro-ker_len_min);
@@ -304,9 +306,63 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
         taglio2=rand()%nval+taglio1+ker_len_min;//se taglio1<max val possibile taglio2 èrandom,cioè lunghezza kernel è casuale
     else
         taglio2=taglio1+ker_len_min;//se taglio1 è val max possibile taglio2 è vincolato da kerlenmin
-    /*generazione kernel*/
-    for(i=taglio1;(i<taglio2);i++){
-        
+    /*generazione kernel
+     *i indice del bordo linearizzato
+     *j indice degli elementi di bordo nella matrice*/
+    //trova su che lato del bordo inizia il kernel
+    
+    //NB sfrutta il fatto che la matrice è quadrata col=row => BOTTOM=RIGHT
+    j=taglio1;
+    for(i=taglio1;(i<taglio2)&&(j<RIGHT);i++,j++){
+        //figlio1
+        fig1->matrice_pezzi[0][j][0]=sol1->matrice_pezzi[0][j][0];
+        fig1->matrice_pezzi[0][j][1]=sol1->matrice_pezzi[0][j][1];
+        kernelPieces[sol1->matrice_pezzi[0][j][0]][0]=i;
+        // figlio 2
+        fig2->matrice_pezzi[0][j][0]=sol2->matrice_pezzi[0][j][0];
+        fig2->matrice_pezzi[0][j][1]=sol2->matrice_pezzi[0][j][1];
+        kernelPieces[sol2->matrice_pezzi[0][j][0]][1]=i;
+    }
+    if(i>taglio1)
+        j=0;//col dx appartiene al kernel(si è a dx di taglio1 considerando bordo lin)
+    else
+        j-=BOTTOM;//altrimenti taglio1 ancora da trovare quindi se in col dx pos di taglio1-row-1=taglio1-BOTTOM per non considerare el già trattati
+    for(;(i<taglio2)&&(j<BOTTOM);i++,j++){
+        //figlio1
+        fig1->matrice_pezzi[j][RIGHT][0]=sol1->matrice_pezzi[j][RIGHT][0];
+        fig1->matrice_pezzi[j][RIGHT][1]=sol1->matrice_pezzi[j][RIGHT][1];
+        kernelPieces[sol1->matrice_pezzi[j][RIGHT][0]][0]=i;
+        // figlio 2
+        fig2->matrice_pezzi[j][RIGHT][0]=sol2->matrice_pezzi[j][RIGHT][0];
+        fig2->matrice_pezzi[j][RIGHT][1]=sol2->matrice_pezzi[j][RIGHT][1];
+        kernelPieces[sol2->matrice_pezzi[j][RIGHT][0]][1]=i;
+    }
+    //se taglio1 era in col dx e continua qua j già settatoo da ciclo prima
+    if(j=j-BOTTOM)
+        //se invece ancora da trovare taglio1(cicli precedenti non eseguiti)
+        j-=row;//se taglio1=1°el su cui ciclo scorre (ultimo a dx della riga) cioè taglio1=row+col-1=BOTTOM-row 
+    for(;(i<taglio2)&&(j>0);i++,j--){
+        //figlio1
+        fig1->matrice_pezzi[BOTTOM][j][0]=sol1->matrice_pezzi[BOTTOM][j][0];
+        fig1->matrice_pezzi[BOTTOM][j][1]=sol1->matrice_pezzi[BOTTOM][j][1];
+        kernelPieces[sol1->matrice_pezzi[BOTTOM][j][0]][0]=i;
+        // figlio 2
+        fig2->matrice_pezzi[BOTTOM][j][0]=sol2->matrice_pezzi[BOTTOM][j][0];
+        fig2->matrice_pezzi[BOTTOM][j][1]=sol2->matrice_pezzi[BOTTOM][j][1];
+        kernelPieces[sol2->matrice_pezzi[BOTTOM][j][0]][1]=i;
+    }
+    if(i>taglio1)
+        j=BOTTOM;//taglio1 superato e ultima riga appartiene al kernel(si è a dx di taglio1 considerando bordo lin)
+        //sistemare qui!
+    for(;(i<taglio2)&&(j>0);i++,j++){
+        //figlio1
+        fig1->matrice_pezzi[j][0][0]=sol1->matrice_pezzi[j][0][0];
+        fig1->matrice_pezzi[j][0][1]=sol1->matrice_pezzi[j][0][1];
+        kernelPieces[sol1->matrice_pezzi[j][0][0]][0]=i;
+        // figlio 2
+        fig2->matrice_pezzi[j][0][0]=sol2->matrice_pezzi[j][0][0];
+        fig2->matrice_pezzi[j][0][1]=sol2->matrice_pezzi[j][0][1];
+        kernelPieces[sol2->matrice_pezzi[j][0][0]][1]=i;
     }
 }
 
