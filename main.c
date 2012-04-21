@@ -22,22 +22,18 @@ int main(int argc, char** argv) {
     population_t *population;
     long max_iterations;
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
-    pieces=build_pieces("pieces_10x10.txt",&border,&npieces,&row,&col);
+    pieces=build_pieces("pieces_05x05.txt",&border,&npieces,&row,&col);
     population=build_population(pieces,border,npieces,row,col);
-/*
-    test_solution(&population->soluzioni[0],row,col);
-    test_solution(&population->soluzioni[1],row,col);
-    crossover(&population->soluzioni[0],&population->soluzioni[1],&solution,&solution1,npieces,row,col);
-=======
-    i=rand()%100000;
-    a=rand()%100000;
-    printf("%d %d",i,a);
+
+    
+    i=rand()%POP_DIM;
+    a=rand()%POP_DIM;
+    printf("%d %d\n",i,a);
     test_solution(&population->soluzioni[i],row,col);
     test_solution(&population->soluzioni[a],row,col);
     crossover(&population->soluzioni[i],&population->soluzioni[a],&solution,&solution1,npieces,row,col);
->>>>>>> 987f7e90509047fedd6a7c29f0930da2b42ea819
-    test_solution(&solution,row,col);
-    test_solution(&solution1,row,col);
+    //test_solution(&solution,row,col);
+    //test_solution(&solution1,row,col);
 /*
 */
     sorted_popolation(population,pieces);
