@@ -284,7 +284,16 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
         kernelPieces[i][1]=-1;
     }
     //crossover_centro(kernelPieces,sol1,sol2,fig1,fig2,npieces,row,col);
+    for(i=0;i<npieces;i++){
+        kernelPieces[i][0]=-1;
+        kernelPieces[i][1]=-1;
+    }
     crossover_bordo(kernelPieces,sol1,sol2,fig1,fig2,npieces,row,col);
+    for(i=0;i<npieces;i++){
+        free(kernelPieces[i]);
+    }
+    free(kernelPieces);
+    return;
 }
 
 /*funzione per il crossover tra i pezzi di bordo.
@@ -831,6 +840,7 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 fig2->matrice_pezzi[j][0][1]=sol1->matrice_pezzi[r1][c1][1];
             }
     }
+    return;
 }
 
 /*funzione per il crossover tra i pezzi della matrice che non sono di bordo 
@@ -1085,6 +1095,7 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
             }
         }
     }
+    return;
 }
 
 void write_best_solution(char *nomefile,population_t *pop,int row,int col) {
