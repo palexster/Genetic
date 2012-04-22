@@ -300,7 +300,7 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
    
     perimetro=(row-1+col-1)*2;
     ker_len_min=(char)perimetro/10;//10% num pezzi(approx. all'intero inferiore)
-    taglio1=rand()%(perimetro-ker_len_min);
+    taglio1=rand()%(perimetro-ker_len_min-1)+1;
     if((nval=perimetro-taglio1-ker_len_min))
         taglio2=rand()%nval+taglio1+ker_len_min;//se taglio1<max val possibile taglio2 èrandom,cioè lunghezza kernel è casuale
     else
@@ -375,8 +375,8 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
         kernelPieces[sol2->matrice_pezzi[j][0][0]][1]=j*col;//linearizzo indici row col
     }
     //DEBUG
-    test_solution(fig1,row,col);
-    test_solution(fig2,row,col);
+    //test_solution(fig1,row,col);
+    //test_solution(fig2,row,col);
     /*lato sinistro prole*/
     for(i=j=0;(i<taglio1)&&(j<RIGHT);i++,j++){
         if (kernelPieces[sol2->matrice_pezzi[0][j][0]][0]<0){
@@ -595,8 +595,8 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
             }
     }
     //DEBUG
-    test_solution(fig1,row,col);
-    test_solution(fig2,row,col);
+    //test_solution(fig1,row,col);
+    //test_solution(fig2,row,col);
     /*lato destro prole*/
     //DA VEDERE CICLI!(STILE KERNEL)
     for(i=j=taglio2;j<RIGHT;i++,j++){
@@ -652,8 +652,12 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 fig2->matrice_pezzi[0][j][1]=sol1->matrice_pezzi[r1][c1][1];
             }
     }
-    //ultima col dx
-    for(j=0;(i<perimetro)&&(j<BOTTOM);i++,j++){
+    //ultima col a dx
+    if(i>taglio2)
+        j=0;//col dx appartiene al kernel(si è a dx di taglio1 considerando bordo lin)
+    else
+        j-=RIGHT;//altrimenti taglio1 ancora da trovare quindi se in col dx pos di taglio1-row-1=taglio1-BOTTOM per saltare el non del kernel
+    for(;j<BOTTOM;i++,j++){
         if (kernelPieces[sol2->matrice_pezzi[j][RIGHT][0]][0]<0){
                 fig1->matrice_pezzi[j][RIGHT][0]=sol2->matrice_pezzi[j][RIGHT][0];
                 fig1->matrice_pezzi[j][RIGHT][1]=sol2->matrice_pezzi[j][RIGHT][1];
@@ -706,8 +710,14 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 fig2->matrice_pezzi[j][RIGHT][1]=sol1->matrice_pezzi[r1][c1][1];
             }
     }
-    
-    for(;(i<perimetro)&&(j>0);i++,j--){
+    //ultima riga
+    //se taglio1 era in col dx e continua qua j già settato da ciclo prima j=BOTTOM=RIGHT
+    if(i==taglio2){
+        //se invece ancora da trovare taglio1(cicli precedenti non eseguiti)
+        j-=BOTTOM;//j punta a taglio1 in lato corrente considerando pos RIGHT come partenza(cioè come pos0)
+        j=RIGHT-j;//per trovare pos reale fare il complemento di j su right.
+    }
+    for(;j>0;i++,j--){
         if (kernelPieces[sol2->matrice_pezzi[BOTTOM][j][0]][0]<0){
                 fig1->matrice_pezzi[BOTTOM][j][0]=sol2->matrice_pezzi[BOTTOM][j][0];
                 fig1->matrice_pezzi[BOTTOM][j][1]=sol2->matrice_pezzi[BOTTOM][j][1];
@@ -761,7 +771,13 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
             }
     }
     //1^col sx
-    for(j=BOTTOM;(i<perimetro)&&(j>0);i++,j--){
+     if(i>taglio2)
+        j=BOTTOM;//taglio1 superato e ultima riga appartiene al kernel(si è a dx di taglio1 considerando bordo lin)
+    else{
+        j=taglio2-3*RIGHT;//trova pos di taglio1 nel lato corrente considerando pos RIGHT come partenza(cioè come pos0)
+        j=BOTTOM-j;//complemento per trovare pos reale
+    }
+    for(;j>0;i++,j--){
         if (kernelPieces[sol2->matrice_pezzi[j][0][0]][0]<0){
                 fig1->matrice_pezzi[j][0][0]=sol2->matrice_pezzi[j][0][0];
                 fig1->matrice_pezzi[j][0][1]=sol2->matrice_pezzi[j][0][1];
@@ -1021,7 +1037,7 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
                 fig1->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
                 fig1->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r][c][1];
             }
-            // se il pezzo è già presente nel kernel
+            //se il pezzo è già presente nel kernel
             else {
                  //figlio1
                 r1=r;

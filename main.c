@@ -32,8 +32,8 @@ int main(int argc, char** argv) {
     test_solution(&population->soluzioni[i],row,col);
     test_solution(&population->soluzioni[a],row,col);
     crossover(&population->soluzioni[i],&population->soluzioni[a],&solution,&solution1,npieces,row,col);
-    //test_solution(&solution,row,col);
-    //test_solution(&solution1,row,col);
+    test_solution(&solution,row,col);
+    test_solution(&solution1,row,col);
 /*
 */
     sorted_popolation(population,pieces);
