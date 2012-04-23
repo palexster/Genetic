@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include "pieces.h"
 #include "popolation.h"
-#define MAX_ITERATIONS 10
 
 int main(int argc, char** argv) {
     /* Dichiarazione variabili */
@@ -22,7 +21,7 @@ int main(int argc, char** argv) {
     population_t *population;
     long max_iterations;
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
-    pieces=build_pieces("pieces_10x10.txt",&border,&npieces,&row,&col);
+    pieces=build_pieces("pieces_05x05.txt",&border,&npieces,&row,&col);
     population=build_population(pieces,border,npieces,row,col);
 
     
@@ -41,13 +40,14 @@ int main(int argc, char** argv) {
 /*
 */
     sorted_popolation(population,pieces);
+    test_evolution(population);
     //test_evolution(population);
     // comincia l'evoluzione... i criteri di stop
     // 1) Soluzione Ottima
     // 2) Troppe epoche
     //se la prima sol non itera neanche
     if(!(is_best(population,row,col))){
-        for(i=0;pop_evolution(pieces,npieces,population,row,col)!=OPT_SOL&&(i<MAX_ITERATIONS);i++){
+        for(i=0;pop_evolution(pieces,npieces,population,row,col)&&(i<MAX_ITERATIONS);i++){
        test_evolution(population);
        //DEBUG
        //scanf("%d",&a);
@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
     }
     write_best_solution("Output.txt",population,row,col);
     //deallocazione memoria heap
-    dealloc_population(population,row);
+        dealloc_population(population,row);
     free(population);
     dealloc_pieces(pieces,npieces);
     return (EXIT_SUCCESS);

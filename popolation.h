@@ -17,7 +17,7 @@ extern "C" {
 #include "pieces.h"
 #include <math.h>
     
-#define POP_DIM 20
+#define POP_DIM 200000
 #define GEN_N (POP_DIM/2+(POP_DIM%2))//numero genitori è metà della popolazione
                                    //deve essere pari percui se è dispari somma 1
 #define ELITE (POP_DIM/4)//numero di migliori tra i genitori (è pari)
@@ -26,7 +26,7 @@ extern "C" {
                                //evitando di estrarre le sol tra 0 ed elite 
 #define OPT_SOL 0
 #define EVOLVI_ANCORA 1
-#define MAX_ITERATIONS 1 // MAX_NUMERO_DI_ITERAZIONI
+#define MAX_ITERATIONS 100 // MAX_NUMERO_DI_ITERAZIONI
 #define N_MISURE 3 // MAX,MEDIA,VARIANZA 
     
     typedef enum {
@@ -37,7 +37,7 @@ extern "C" {
     
 typedef struct population_s {
     solution_t *soluzioni;
-    float bests[MAX_ITERATIONS][N_MISURE]; // Vettore per registrare i valore dei massimi durante l'evoluzione
+    float bests[MAX_ITERATIONS+1][N_MISURE]; // Vettore per registrare i valore dei massimi durante l'evoluzione
     int current_iteration; // numero dell'iterazione corrente
 } population_t;
 
