@@ -37,7 +37,7 @@ extern "C" {
     
 typedef struct population_s {
     solution_t *soluzioni;
-    int bests[MAX_ITERATIONS][N_MISURE]; // Vettore per registrare i valore dei massimi durante l'evoluzione
+    float bests[MAX_ITERATIONS][N_MISURE]; // Vettore per registrare i valore dei massimi durante l'evoluzione
     int current_iteration; // numero dell'iterazione corrente
 } population_t;
 

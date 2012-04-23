@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include "pieces.h"
 #include "popolation.h"
-#define MAX_ITERATIONS 1
+#define MAX_ITERATIONS 10
 
 int main(int argc, char** argv) {
     /* Dichiarazione variabili */
@@ -26,31 +26,33 @@ int main(int argc, char** argv) {
     population=build_population(pieces,border,npieces,row,col);
 
     
+/*
     i=rand()%POP_DIM;
     a=rand()%POP_DIM;
     printf("%d %d\n",i,a);
+*/
+/*
     test_solution(&population->soluzioni[i],row,col);
     test_solution(&population->soluzioni[a],row,col);
     crossover(&population->soluzioni[i],&population->soluzioni[a],&solution,&solution1,npieces,row,col);
     test_solution(&solution,row,col);
     test_solution(&solution1,row,col);
+*/
 /*
 */
     sorted_popolation(population,pieces);
-    test_evolution(population);
+    //test_evolution(population);
     // comincia l'evoluzione... i criteri di stop
     // 1) Soluzione Ottima
     // 2) Troppe epoche
     //se la prima sol non itera neanche
-/*
     if(!(is_best(population,row,col))){
         for(i=0;pop_evolution(pieces,npieces,population,row,col)!=OPT_SOL&&(i<MAX_ITERATIONS);i++){
-       test_fitness(population);
+       test_evolution(population);
        //DEBUG
-       scanf("%d",&a);
+       //scanf("%d",&a);
         }
     }
- */   
     write_best_solution("Output.txt",population,row,col);
     //deallocazione memoria heap
     dealloc_population(population,row);

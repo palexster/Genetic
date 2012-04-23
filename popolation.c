@@ -48,11 +48,13 @@ void test_fitness(population_t *pop){
         varianza += pow((pop->soluzioni[i].fitness - media),2); 
     }
     varianza = varianza / (POP_DIM-1);
-    printf("Media %d",media);
-    printf("Varianza %d",varianza);
-    pop->bests[pop->current_iteration][MAX]=pop->soluzioni[idmax].fitness;
+    //printf("Media %d",media);
+    //printf("Varianza %d",varianza);
+    //printf("MAX  --> %d\n", pop->soluzioni[idmax].fitness);
+    pop->bests[pop->current_iteration][MAX]=max;
     pop->bests[pop->current_iteration][MEDIA]=media;
     pop->bests[pop->current_iteration][VARIANZA]=varianza;  
+    //printf("MAX  --> %f\n", pop->bests[pop->current_iteration][MAX]);
 }
 
 int cmp_fitness(solution_t s1cast,solution_t s2cast){
@@ -236,7 +238,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
      corrente),oppure ritirare a sorte(rispetta criterio iniziale di scelta 
      dipendente da fitness dell'el ma + overhead perchè se estraz fallisce
      probing è stato inutile)
-    
+    *
     for(i=0;i<GEN_N;i++){
          tmp=rand()%POP_DIM;
          //usa il long per genitore anche se non ha nulla a che vedere
@@ -251,7 +253,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
                 pop->soluzioni[tmp]=offspring[i];
          }     
     }*/
-    //sorted_popolation(pop,pieces);
+    sorted_popolation(pop,pieces);
     if(is_best(pop,row,col)){
         return(OPT_SOL);
     }
@@ -283,7 +285,7 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
         kernelPieces[i][0]=-1;
         kernelPieces[i][1]=-1;
     }
-    //crossover_centro(kernelPieces,sol1,sol2,fig1,fig2,npieces,row,col);
+    crossover_centro(kernelPieces,sol1,sol2,fig1,fig2,npieces,row,col);
     for(i=0;i<npieces;i++){
         kernelPieces[i][0]=-1;
         kernelPieces[i][1]=-1;
@@ -1112,16 +1114,16 @@ void write_best_solution(char *nomefile,population_t *pop,int row,int col) {
 
 void test_evolution(population_t *pop){
     test_fitness(pop);
-    printf("-----------------------------------------------------------------");;
-    printf("-----------------------------------------------------------------");
+    printf("-----------------------------------------------------------------\n");;
+    printf("-----------------------------------------------------------------\n");
     printf("Evoluzione: Generazione %d\n", pop->current_iteration );
     printf("Dimensione popolazione: %d\n", POP_DIM);
     printf("Media Popolazione: %f \t Varianza Popolazione: %f \n",pop->bests[pop->current_iteration][MEDIA],pop->bests[pop->current_iteration][VARIANZA]);
-    printf("Miglior Soluzione punti: %d\n",pop->bests[pop->current_iteration][MAX]);
+    printf("Miglior Soluzione punti: %d\n",(int)pop->bests[pop->current_iteration][MAX]);
     if (pop->current_iteration  > 0){
                 printf("-----------------------------------------------------------------");
                 printf("Evoluzione parametri %d --> %d\n", pop->current_iteration-1, pop->current_iteration );
                 printf("Variazione Media Popolazione: %f \t Variazione Varianza Popolazione: %f \n",(pop->bests[pop->current_iteration][MEDIA]-pop->bests[pop->current_iteration-1][MEDIA]),(pop->bests[pop->current_iteration][VARIANZA]-pop->bests[pop->current_iteration-1][VARIANZA]));
-                printf("Variazione Miglior Soluzione punti: %d\n",pop->bests[pop->current_iteration][MAX]-pop->bests[pop->current_iteration-1][MAX]);
+                printf("Variazione Miglior Soluzione punti: %d\n",(int)pop->bests[pop->current_iteration][MAX]-(int)pop->bests[pop->current_iteration-1][MAX]);
     }
 }
