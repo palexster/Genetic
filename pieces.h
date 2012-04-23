@@ -19,7 +19,7 @@ extern "C" {
  */    
 typedef struct solution_s {
     char ***matrice_pezzi;
-    int fitness;
+    short int fitness;
 } solution_t;
 
 typedef enum {

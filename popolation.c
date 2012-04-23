@@ -1,10 +1,3 @@
-#define POP_DIM 1000000
-#define GEN_N (POP_DIM/2+(POP_DIM%2))//numero genitori è metà della popolazione
-                                   //deve essere pari percui se è dispari somma 1
-#define ELITE (POP_DIM/4)//numero di migliori tra i genitori (è pari)
-//#define CASUALI (GEN_N-ELITE)//genitori da scegliere a caso (sol 0-elite)
-#define RANGE_CAS (POP_DIM-ELITE)//numero di valori tra cui estrarre gli el casuali
-                               //evitando di estrarre le sol tra 0 ed elite 
 
 #include "popolation.h"
 
@@ -34,6 +27,7 @@ population_t *build_population(int **pieces,int *border,int npieces,int row,int 
         fit=fitness_solution_evaluation(pieces,&popolazione_start->soluzioni[i],npieces,row,col);
         popolazione_start->soluzioni[i].fitness=fit;
     }
+    popolazione_start->current_iteration=0;
     //printf("N° soluzioni feasible: %d\n", nfeasible);
     return popolazione_start;
 }
@@ -48,16 +42,17 @@ void test_fitness(population_t *pop){
             idmax=i;
         }
         totale+=pop->soluzioni[i].fitness;
-        //printf("Soluzione %d:\t %d \n",i,pop->soluzioni[i].fitness);
     }
     media =(float) totale / POP_DIM;
     for(i=0;i<POP_DIM;i++){
-    varianza += pow((pop->soluzioni[i].fitness - media),2); 
+        varianza += pow((pop->soluzioni[i].fitness - media),2); 
     }
     varianza = varianza / (POP_DIM-1);
-    printf("Dimensione popolazione: %d\n", POP_DIM);
-    printf("Media Popolazione: %f \t Varianza Popolazione: %f \n",media,varianza);
-    printf("Miglior Soluzione punti: %d\n",pop->soluzioni[idmax].fitness);
+    printf("Media %d",media);
+    printf("Varianza %d",varianza);
+    pop->bests[pop->current_iteration][MAX]=pop->soluzioni[idmax].fitness;
+    pop->bests[pop->current_iteration][MEDIA]=media;
+    pop->bests[pop->current_iteration][VARIANZA]=varianza;  
 }
 
 int cmp_fitness(solution_t s1cast,solution_t s2cast){
@@ -76,7 +71,7 @@ void quick_sort(solution_t *array, int l, int r, int (*cmp)(solution_t lv, solut
 {
    int i, j;
    solution_t pivot, tmp;
-
+   
    if (l >= r) return;
 
    pivot = array[l];
@@ -552,5 +547,22 @@ void write_best_solution(char *nomefile,population_t *pop,int row,int col) {
      for(i=0;i<row;i++)
          for(j=0;j<col;j++)
                 fprintf(fp,"%d %d \n",pop->soluzioni[0].matrice_pezzi[i][j][0],pop->soluzioni[0].matrice_pezzi[i][j][1]);
+}
 
+/* Funzione per visualizzare l'andamento dell'evoluzione durante l'esecuzione del software*/
+
+void test_evolution(population_t *pop){
+    test_fitness(pop);
+    printf("-----------------------------------------------------------------");;
+    printf("-----------------------------------------------------------------");
+    printf("Evoluzione: Generazione %d\n", pop->current_iteration );
+    printf("Dimensione popolazione: %d\n", POP_DIM);
+    printf("Media Popolazione: %f \t Varianza Popolazione: %f \n",pop->bests[pop->current_iteration][MEDIA],pop->bests[pop->current_iteration][VARIANZA]);
+    printf("Miglior Soluzione punti: %d\n",pop->bests[pop->current_iteration][MAX]);
+    if (pop->current_iteration  > 0){
+                printf("-----------------------------------------------------------------");
+                printf("Evoluzione parametri %d --> %d\n", pop->current_iteration-1, pop->current_iteration );
+                printf("Variazione Media Popolazione: %f \t Variazione Varianza Popolazione: %f \n",(pop->bests[pop->current_iteration][MEDIA]-pop->bests[pop->current_iteration-1][MEDIA]),(pop->bests[pop->current_iteration][VARIANZA]-pop->bests[pop->current_iteration-1][VARIANZA]));
+                printf("Variazione Miglior Soluzione punti: %d\n",pop->bests[pop->current_iteration][MAX]-pop->bests[pop->current_iteration-1][MAX]);
+    }
 }

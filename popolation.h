@@ -17,11 +17,28 @@ extern "C" {
 #include "pieces.h"
 #include <math.h>
     
+#define POP_DIM 20
+#define GEN_N (POP_DIM/2+(POP_DIM%2))//numero genitori è metà della popolazione
+                                   //deve essere pari percui se è dispari somma 1
+#define ELITE (POP_DIM/4)//numero di migliori tra i genitori (è pari)
+//#define CASUALI (GEN_N-ELITE)//genitori da scegliere a caso (sol 0-elite)
+#define RANGE_CAS (POP_DIM-ELITE)//numero di valori tra cui estrarre gli el casuali
+                               //evitando di estrarre le sol tra 0 ed elite 
 #define OPT_SOL 0
 #define EVOLVI_ANCORA 1
+#define MAX_ITERATIONS 1 // MAX_NUMERO_DI_ITERAZIONI
+#define N_MISURE 3 // MAX,MEDIA,VARIANZA
+    
+    typedef enum {
+                MAX,
+                MEDIA,
+                VARIANZA,
+    } misure_t;
     
 typedef struct population_s {
     solution_t *soluzioni;
+    int bests[MAX_ITERATIONS][N_MISURE]; // Vettore per registrare i valore dei massimi durante l'evoluzione
+    int current_iteration; // numero dell'iterazione corrente
 } population_t;
 
 //boolean val
@@ -37,6 +54,7 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
 int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col);
 int get_best(population_t* pop);
 int is_best(population_t* pop,int row,int col);
+void test_evolution(population_t *pop);
 
 void write_best_solution(char *nomefile,population_t *pop,int row,int col);
 #ifdef	__cplusplus
