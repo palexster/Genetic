@@ -42,15 +42,18 @@ void test_fitness(population_t *pop){
             idmax=i;
         }
         totale+=pop->soluzioni[i].fitness;
+       // printf("Soluzione %d --> %d\n",i,pop->soluzioni[i].fitness);
     }
     media =(float) totale / POP_DIM;
     for(i=0;i<POP_DIM;i++){
         varianza += pow((pop->soluzioni[i].fitness - media),2); 
     }
     varianza = varianza / (POP_DIM-1);
-    //printf("Media %d",media);
-    //printf("Varianza %d",varianza);
-    //printf("MAX  --> %d\n", pop->soluzioni[idmax].fitness);
+/*
+    printf("Media %f\n",media);
+    printf("Varianza %f\n",varianza);
+    printf("MAX  --> %d\n", pop->soluzioni[idmax].fitness);
+*/
     pop->bests[pop->current_iteration][MAX]=max;
     pop->bests[pop->current_iteration][MEDIA]=media;
     pop->bests[pop->current_iteration][VARIANZA]=varianza;  
@@ -117,6 +120,10 @@ int is_best(population_t* pop,int row,int col){
                                                //1° addendo collegamenti oriz.
                                                //2°verticali (colleg=coppia di
                                                //pezzi con colori uguali su giuntura)
+     if(get_best(pop)>=MAX_PT) {
+         fprintf(stderr,"ERRORE: La fitness della soluzione massima è maggiore di quella MASSIMA ammissibile\n");
+         exit(2);
+     }
      if(get_best(pop)==MAX_PT) return(TRUE);
      return(FALSE);
 }
@@ -196,12 +203,16 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
         }
         //DEBUG
         //printf("gen:%ld %ld\n",gen[0],gen[1]);
-        offspring[i++].fitness=-1;
-        offspring[i++].fitness=-1;
+        //offspring[i++].fitness=-1;
+        //offspring[i++].fitness=-1;
         //END DEBUG
         crossover(&pop->soluzioni[parents[gen[0]]-1],&pop->soluzioni[parents[gen[1]]-1],&offspring[i],&offspring[i+1],npieces,row,col);
-        fitness_solution_evaluation(pieces,&offspring[i++],npieces,row,col);
-        fitness_solution_evaluation(pieces,&offspring[i++],npieces,row,col);
+        offspring[i].fitness=fitness_solution_evaluation(pieces,&offspring[i],npieces,row,col);
+        //printf("Valore fitness figlio %d: %d\n",i,offspring[i].fitness);
+        i++;
+        offspring[i].fitness=fitness_solution_evaluation(pieces,&offspring[i],npieces,row,col);
+        //printf("Valore fitness figlio %d : %d\n",i,offspring[i].fitness);
+        i++;
     }
     /*inizializzazione flag e calcolo somma inversi della fitness*/
     sum_inv_fit=0;
@@ -238,22 +249,24 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
      corrente),oppure ritirare a sorte(rispetta criterio iniziale di scelta 
      dipendente da fitness dell'el ma + overhead perchè se estraz fallisce
      probing è stato inutile)
-    *
+    */
     for(i=0;i<GEN_N;i++){
          tmp=rand()%POP_DIM;
          //usa il long per genitore anche se non ha nulla a che vedere
          //(evita nuova var tanto solo per prova)
          tmp_rnd=(double)rand()/(double)RAND_MAX;
          pi=((double)1/(double)pop->soluzioni[i].fitness)/sum_inv_fit;
-         if(tmp_rnd<pi]){
+         if(tmp_rnd<pi){
                 //se già sostituito prova col successivo finchè non trova uno vecchio el
                 while(chosen[tmp])
                          tmp=(tmp+1)%POP_DIM;
                 //sostituisce in ogni caso(non considera fitness el corrente)
                 pop->soluzioni[tmp]=offspring[i];
          }     
-    }*/
+    }
+    //test_fitness(pop);
     sorted_popolation(pop,pieces);
+    //test_fitness(pop);
     if(is_best(pop,row,col)){
         return(OPT_SOL);
     }
@@ -317,7 +330,7 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
     else
         taglio2=taglio1+ker_len_min;//se taglio1 è val max possibile taglio2 è vincolato da kerlenmin
     //DEBUG
-    printf("t1=%d,t2=%d,kerlenmin=%d\n",taglio1,taglio2,ker_len_min);
+    //printf("t1=%d,t2=%d,kerlenmin=%d\n",taglio1,taglio2,ker_len_min);
     /*generazione kernel
      *i indice del bordo linearizzato
      *j indice degli elementi di bordo nella matrice*/
@@ -871,7 +884,7 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
     //se kernel su + righe i pezzi di bordo(ultimo di una riga e primo della 
     //successiva) contano nella distanza tra i tagli quindi per garantire min 
     //aumenta taglio2 del n° pezzi inclusi (2*ogni salto di riga)
-    taglio2+=2*(taglio2-taglio1+1)/col;
+    //taglio2+=2*(taglio2-taglio1+1)/col;
     //DEBUG
     //printf("t1=%d,t2=%d,kerlenmin=%d\n",taglio1,taglio2,ker_len_min);
     //così vincoli il kernel sempre a cavallo della metà.
@@ -1104,7 +1117,10 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
 void write_best_solution(char *nomefile,population_t *pop,int row,int col) {
     int i,j; // contatori nel ciclo 
     FILE *fp;//puntatore al file  di pezzi
-     fp=fopen(nomefile,"w");
+     if ((fp=fopen(nomefile,"w")) == NULL){
+                 fprintf(stderr,"build_population()-errore in malloc() di kernelPieces.\n");
+                 exit(2);
+         }
      for(i=0;i<row;i++)
          for(j=0;j<col;j++)
                 fprintf(fp,"%d %d \n",pop->soluzioni[0].matrice_pezzi[i][j][0],pop->soluzioni[0].matrice_pezzi[i][j][1]);
@@ -1121,9 +1137,29 @@ void test_evolution(population_t *pop){
     printf("Media Popolazione: %f \t Varianza Popolazione: %f \n",pop->bests[pop->current_iteration][MEDIA],pop->bests[pop->current_iteration][VARIANZA]);
     printf("Miglior Soluzione punti: %d\n",(int)pop->bests[pop->current_iteration][MAX]);
     if (pop->current_iteration  > 0){
-                printf("-----------------------------------------------------------------");
+                printf("-----------------------------------------------------------------\n");
                 printf("Evoluzione parametri %d --> %d\n", pop->current_iteration-1, pop->current_iteration );
                 printf("Variazione Media Popolazione: %f \t Variazione Varianza Popolazione: %f \n",(pop->bests[pop->current_iteration][MEDIA]-pop->bests[pop->current_iteration-1][MEDIA]),(pop->bests[pop->current_iteration][VARIANZA]-pop->bests[pop->current_iteration-1][VARIANZA]));
                 printf("Variazione Miglior Soluzione punti: %d\n",(int)pop->bests[pop->current_iteration][MAX]-(int)pop->bests[pop->current_iteration-1][MAX]);
     }
+    ++pop->current_iteration;
+}
+
+/* Funzione per l'analisi dei dati ottenuti alla fine dell'esecuzione, il file di output verrà scritto utilizzando la codifica CSV*/
+
+void write_evolution(population_t *pop,char *nomefile){
+       int i,j; // contatori nel ciclo 
+       FILE *fp;//puntatore al file  di pezzi
+      if ((fp=fopen(nomefile,"w") == NULL)){
+                 fprintf(stderr,"Errore nell'apertura del file %s\n",nomefile);
+                 exit(2);
+         }
+       fprintf(fp,"GENERAZIONE,MAX,MEDIA,VARIANZA\n",nomefile);
+       for(i=0;i<pop->current_iteration;i++){
+            fprintf(fp,"%d",i);
+         for(j=0;j<N_MISURE;j++)
+                fprintf(fp,"%f\n",pop->bests[i][j]); 
+         fprintf(fp,"\n");
+       }
+       return;
 }
