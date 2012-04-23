@@ -1,0 +1,12 @@
+PARAMETRI E POLITICHE SIGNIFICATIVE NEL CROSSOVER
+
+Crossover Centro
+
+*ker_len_min:	10% num tot elementi (conta anche bordo) ie npieces/10(divisione intera).
+*taglio1-taglio2:	min dist kerlenmin. t2-t1 può essere maggiore del num pezzi nel kernel
+									se sono compresi dei bordi. Non c'è sempre coerenza tra t2-t1 e ker_len
+									effettiva.
+
+Crossover bordo
+
+*ker_len_min:10% num pezzi bordo (perimetro/10 divisione intera)

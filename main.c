@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
     int row,col,a;//numero righe e colonne matrice dei pezzi
     int npieces,//numero pezzi
         stop=1,// flag di fine generazione
-        *border,// vettore dei pezzi di bordo
+        *border,// vettore dei pezzi di bordo di npieces el.per ogni pezzo dice se è di bordo.val è pari al num di trinagoli grigi(0=centro,1=bordo,2=angolo)
         i;
     int **pieces;//vettore dei colori del pezzo
     solution_t solution,solution1;
@@ -24,26 +24,17 @@ int main(int argc, char** argv) {
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
     pieces=build_pieces("pieces_10x10.txt",&border,&npieces,&row,&col);
     population=build_population(pieces,border,npieces,row,col);
-    i=rand()%10;
-    a=rand()%10;
-    printf("%d %d",i,a);
+
+    
+    i=rand()%POP_DIM;
+    a=rand()%POP_DIM;
+    printf("%d %d\n",i,a);
+    test_solution(&population->soluzioni[i],row,col);
+    test_solution(&population->soluzioni[a],row,col);
+    crossover(&population->soluzioni[i],&population->soluzioni[a],&solution,&solution1,npieces,row,col);
+    test_solution(&solution,row,col);
+    test_solution(&solution1,row,col);
 /*
-    test_solution(&population->soluzioni[i],row,col);
-    test_solution(&population->soluzioni[a],row,col);
-    crossover(&population->soluzioni[i],&population->soluzioni[a],&solution,&solution1,npieces,row,col);
-    i=rand()%100000;
-    a=rand()%100000;
-    printf("%d %d",i,a);
-    test_solution(&population->soluzioni[i],row,col);
-    test_solution(&population->soluzioni[a],row,col);
-    crossover(&population->soluzioni[i],&population->soluzioni[a],&solution,&solution1,npieces,row,col);
-
-
-    test_solution(&population->soluzioni[1],row,col);
-    crossover(&population->soluzioni[0],&population->soluzioni[1],&solution,&solution1,npieces,row,col);
-
-
-
 */
     sorted_popolation(population,pieces);
     test_evolution(population);
@@ -58,10 +49,9 @@ int main(int argc, char** argv) {
        //DEBUG
        scanf("%d",&a);
         }
-    }*/
-
+    }
+ */   
     write_best_solution("Output.txt",population,row,col);
-
     //deallocazione memoria heap
     dealloc_population(population,row);
     free(population);

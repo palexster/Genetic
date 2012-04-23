@@ -42,6 +42,9 @@
         <compilerSet>GNU|GNU</compilerSet>
       </toolsSet>
       <compileType>
+        <cTool>
+          <architecture>2</architecture>
+        </cTool>
       </compileType>
     </conf>
     <conf name="Release" type="1">

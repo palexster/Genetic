@@ -17,7 +17,7 @@ int **build_pieces(char* filename, int **border,int* np, int* r, int* c){
     int row,col,//numero righe e colonne matrice dei pezzi
         npieces,//numero pezzi
         line[COLN],//vettore temporaneo per caricare i colori
-            *b,
+            *b,//vettore di npieces el.per ogni pezzo dice se è di bordo (0=centro,1=bordo,2=angolo)
         i,j;//indici della matrice
     /*Lettura dimensioni della matrice e allocazione del vettore dei pezzi*/
     if((fp=fopen(filename,"r"))==NULL){
