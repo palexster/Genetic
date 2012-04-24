@@ -154,10 +154,12 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
                              //E' usata nche per tenere conto dell'estarazione 
                              //per la scelta degli accoppiamenti se val positivo
                              //allora già estratto
-    long i,tmp;//indice su pop e var temp per memorizzare il val estratto a caso
+    long i,tmp,//indice su pop e var temp per memorizzare il val estratto a caso
+            cnt;//per generare coppia e distinguere genitori in selez genitori
+                //e come indice di offspring in sostituzione(max val GEN_N-1)
     solution_t offspring[GEN_N];//vettore dei figli
-    int cnt,//per generare coppia e distinguere genitori
-        curr_best;//per normalizzare probabilità in base a miglior sol
+    char j;//indice per fare la free della matrice pezzi nelle sol sostituite
+    //int curr_best;//per normalizzare probabilità in base a miglior sol
                   //evitando che nelle prime iteraz se fitnessmedia è bassa ci
                   //sia troppo facile venir sostituiti
     long gen[2];//vettore dei due indici dei genitori accoppiati da passare 
@@ -260,6 +262,10 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
                 //se già sostituito prova col successivo finchè non trova uno vecchio el
                 while(chosen[tmp])
                          tmp=(tmp+1)%POP_DIM;
+                //rilascia la mem per la matrice dei pezzi della sol da sostiutuire
+                for(j=0;j<row;j++)
+                    free(pop->soluzioni[tmp].matrice_pezzi[j]);
+                free(pop->soluzioni[tmp].matrice_pezzi);
                 //sostituisce in ogni caso(non considera fitness el corrente)
                 pop->soluzioni[tmp]=offspring[i];
          }     
@@ -272,7 +278,8 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
     }
     return(EVOLVI_ANCORA);
 }
-
+/*realizza crossover. riceve coppia genitori i puntatori ai figli e le dimensioni della soluz(cioè num pezzi) e della matrice(num righe e num col) 
+ *si limita a preparare le strutture di appoggio usate e a chiamare le funzioni di crossover_bordo e crossover_centro*/
 void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
     int i;
     *fig1=build_solution(row,col);
@@ -864,7 +871,7 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
     // generazione tagli, contatori e indice righe/colonne
     int taglio1,taglio2,i,r,c,c1,r1,nval,tmp;
     char ker_len_min;//lunghezza minima kernel
-    solution_t *tmp_ptr1,*tmp_ptr2,*tmp_ptr_swap;
+    //solution_t *tmp_ptr1,*tmp_ptr2,*tmp_ptr_swap;
     
     ker_len_min=(char)npieces/10;//10% num pezzi(approx. all'intero inferiore) conta anche bordo anche se lavora su centro
     //col+2 fa si che min(taglio1) è 3° el 2^riga per evitare bordo
