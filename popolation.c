@@ -208,6 +208,8 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
         //offspring[i++].fitness=-1;
         //offspring[i++].fitness=-1;
         //END DEBUG
+        offspring[i]=build_solution(row,col);
+        offspring[i+1]=build_solution(row,col);
         crossover(&pop->soluzioni[parents[gen[0]]-1],&pop->soluzioni[parents[gen[1]]-1],&offspring[i],&offspring[i+1],npieces,row,col);
         offspring[i].fitness=fitness_solution_evaluation(pieces,&offspring[i],npieces,row,col);
         //printf("Valore fitness figlio %d: %d\n",i,offspring[i].fitness);
@@ -222,6 +224,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
         chosen[i]=FALSE;
         sum_inv_fit+=(double)1/(double)pop->soluzioni[i].fitness;
     }
+    //SOSTITUZIONE PUÒ ESSERE DA RIPENSARE IN OGNI CASO SOLO 1 DELLE 2 DA USARE!
     /*Sostituzione: tutti i figli sono inseriti, scegliendo a caso gli elementi
      da eliminare (di fatto ogni el. da eliminare sostituito con un figlio)
      Scorre vettore popolazione e per ogni el sostituito con probabilità
@@ -233,10 +236,17 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
      di una scansione ci siano ancora figli da inserire)*/
     cnt=0;
     for(i=0;cnt<GEN_N;i=((i+1)%POP_DIM)){
-        tmp_rnd=(double)rand()/(double)RAND_MAX/sum_inv_fit;
-        pi=((double)1/(double)pop->soluzioni[i].fitness)/sum_inv_fit;
-        if((!chosen[i])&&(tmp_rnd<pi))
+        //vedi ex knapsack di perboli(metaheuristics-ga)
+        tmp_rnd=(double)rand()/(double)RAND_MAX/sum_inv_fit;//=(n_random/rand_max)*(1/sum_inv_fit)
+        pi=((double)1/(double)pop->soluzioni[i].fitness)/sum_inv_fit;//=(1/fitness)*(1/sum_inv_fit)
+        if((!chosen[i])&&(tmp_rnd<pi)){
+            //rilascia la mem per la matrice dei pezzi della sol da sostiutuire
+            for(j=0;j<row;j++)
+                free(pop->soluzioni[i].matrice_pezzi[j]);
+            free(pop->soluzioni[i].matrice_pezzi);
             pop->soluzioni[i]=offspring[cnt++];
+            chosen[i]=TRUE;
+        }
     }
     //DEBUG
     //test_fitness(pop);
@@ -252,7 +262,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
      dipendente da fitness dell'el ma + overhead perchè se estraz fallisce
      probing è stato inutile)
     */
-    for(i=0;i<GEN_N;i++){
+    /*for(i=0;i<GEN_N;i++){
          tmp=rand()%POP_DIM;
          //usa il long per genitore anche se non ha nulla a che vedere
          //(evita nuova var tanto solo per prova)
@@ -269,7 +279,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
                 //sostituisce in ogni caso(non considera fitness el corrente)
                 pop->soluzioni[tmp]=offspring[i];
          }     
-    }
+    }*/
     //test_fitness(pop);
     sorted_popolation(pop,pieces);
     //test_fitness(pop);
@@ -282,8 +292,6 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
  *si limita a preparare le strutture di appoggio usate e a chiamare le funzioni di crossover_bordo e crossover_centro*/
 void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
     int i;
-    *fig1=build_solution(row,col);
-    *fig2=build_solution(row,col);
     // confronto pezzi dentro il kernel, kernelPieces serve a tenere traccia di quali pezzi
     // sono presenti dentro il kernel dei figli e devono essere rimpiazzati.
     // L'allocazione dei due figli è parallelizzata
@@ -1157,7 +1165,7 @@ void test_evolution(population_t *pop){
 void write_evolution(population_t *pop,char *nomefile){
        int i,j; // contatori nel ciclo 
        FILE *fp;//puntatore al file  di pezzi
-      if ((fp=fopen(nomefile,"w") == NULL)){
+      if ((fp=fopen(nomefile,"w")) == NULL){
                  fprintf(stderr,"Errore nell'apertura del file %s\n",nomefile);
                  exit(2);
          }
