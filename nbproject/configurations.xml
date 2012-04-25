@@ -44,6 +44,9 @@
         <compilerSet>GNU|GNU</compilerSet>
       </toolsSet>
       <compileType>
+        <cTool>
+          <warningLevel>2</warningLevel>
+        </cTool>
       </compileType>
     </conf>
     <conf name="Release" type="1">
