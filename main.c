@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     population_t *population;
     long max_iterations;
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
-    pieces=build_pieces("pieces_05x05.txt",&border,&npieces,&row,&col);
+    pieces=build_pieces("pieces_10x10.txt",&border,&npieces,&row,&col);
     population=build_population(pieces,border,npieces,row,col);
 
     
@@ -54,6 +54,7 @@ int main(int argc, char** argv) {
         }
     }
     write_best_solution("Output.txt",population,row,col);
+    write_evolution(population,"Statistiche.csv");
     //deallocazione memoria heap
         dealloc_population(population,row);
     free(population);

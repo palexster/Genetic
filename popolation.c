@@ -167,7 +167,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
     double  tmp_rnd,//tmp_rnd per estraz in sostituzione
             sum_inv_fit,//somma di 1/fitness per sol nella pop
             pi;// pi=(1/fitness)/sum_inv_fit prob con cui el è sostituito
-   
+   //printf("Entro in Pop Evolution\n");
     /*inizializzazione flag*/
     for(i=0;i<POP_DIM;i++)
         chosen[i]=FALSE;
@@ -276,6 +276,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
     if(is_best(pop,row,col)){
         return(OPT_SOL);
     }
+    //printf("Esco da Pop Evolution\n");
     return(EVOLVI_ANCORA);
 }
 /*realizza crossover. riceve coppia genitori i puntatori ai figli e le dimensioni della soluz(cioè num pezzi) e della matrice(num righe e num col) 
@@ -284,6 +285,7 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
     int i;
     *fig1=build_solution(row,col);
     *fig2=build_solution(row,col);
+       //printf("Esco da Crossover\n");
     // confronto pezzi dentro il kernel, kernelPieces serve a tenere traccia di quali pezzi
     // sono presenti dentro il kernel dei figli e devono essere rimpiazzati.
     // L'allocazione dei due figli è parallelizzata
@@ -293,13 +295,13 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
     //pezzi di bordo in realtà mai usati quindi alcuni el del vet mai usati
     kernelPieces=(char **)malloc(sizeof(char*)*npieces);
     if(kernelPieces==NULL){
-        fprintf(stderr,"build_population()-errore in malloc() di kernelPieces.\n");
+        fprintf(stderr,"crossover()-errore in malloc() di kernelPieces.\n");
         exit(2);
     }
    for(i=0;i<npieces;i++){
         kernelPieces[i]=(char *)malloc(sizeof(char)*2);
         if(kernelPieces[i]==NULL){
-                fprintf(stderr,"crossover_centro()-errore in malloc() di kernelPieces[%d].\n",i);
+                fprintf(stderr,"crossover()-errore in malloc() di kernelPieces[%d].\n",i);
                 exit(2);
         }
         kernelPieces[i][0]=-1;
@@ -315,6 +317,7 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
         free(kernelPieces[i]);
     }
     free(kernelPieces);
+    //printf("Esco da Crossover\n");
     return;
 }
 
@@ -328,7 +331,7 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
     char ker_len_min;//lunghezza minima kernel
     const int BOTTOM=row-1;
     const int RIGHT=col-1;
-   
+   //printf("Entro in Crossover bordo\n");
     perimetro=(row-1+col-1)*2;
     ker_len_min=(char)perimetro/10;//10% num pezzi(approx. all'intero inferiore)
     taglio1=rand()%(perimetro-ker_len_min-1)+1;
@@ -862,6 +865,7 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 fig2->matrice_pezzi[j][0][1]=sol1->matrice_pezzi[r1][c1][1];
             }
     }
+    //printf("Esco da Crossover bordo\n");
     return;
 }
 
@@ -872,7 +876,7 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
     int taglio1,taglio2,i,r,c,c1,r1,nval,tmp;
     char ker_len_min;//lunghezza minima kernel
     //solution_t *tmp_ptr1,*tmp_ptr2,*tmp_ptr_swap;
-    
+    //printf("Entro in Crossover centro\n");
     ker_len_min=(char)npieces/10;//10% num pezzi(approx. all'intero inferiore) conta anche bordo anche se lavora su centro
     //col+2 fa si che min(taglio1) è 3° el 2^riga per evitare bordo
     //(evita 1^riga e almeno un el prima del taglio) e avere almeno un el prima del taglio
@@ -914,11 +918,11 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
     for(;(c<(col-1))&&(i<taglio2);c++,i++){
         fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
         fig1->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r][c][1];
-        kernelPieces[sol1->matrice_pezzi[r][c][0]][0]=i;
+        kernelPieces[sol1->matrice_pezzi[r][c][0]][0]=(char)i;
         // figlio 2
         fig2->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
         fig2->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r][c][1];
-        kernelPieces[sol2->matrice_pezzi[r][c][0]][1]=i;
+        kernelPieces[sol2->matrice_pezzi[r][c][0]][1]=(char)i;
     }
     //se kernel su + righe continua a scorrere matrice interna fino a taglio2
     i+=2;//considera su matrice linearizzata le posizioni saltate quando finisce
@@ -1118,6 +1122,7 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
             }
         }
     }
+    //printf("Esco da Crossover centro\n");
     return;
 }
 
@@ -1157,15 +1162,15 @@ void test_evolution(population_t *pop){
 void write_evolution(population_t *pop,char *nomefile){
        int i,j; // contatori nel ciclo 
        FILE *fp;//puntatore al file  di pezzi
-      if ((fp=fopen(nomefile,"w") == NULL)){
+      if (((fp=fopen(nomefile,"w")) == NULL)){
                  fprintf(stderr,"Errore nell'apertura del file %s\n",nomefile);
                  exit(2);
          }
        fprintf(fp,"GENERAZIONE,MAX,MEDIA,VARIANZA\n",nomefile);
        for(i=0;i<pop->current_iteration;i++){
-            fprintf(fp,"%d",i);
+            fprintf(fp,"%d,",i);
          for(j=0;j<N_MISURE;j++)
-                fprintf(fp,"%f\n",pop->bests[i][j]); 
+                fprintf(fp,"%d,",(int)pop->bests[i][j]); 
          fprintf(fp,"\n");
        }
        return;
