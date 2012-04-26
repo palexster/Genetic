@@ -204,7 +204,7 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
     ++taken[solution->matrice_pezzi[0][col-1][0]];
     //Angolo basso-destra;
     solution->matrice_pezzi[row-1][col-1][0]=get_right_corner(pieces,corner_taken,corners);
-    solution->matrice_pezzi[row-1][col-1][1]=get_corner_fitting_rotation(pieces,solution->matrice_pezzi[row-1][col-1][0],SOTTO,DESTRA);
+    solution->matrice_pezzi[row-1][col-1][1]=get_corner_fitting_rotation(pieces,solution->matrice_pezzi[row-1][col-1][0],DESTRA,SOTTO);//SOTTO,DESTRA);
     ++taken[solution->matrice_pezzi[row-1][col-1][0]];
     //Angolo basso-sinistra;
     solution->matrice_pezzi[row-1][0][0]=get_right_corner(pieces,corner_taken,corners);
@@ -318,10 +318,8 @@ int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,in
 */
                 if (a == b)
                         profit++;
-/*
                if (a == GRAY || b == GRAY)
                     printf("Sto confrontando colori di cui uno è GRAY: A--> %d\t B --> %d\n",a,b);
-*/
             }
             // se è l'ultima riga non controlla il profit orizzontale
             if (i<(row-1)){
@@ -337,19 +335,20 @@ int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,in
                 //printf("B --> Pezzo Numero: %d,ruotato di %d,B vale %d\n",solution->matrice_pezzi[i+1][j][0],rot_sec,b);
                 if (a==b )
                         profit++;
-/*
                 if (a == GRAY || b == GRAY)
                     printf("Sto confrontando colori di cui uno è GRAY: A--> %d\t B --> %d\n",a,b);
-*/
             }            
         }
     return profit;
 }
 
-void dealloc_soluzioni(solution_t *sol,int row){
-    int count;
-    for (count = 0; count < row; count++)
-                free(sol->matrice_pezzi[count]);
+void dealloc_soluzioni(solution_t *sol,int row,int col){
+    int count,j;
+    for (count = 0; count < row; count++){
+        for(j=0;j<col;j++)
+                free(sol->matrice_pezzi[count][j]);
+        free(sol->matrice_pezzi[count]);
+    }            
     free(sol->matrice_pezzi);
     return;
 } 

@@ -97,8 +97,8 @@ void quick_sort(solution_t *array, int l, int r, int (*cmp)(solution_t lv, solut
    quick_sort(array, j+1, r, cmp);
 }
 
-void dealloc_population(population_t *pop,int row){
-    dealloc_soluzioni(pop->soluzioni,row);
+void dealloc_population(population_t *pop,int row,int col){
+    dealloc_soluzioni(pop->soluzioni,row,col);
     free(pop->soluzioni);
     //free(pop);
     return;
@@ -158,7 +158,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
             cnt;//per generare coppia e distinguere genitori in selez genitori
                 //e come indice di offspring in sostituzione(max val GEN_N-1)
     solution_t offspring[GEN_N];//vettore dei figli
-    char j;//indice per fare la free della matrice pezzi nelle sol sostituite
+    char j,k;//indici per fare la free della matrice pezzi nelle sol sostituite
     //int curr_best;//per normalizzare probabilità in base a miglior sol
                   //evitando che nelle prime iteraz se fitnessmedia è bassa ci
                   //sia troppo facile venir sostituiti
@@ -210,7 +210,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
         //END DEBUG
         offspring[i]=build_solution(row,col);
         offspring[i+1]=build_solution(row,col);
-        crossover(&pop->soluzioni[parents[gen[0]]-1],&pop->soluzioni[parents[gen[1]]-1],&offspring[i],&offspring[i+1],npieces,row,col);
+        crossover(&pop->soluzioni[parents[gen[0]]-1],&pop->soluzioni[parents[gen[1]]-1],&offspring[i],&offspring[i+1],pieces,npieces,row,col);
         offspring[i].fitness=fitness_solution_evaluation(pieces,&offspring[i],npieces,row,col);
         //printf("Valore fitness figlio %d: %d\n",i,offspring[i].fitness);
         i++;
@@ -241,9 +241,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
         pi=((double)1/(double)pop->soluzioni[i].fitness)/sum_inv_fit;//=(1/fitness)*(1/sum_inv_fit)
         if((!chosen[i])&&(tmp_rnd<pi)){
             //rilascia la mem per la matrice dei pezzi della sol da sostiutuire
-            for(j=0;j<row;j++)
-                free(pop->soluzioni[i].matrice_pezzi[j]);
-            free(pop->soluzioni[i].matrice_pezzi);
+            dealloc_soluzioni(&pop->soluzioni[i],row,col);
             pop->soluzioni[i]=offspring[cnt++];
             chosen[i]=TRUE;
         }
@@ -291,7 +289,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
 }
 /*realizza crossover. riceve coppia genitori i puntatori ai figli e le dimensioni della soluz(cioè num pezzi) e della matrice(num righe e num col) 
  *si limita a preparare le strutture di appoggio usate e a chiamare le funzioni di crossover_bordo e crossover_centro*/
-void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
+void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2,int**pieces, int npieces, int row, int col){
     int i;
     // confronto pezzi dentro il kernel, kernelPieces serve a tenere traccia di quali pezzi
     // sono presenti dentro il kernel dei figli e devono essere rimpiazzati.
@@ -319,7 +317,10 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
         kernelPieces[i][0]=-1;
         kernelPieces[i][1]=-1;
     }
-    crossover_bordo(kernelPieces,sol1,sol2,fig1,fig2,npieces,row,col);
+    crossover_bordo(kernelPieces,sol1,sol2,fig1,fig2,pieces,npieces,row,col);
+    //test_solution(fig1,row,col);
+    //test_solution(fig2,row,col);
+    
     for(i=0;i<npieces;i++){
         free(kernelPieces[i]);
     }
@@ -332,7 +333,7 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
  * riceve 2 soluzioni(genitori) e genera 2 figli
  * bordo linearizzato in senso orario a partire da pos 0,0, cioè:
  * riga0,coln,rigan,col0 conisiderando una matrice n*n.*/
-void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
+void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2,int**pieces, int npieces, int row, int col){
     // generazione tagli, contatori e indice righe/colonne
     int taglio1,taglio2,i,j,c1,r1,perimetro,nval,tmp;
     char ker_len_min;//lunghezza minima kernel
@@ -444,7 +445,14 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 }while(kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]>0);
                 //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
                 fig1->matrice_pezzi[0][j][0]=sol2->matrice_pezzi[r1][c1][0];
-                fig1->matrice_pezzi[0][j][1]=sol2->matrice_pezzi[r1][c1][1];
+                //rotazione in questo caso non si può copiare perchè pos diversa
+                //e potrebbe essere su lato diverso.
+                if(j==0)//unico angolo è quello in alto a sin (alto a dx considerato in col a dx)
+                    //trova giusta rotaz per l'angolo
+                    fig1->matrice_pezzi[0][j][1]=get_corner_fitting_rotation(pieces,sol2->matrice_pezzi[r1][c1][0],SINISTRA,SOPRA);
+                else//altrimenti è sul lato
+                    //trova rotaz per bordo
+                    fig1->matrice_pezzi[0][j][1]=get_border_fitting_rotation(pieces,sol2->matrice_pezzi[r1][c1][0],SOPRA);
             }
             if (kernelPieces[sol1->matrice_pezzi[0][j][0]][1]<0){
                 fig2->matrice_pezzi[0][j][0]=sol1->matrice_pezzi[0][j][0];
@@ -469,7 +477,14 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 }while(kernelPieces[sol1->matrice_pezzi[r1][c1][0]][1]>0);
                 //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
                 fig2->matrice_pezzi[0][j][0]=sol1->matrice_pezzi[r1][c1][0];
-                fig2->matrice_pezzi[0][j][1]=sol1->matrice_pezzi[r1][c1][1];
+                //rotazione in questo caso non si può copiare perchè pos diversa
+                //e potrebbe essere su lato diverso (o angolo diverso se pezzo è di angolo)
+                 if(j==0)//unico angolo è quello in alto a sin (alto a dx considerato in col a dx)
+                    //trova giusta rotaz per l'angolo
+                    fig2->matrice_pezzi[0][j][1]=get_corner_fitting_rotation(pieces,sol1->matrice_pezzi[r1][c1][0],SINISTRA,SOPRA);
+                else//altrimenti è sul lato
+                    //trova rotaz per bordo
+                    fig2->matrice_pezzi[0][j][1]=get_border_fitting_rotation(pieces,sol1->matrice_pezzi[r1][c1][0],SOPRA);
             }
     }
     //ultima col dx
@@ -498,7 +513,14 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 }while(kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]>0);
                 //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
                 fig1->matrice_pezzi[j][RIGHT][0]=sol2->matrice_pezzi[r1][c1][0];
-                fig1->matrice_pezzi[j][RIGHT][1]=sol2->matrice_pezzi[r1][c1][1];
+                //rotazione in questo caso non si può copiare perchè pos diversa
+                //e potrebbe essere su lato diverso (o angolo diverso se pezzo è di angolo)
+                 if(j==0)//unico angolo è quello in alto a sin (alto a dx considerato in col a dx)
+                    //trova giusta rotaz per l'angolo
+                    fig1->matrice_pezzi[j][RIGHT][1]=get_corner_fitting_rotation(pieces,sol2->matrice_pezzi[r1][c1][0],SOPRA,DESTRA);
+                else//altrimenti è sul lato
+                    //trova rotaz per bordo
+                    fig1->matrice_pezzi[j][RIGHT][1]=get_border_fitting_rotation(pieces,sol2->matrice_pezzi[r1][c1][0],DESTRA);
             }
             if (kernelPieces[sol1->matrice_pezzi[j][RIGHT][0]][1]<0){
                 fig2->matrice_pezzi[j][RIGHT][0]=sol1->matrice_pezzi[j][RIGHT][0];
@@ -523,10 +545,17 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 }while(kernelPieces[sol1->matrice_pezzi[r1][c1][0]][1]>0);
                 //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
                 fig2->matrice_pezzi[j][RIGHT][0]=sol1->matrice_pezzi[r1][c1][0];
-                fig2->matrice_pezzi[j][RIGHT][1]=sol1->matrice_pezzi[r1][c1][1];
+                //rotazione in questo caso non si può copiare perchè pos diversa
+                //e potrebbe essere su lato diverso (o angolo diverso se pezzo è di angolo)
+                 if(j==0)//unico angolo è quello in alto a sin (alto a dx considerato in col a dx)
+                    //trova giusta rotaz per l'angolo
+                    fig2->matrice_pezzi[j][RIGHT][1]=get_corner_fitting_rotation(pieces,sol1->matrice_pezzi[r1][c1][0],SOPRA,DESTRA);
+                else//altrimenti è sul lato
+                    //trova rotaz per bordo
+                    fig2->matrice_pezzi[j][RIGHT][1]=get_border_fitting_rotation(pieces,sol1->matrice_pezzi[r1][c1][0],DESTRA);
             }
     }
-    
+    //ultima riga in basso
     for(;(i<taglio1)&&(j>0);i++,j--){
         if (kernelPieces[sol2->matrice_pezzi[BOTTOM][j][0]][0]<0){
                 fig1->matrice_pezzi[BOTTOM][j][0]=sol2->matrice_pezzi[BOTTOM][j][0];
@@ -552,7 +581,14 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 }while(kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]>0);
                 //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
                 fig1->matrice_pezzi[BOTTOM][j][0]=sol2->matrice_pezzi[r1][c1][0];
-                fig1->matrice_pezzi[BOTTOM][j][1]=sol2->matrice_pezzi[r1][c1][1];
+                //rotazione in questo caso non si può copiare perchè pos diversa
+                //e potrebbe essere su lato diverso (o angolo diverso se pezzo è di angolo)
+                 if(j==RIGHT)//unico angolo è quello in alto a sin (alto a dx considerato in col a dx)
+                    //trova giusta rotaz per l'angolo
+                    fig1->matrice_pezzi[BOTTOM][j][1]=get_corner_fitting_rotation(pieces,sol2->matrice_pezzi[r1][c1][0],DESTRA,SOTTO);
+                else//altrimenti è sul lato
+                    //trova rotaz per bordo
+                    fig1->matrice_pezzi[BOTTOM][j][1]=get_border_fitting_rotation(pieces,sol2->matrice_pezzi[r1][c1][0],SOTTO);
             }
             if (kernelPieces[sol1->matrice_pezzi[BOTTOM][j][0]][1]<0){
                 fig2->matrice_pezzi[BOTTOM][j][0]=sol1->matrice_pezzi[BOTTOM][j][0];
@@ -577,7 +613,14 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 }while(kernelPieces[sol1->matrice_pezzi[r1][c1][0]][1]>0);
                 //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
                 fig2->matrice_pezzi[BOTTOM][j][0]=sol1->matrice_pezzi[r1][c1][0];
-                fig2->matrice_pezzi[BOTTOM][j][1]=sol1->matrice_pezzi[r1][c1][1];
+                //rotazione in questo caso non si può copiare perchè pos diversa
+                //e potrebbe essere su lato diverso (o angolo diverso se pezzo è di angolo)
+                 if(j==RIGHT)//unico angolo è quello in alto a sin (alto a dx considerato in col a dx)
+                    //trova giusta rotaz per l'angolo
+                    fig2->matrice_pezzi[BOTTOM][j][1]=get_corner_fitting_rotation(pieces,sol1->matrice_pezzi[r1][c1][0],DESTRA,SOTTO);
+                else//altrimenti è sul lato
+                    //trova rotaz per bordo
+                    fig2->matrice_pezzi[BOTTOM][j][1]=get_border_fitting_rotation(pieces,sol1->matrice_pezzi[r1][c1][0],SOTTO);
             }
     }
     //1^col sx
@@ -606,7 +649,14 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 }while(kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]>0);
                 //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
                 fig1->matrice_pezzi[j][0][0]=sol2->matrice_pezzi[r1][c1][0];
-                fig1->matrice_pezzi[j][0][1]=sol2->matrice_pezzi[r1][c1][1];
+                //rotazione in questo caso non si può copiare perchè pos diversa
+                //e potrebbe essere su lato diverso (o angolo diverso se pezzo è di angolo)
+                 if(j==BOTTOM)//unico angolo è quello in alto a sin (alto a dx considerato in col a dx)
+                    //trova giusta rotaz per l'angolo
+                    fig1->matrice_pezzi[j][0][1]=get_corner_fitting_rotation(pieces,sol2->matrice_pezzi[r1][c1][0],SOTTO,SINISTRA);
+                else//altrimenti è sul lato
+                    //trova rotaz per bordo
+                    fig1->matrice_pezzi[j][0][1]=get_border_fitting_rotation(pieces,sol2->matrice_pezzi[r1][c1][0],SINISTRA);
             }
             if (kernelPieces[sol1->matrice_pezzi[j][0][0]][1]<0){
                 fig2->matrice_pezzi[j][0][0]=sol1->matrice_pezzi[j][0][0];
@@ -632,14 +682,20 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 }while(kernelPieces[sol1->matrice_pezzi[r1][c1][0]][1]>0);
                 //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
                 fig2->matrice_pezzi[j][0][0]=sol1->matrice_pezzi[r1][c1][0];
-                fig2->matrice_pezzi[j][0][1]=sol1->matrice_pezzi[r1][c1][1];
+                //rotazione in questo caso non si può copiare perchè pos diversa
+                //e potrebbe essere su lato diverso (o angolo diverso se pezzo è di angolo)
+                 if(j==BOTTOM)//unico angolo è quello in alto a sin (alto a dx considerato in col a dx)
+                    //trova giusta rotaz per l'angolo
+                    fig2->matrice_pezzi[j][0][1]=get_corner_fitting_rotation(pieces,sol1->matrice_pezzi[r1][c1][0],SOTTO,SINISTRA);
+                else//altrimenti è sul lato
+                    //trova rotaz per bordo
+                    fig2->matrice_pezzi[j][0][1]=get_border_fitting_rotation(pieces,sol1->matrice_pezzi[r1][c1][0],SINISTRA);
             }
     }
     //DEBUG
     //test_solution(fig1,row,col);
     //test_solution(fig2,row,col);
     /*lato destro prole*/
-    //DA VEDERE CICLI!(STILE KERNEL)
     for(i=j=taglio2;j<RIGHT;i++,j++){
         if (kernelPieces[sol2->matrice_pezzi[0][j][0]][0]<0){
                 fig1->matrice_pezzi[0][j][0]=sol2->matrice_pezzi[0][j][0];
@@ -665,7 +721,12 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 }while(kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]>0);
                 //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
                 fig1->matrice_pezzi[0][j][0]=sol2->matrice_pezzi[r1][c1][0];
-                fig1->matrice_pezzi[0][j][1]=sol2->matrice_pezzi[r1][c1][1];
+                //rotazione in questo caso non si può copiare perchè pos diversa
+                //e potrebbe essere su lato diverso.
+                //trova rotaz per bordo
+                //L'angolo in questo caso non appartiene mai al lato dx prole (caso limite taglio2=kerlenmin)
+                //trova rotaz per bordo
+                fig1->matrice_pezzi[0][j][1]=get_border_fitting_rotation(pieces,sol2->matrice_pezzi[r1][c1][0],SOPRA);
             }
             if (kernelPieces[sol1->matrice_pezzi[0][j][0]][1]<0){
                 fig2->matrice_pezzi[0][j][0]=sol1->matrice_pezzi[0][j][0];
@@ -690,7 +751,11 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 }while(kernelPieces[sol1->matrice_pezzi[r1][c1][0]][1]>0);
                 //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
                 fig2->matrice_pezzi[0][j][0]=sol1->matrice_pezzi[r1][c1][0];
-                fig2->matrice_pezzi[0][j][1]=sol1->matrice_pezzi[r1][c1][1];
+                //rotazione in questo caso non si può copiare perchè pos diversa
+                //e potrebbe essere su lato diverso.
+                //L'angolo in questo caso non appartiene mai al lato dx prole (caso limite taglio2=kerlenmin)
+                //trova rotaz per bordo
+                fig2->matrice_pezzi[0][j][1]=get_border_fitting_rotation(pieces,sol1->matrice_pezzi[r1][c1][0],SOPRA);
             }
     }
     //ultima col a dx
@@ -723,7 +788,14 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 }while(kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]>0);
                 //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
                 fig1->matrice_pezzi[j][RIGHT][0]=sol2->matrice_pezzi[r1][c1][0];
-                fig1->matrice_pezzi[j][RIGHT][1]=sol2->matrice_pezzi[r1][c1][1];
+                //rotazione in questo caso non si può copiare perchè pos diversa
+                //e potrebbe essere su lato diverso (o angolo diverso se pezzo è di angolo)
+                 if(j==0)//unico angolo è quello in alto a sin (alto a dx considerato in col a dx)
+                    //trova giusta rotaz per l'angolo
+                    fig1->matrice_pezzi[j][RIGHT][1]=get_corner_fitting_rotation(pieces,sol2->matrice_pezzi[r1][c1][0],SOPRA,DESTRA);
+                else//altrimenti è sul lato
+                    //trova rotaz per bordo
+                    fig1->matrice_pezzi[j][RIGHT][1]=get_border_fitting_rotation(pieces,sol2->matrice_pezzi[r1][c1][0],DESTRA);
             }
             if (kernelPieces[sol1->matrice_pezzi[j][RIGHT][0]][1]<0){
                 fig2->matrice_pezzi[j][RIGHT][0]=sol1->matrice_pezzi[j][RIGHT][0];
@@ -748,7 +820,14 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 }while(kernelPieces[sol1->matrice_pezzi[r1][c1][0]][1]>0);
                 //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
                 fig2->matrice_pezzi[j][RIGHT][0]=sol1->matrice_pezzi[r1][c1][0];
-                fig2->matrice_pezzi[j][RIGHT][1]=sol1->matrice_pezzi[r1][c1][1];
+                //rotazione in questo caso non si può copiare perchè pos diversa
+                //e potrebbe essere su lato diverso (o angolo diverso se pezzo è di angolo)
+                 if(j==0)//unico angolo è quello in alto a sin (alto a dx considerato in col a dx)
+                    //trova giusta rotaz per l'angolo
+                    fig2->matrice_pezzi[j][RIGHT][1]=get_corner_fitting_rotation(pieces,sol1->matrice_pezzi[r1][c1][0],SOPRA,DESTRA);
+                else//altrimenti è sul lato
+                    //trova rotaz per bordo
+                    fig2->matrice_pezzi[j][RIGHT][1]=get_border_fitting_rotation(pieces,sol1->matrice_pezzi[r1][c1][0],DESTRA);
             }
     }
     //ultima riga
@@ -783,7 +862,14 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 }while(kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]>0);
                 //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
                 fig1->matrice_pezzi[BOTTOM][j][0]=sol2->matrice_pezzi[r1][c1][0];
-                fig1->matrice_pezzi[BOTTOM][j][1]=sol2->matrice_pezzi[r1][c1][1];
+                //rotazione in questo caso non si può copiare perchè pos diversa
+                //e potrebbe essere su lato diverso (o angolo diverso se pezzo è di angolo)
+                 if(j==RIGHT)//unico angolo è quello in alto a sin (alto a dx considerato in col a dx)
+                    //trova giusta rotaz per l'angolo
+                    fig1->matrice_pezzi[BOTTOM][j][1]=get_corner_fitting_rotation(pieces,sol2->matrice_pezzi[r1][c1][0],DESTRA,SOTTO);
+                else//altrimenti è sul lato
+                    //trova rotaz per bordo
+                    fig1->matrice_pezzi[BOTTOM][j][1]=get_border_fitting_rotation(pieces,sol2->matrice_pezzi[r1][c1][0],SOTTO);
             }
             if (kernelPieces[sol1->matrice_pezzi[BOTTOM][j][0]][1]<0){
                 fig2->matrice_pezzi[BOTTOM][j][0]=sol1->matrice_pezzi[BOTTOM][j][0];
@@ -808,7 +894,14 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 }while(kernelPieces[sol1->matrice_pezzi[r1][c1][0]][1]>0);
                 //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
                 fig2->matrice_pezzi[BOTTOM][j][0]=sol1->matrice_pezzi[r1][c1][0];
-                fig2->matrice_pezzi[BOTTOM][j][1]=sol1->matrice_pezzi[r1][c1][1];
+                //rotazione in questo caso non si può copiare perchè pos diversa
+                //e potrebbe essere su lato diverso (o angolo diverso se pezzo è di angolo)
+                 if(j==RIGHT)//unico angolo è quello in alto a sin (alto a dx considerato in col a dx)
+                    //trova giusta rotaz per l'angolo
+                    fig2->matrice_pezzi[BOTTOM][j][1]=get_corner_fitting_rotation(pieces,sol1->matrice_pezzi[r1][c1][0],DESTRA,SOTTO);
+                else//altrimenti è sul lato
+                    //trova rotaz per bordo
+                    fig2->matrice_pezzi[BOTTOM][j][1]=get_border_fitting_rotation(pieces,sol1->matrice_pezzi[r1][c1][0],SOTTO);
             }
     }
     //1^col sx
@@ -819,7 +912,7 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
         j=BOTTOM-j;//complemento per trovare pos reale
     }
     for(;j>0;i++,j--){
-        if (kernelPieces[sol2->matrice_pezzi[j][0][0]][0]<0){
+       if (kernelPieces[sol2->matrice_pezzi[j][0][0]][0]<0){
                 fig1->matrice_pezzi[j][0][0]=sol2->matrice_pezzi[j][0][0];
                 fig1->matrice_pezzi[j][0][1]=sol2->matrice_pezzi[j][0][1];
             }
@@ -843,7 +936,14 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 }while(kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]>0);
                 //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
                 fig1->matrice_pezzi[j][0][0]=sol2->matrice_pezzi[r1][c1][0];
-                fig1->matrice_pezzi[j][0][1]=sol2->matrice_pezzi[r1][c1][1];
+                //rotazione in questo caso non si può copiare perchè pos diversa
+                //e potrebbe essere su lato diverso (o angolo diverso se pezzo è di angolo)
+                 if(j==BOTTOM)//unico angolo è quello in alto a sin (alto a dx considerato in col a dx)
+                    //trova giusta rotaz per l'angolo
+                    fig1->matrice_pezzi[j][0][1]=get_corner_fitting_rotation(pieces,sol2->matrice_pezzi[r1][c1][0],SOTTO,SINISTRA);
+                else//altrimenti è sul lato
+                    //trova rotaz per bordo
+                    fig1->matrice_pezzi[j][0][1]=get_border_fitting_rotation(pieces,sol2->matrice_pezzi[r1][c1][0],SINISTRA);
             }
             if (kernelPieces[sol1->matrice_pezzi[j][0][0]][1]<0){
                 fig2->matrice_pezzi[j][0][0]=sol1->matrice_pezzi[j][0][0];
@@ -869,7 +969,14 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                 }while(kernelPieces[sol1->matrice_pezzi[r1][c1][0]][1]>0);
                 //se era già presente copia quello sostituito altrimenti sol2->mat_pez[r][c]
                 fig2->matrice_pezzi[j][0][0]=sol1->matrice_pezzi[r1][c1][0];
-                fig2->matrice_pezzi[j][0][1]=sol1->matrice_pezzi[r1][c1][1];
+                //rotazione in questo caso non si può copiare perchè pos diversa
+                //e potrebbe essere su lato diverso (o angolo diverso se pezzo è di angolo)
+                 if(j==BOTTOM)//unico angolo è quello in alto a sin (alto a dx considerato in col a dx)
+                    //trova giusta rotaz per l'angolo
+                    fig2->matrice_pezzi[j][0][1]=get_corner_fitting_rotation(pieces,sol1->matrice_pezzi[r1][c1][0],SOTTO,SINISTRA);
+                else//altrimenti è sul lato
+                    //trova rotaz per bordo
+                    fig2->matrice_pezzi[j][0][1]=get_border_fitting_rotation(pieces,sol1->matrice_pezzi[r1][c1][0],SINISTRA);
             }
     }
     //printf("Esco da Crossover bordo\n");

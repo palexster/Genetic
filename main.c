@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
     write_best_solution("Output.txt",population,row,col);
     write_evolution(population,"Statistiche.csv");
     //deallocazione memoria heap
-        dealloc_population(population,row);
+        dealloc_population(population,row,col);
     free(population);
     dealloc_pieces(pieces,npieces);
     return (EXIT_SUCCESS);

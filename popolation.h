@@ -26,7 +26,7 @@ extern "C" {
                                //evitando di estrarre le sol tra 0 ed elite 
 #define OPT_SOL 0
 #define EVOLVI_ANCORA 1
-#define MAX_ITERATIONS 100 // MAX_NUMERO_DI_ITERAZIONI
+#define MAX_ITERATIONS 1000 // MAX_NUMERO_DI_ITERAZIONI
 #define N_MISURE 3 // MAX,MEDIA,VARIANZA 
     
     typedef enum {
@@ -48,10 +48,10 @@ enum{FALSE,TRUE};
 population_t *build_population(int **pieces,int *border,int npieces,int row,int col);
 void test_fitness(population_t *pop);
 void quick_sort(solution_t *array, int l, int r, int (*cmp)(solution_t lv, solution_t rv));
-void dealloc_population(population_t *pop,int row);
-void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col);
+void dealloc_population(population_t *pop,int row,int col);
+void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2,int**pieces, int npieces, int row, int col);
 void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col);
-void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col);
+void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2,int**pieces, int npieces, int row, int col);
 int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col);
 int get_best(population_t* pop);
 int is_best(population_t* pop,int row,int col);
