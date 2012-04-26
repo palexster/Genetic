@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
         i;
     int **pieces;//vettore dei colori del pezzo
     solution_t solution,solution1;
-    population_t *population;
+    population_t *population; // puntatore a popolazione
     long max_iterations;
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
     pieces=build_pieces("pieces_10x10.txt",&border,&npieces,&row,&col);
