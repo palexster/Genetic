@@ -141,7 +141,7 @@ int is_best(population_t* pop,int row,int col){
  3)    Sostituzione:la dim della pop rimane costante e tutti i figli vengono
         inseriti, quindi ogni generazione un 50% degli elementi muore ed è
         sostituito dai figli*/
-int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
+int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,int *border){
     char chosen[POP_DIM];//vettore di flag per tenere conto che la sol i è già 
                          //estratta (o scelta come genitore o scelta per essere
                          //come genitore)
@@ -155,6 +155,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
                              //per la scelta degli accoppiamenti se val positivo
                              //allora già estratto
     long i,tmp,//indice su pop e var temp per memorizzare il val estratto a caso
+            l, //indice per scorrere la matrice di soluizioni nella mutazione
             cnt;//per generare coppia e distinguere genitori in selez genitori
                 //e come indice di offspring in sostituzione(max val GEN_N-1)
     solution_t offspring[GEN_N];//vettore dei figli
@@ -278,9 +279,27 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col){
                 pop->soluzioni[tmp]=offspring[i];
          }     
     }*/
-    //test_fitness(pop);
     sorted_popolation(pop,pieces);
-    //test_fitness(pop);
+    //MUTATION triggerata solo quando per tre generazioni la varianza è nulla
+    if (pop->current_iteration>GEN_N/5){
+        if (pop->bests[pop->current_iteration][VARIANZA] < 1 && pop->bests[(pop->current_iteration)-1][VARIANZA] < 1 && pop->bests[(pop->current_iteration)-2][VARIANZA] < 1 ){
+            //Scorre la matrice evitando bordi e angoli
+            for(l=POP_DIM/100;l<POP_DIM-1;l++){ // POP
+                //printf("K vale %d\n",l);
+                //for(i=1;i<row-1;i++)
+                //        for(j=1;j<col-1;j++){
+                            //Due alternative
+                            // Ruoto a caso le soluzioni, non dà dei miglioramenti sul lungo periodo, viene riassorbito in fretta   
+                            //pop->soluzioni[k].matrice_pezzi[i][j][1]=rand() % 4; // inserisce una rotazione a caso
+                            // Rigenero a caso una parte della popolazione
+                            random_solution_generation(&(pop->soluzioni[k]),border,pieces,npieces,row,col);   
+                            pop->soluzioni[k].fitness=fitness_solution_evaluation(pieces,&(pop->soluzioni[k]),npieces,row,col);
+                        }
+                //}
+            fprintf(stderr,"C'è stata una mutazione");
+        }
+    }
+    
     if(is_best(pop,row,col)){
         return(OPT_SOL);
     }

@@ -41,16 +41,10 @@ int main(int argc, char** argv) {
 */
     sorted_popolation(population,pieces);
     test_evolution(population);
-    //test_evolution(population);
-    // comincia l'evoluzione... i criteri di stop
-    // 1) Soluzione Ottima
-    // 2) Troppe epoche
-    //se la prima sol non itera neanche
     if(!(is_best(population,row,col))){
-        for(i=0;pop_evolution(pieces,npieces,population,row,col)&&(i<MAX_ITERATIONS);i++){
+        for(i=0;i<MAX_ITERATIONS;i++){
+       pop_evolution(pieces,npieces,population,row,col,border);
        test_evolution(population);
-       //DEBUG
-       //scanf("%d",&a);
         }
     }
     write_best_solution("Output.txt",population,row,col);
