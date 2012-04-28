@@ -24,8 +24,7 @@ population_t *build_population(int **pieces,int *border,int npieces,int row,int 
         //printf("Allocazione soluzione numero %d\n",i);
         random_solution_generation(&popolazione_start->soluzioni[i],border,pieces,row*col,row,col);
         //test_solution(&popolazione_start->soluzioni[i],row,col);
-        fit=fitness_solution_evaluation(pieces,&popolazione_start->soluzioni[i],npieces,row,col);
-        popolazione_start->soluzioni[i].fitness=fit;
+        popolazione_start->soluzioni[i].fitness=fitness_solution_evaluation(pieces,&popolazione_start->soluzioni[i],npieces,row,col);
     }
     popolazione_start->current_iteration=0;
     //printf("N° soluzioni feasible: %d\n", nfeasible);
@@ -284,7 +283,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,in
     if (pop->current_iteration>GEN_N/5){
         if (pop->bests[pop->current_iteration][VARIANZA] < 1 && pop->bests[(pop->current_iteration)-1][VARIANZA] < 1 && pop->bests[(pop->current_iteration)-2][VARIANZA] < 1 ){
             //Scorre la matrice evitando bordi e angoli
-            for(l=POP_DIM/100;l<POP_DIM-1;l++){ // POP
+            for(l=POP_DIM/1000;l<POP_DIM-1;l++){ // POP
                 //printf("K vale %d\n",l);
                 //for(i=1;i<row-1;i++)
                 //        for(j=1;j<col-1;j++){
@@ -313,17 +312,17 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
     // confronto pezzi dentro il kernel, kernelPieces serve a tenere traccia di quali pezzi
     // sono presenti dentro il kernel dei figli e devono essere rimpiazzati.
     // L'allocazione dei due figli è parallelizzata
-    char **kernelPieces;
+    int **kernelPieces;
     //char pezzoDaControllare;->dovrebbe essere inutile
     //allocazione vettori per il confronto ottimizzato del kernel
     //pezzi di bordo in realtà mai usati quindi alcuni el del vet mai usati
-    kernelPieces=(char **)malloc(sizeof(char*)*npieces);
+    kernelPieces=(int  **)malloc(sizeof(int*)*npieces);
     if(kernelPieces==NULL){
         fprintf(stderr,"crossover()-errore in malloc() di kernelPieces.\n");
         exit(2);
     }
    for(i=0;i<npieces;i++){
-        kernelPieces[i]=(char *)malloc(sizeof(char)*2);
+        kernelPieces[i]=(int *)malloc(sizeof(int)*2);
         if(kernelPieces[i]==NULL){
                 fprintf(stderr,"crossover()-errore in malloc() di kernelPieces[%d].\n",i);
                 exit(2);
@@ -352,10 +351,10 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
  * riceve 2 soluzioni(genitori) e genera 2 figli
  * bordo linearizzato in senso orario a partire da pos 0,0, cioè:
  * riga0,coln,rigan,col0 conisiderando una matrice n*n.*/
-void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2,int**pieces, int npieces, int row, int col){
+void crossover_bordo(int **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2,int**pieces, int npieces, int row, int col){
     // generazione tagli, contatori e indice righe/colonne
     int taglio1,taglio2,i,j,c1,r1,perimetro,nval,tmp;
-    char ker_len_min;//lunghezza minima kernel
+    int ker_len_min;//lunghezza minima kernel
     const int BOTTOM=row-1;
     const int RIGHT=col-1;
    //printf("Entro in Crossover bordo\n");
@@ -1004,10 +1003,10 @@ void crossover_bordo(char **kernelPieces,solution_t *sol1, solution_t *sol2, sol
 
 /*funzione per il crossover tra i pezzi della matrice che non sono di bordo 
  * ie indice_riga € [1,row-2] e indice_col€[1,col-2]*/
-void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
+void crossover_centro(int **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
     // generazione tagli, contatori e indice righe/colonne
     int taglio1,taglio2,i,r,c,c1,r1,nval,tmp;
-    char ker_len_min;//lunghezza minima kernel
+    int ker_len_min;//lunghezza minima kernel
     //solution_t *tmp_ptr1,*tmp_ptr2,*tmp_ptr_swap;
     //printf("Entro in Crossover centro\n");
     ker_len_min=(char)npieces/10;//10% num pezzi(approx. all'intero inferiore) conta anche bordo anche se lavora su centro

@@ -18,7 +18,7 @@ extern "C" {
  * del pezzo nel vettore dei pezzi e il secondo indica la rotazione del pezzo
  */    
 typedef struct solution_s {
-    char ***matrice_pezzi;
+    unsigned char ***matrice_pezzi;
     short int fitness;
 } solution_t;
 
@@ -34,7 +34,7 @@ typedef enum {
     UNFEASIBLE,
 } feasible_t;
 
-int **build_pieces(char* filename,int **border,int* np, int* r, int* c);
+int **build_pieces(unsigned char* filename,int **border,int* np, int* r, int* c);
 void test_pieces(int **pieces,int npieces);
 void random_solution_generation(solution_t *solution,int *border,int **pieces,int npieces, int row, int col);
 void test_solution(solution_t *solution,int row,int col);
@@ -42,9 +42,9 @@ int fitness_solution_evaluation(int **pieces,solution_t *sol,int npieces,int row
 solution_t build_solution(int row,int col);
 void dealloc_soluzioni(solution_t *sol,int row,int col);
 void dealloc_pieces(int **pieces, int npieces);
-char get_corner_fitting_rotation(int **pieces,char corner_index,int i,int j);
-char get_right_corner(int **pieces,char *corner_taken,char *corners);
-void get_right_border(int **pieces,solution_t *solution,char *taken,char *border_taken,char* border_pieces,int perimetro,int i,int j,int posizione);
+unsigned char get_corner_fitting_rotation(int **pieces,unsigned char corner_index,int i,int j);
+unsigned char get_right_corner(int **pieces,unsigned char *corner_taken,unsigned char *corners);
+void get_right_border(int **pieces,solution_t *solution,unsigned char *taken,unsigned char *border_taken,unsigned char* border_pieces,int perimetro,int i,int j,int posizione);
 int get_border_fitting_rotation(int **pieces,int border_index, int bordo);
 
 #ifdef	__cplusplus

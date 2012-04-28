@@ -11,7 +11,7 @@
 /*funzione per l'allocazione del vettore e caricamento dei dati
  Riceve nome del file in ingresso
  Ritorna il vettore dei pezzi(vettore di vettori di 4 interi che rappresentano i colori)*/
-int **build_pieces(char* filename, int **border,int* np, int* r, int* c){
+int **build_pieces(unsigned char* filename, int **border,int* np, int* r, int* c){
     int **mat,nbordo;//matrice di interi per allocare la struttura dati dei pezzi
     FILE *fp;//puntatore al file che contiene i pezzi
     int row,col,//numero righe e colonne matrice dei pezzi
@@ -69,6 +69,7 @@ int **build_pieces(char* filename, int **border,int* np, int* r, int* c){
      }
      const int MAX_PT=(row-1)*col+(col-1)*row;//costante di punti max dipende 
      printf("Punteggio Massimo: %d\n",MAX_PT);
+     //test_pieces(mat,npieces);
      *border=b;
      *np=npieces;
      *r=row;
@@ -88,7 +89,7 @@ void test_pieces(int **pieces,int npieces){
 }
 
 /*Ogni soluzione è composta da una matrice di stringhe da due elementi in cui il
- *primo char è l'indice del pezzo nel vettore dei pezzi e il secondo indica la 
+ *primo unsigned char è l'indice del pezzo nel vettore dei pezzi e il secondo indica la 
  *rotazione del pezzo.
  Funzione che alloca la soluzione*/
 solution_t build_solution(int row,int col){
@@ -99,19 +100,19 @@ solution_t build_solution(int row,int col){
         fprintf(stderr,"build_solution()-errore in malloc() di solution.\n");
         exit(2);
     }
-    solution->matrice_pezzi=(char ***)malloc(sizeof(char**)*row);
+    solution->matrice_pezzi=(unsigned char ***)malloc(sizeof(unsigned char**)*row);
     if(solution->matrice_pezzi==NULL){
         fprintf(stderr,"build_solution()-errore in malloc() di solution->matrice_pezzi.\n");
         exit(2);
     }
     for(i=0;i<row;i++){
-        solution->matrice_pezzi[i]=(char **)malloc(sizeof(char *)*col);
+        solution->matrice_pezzi[i]=(unsigned char **)malloc(sizeof(unsigned char *)*col);
         if(solution->matrice_pezzi[i]==NULL){
                 fprintf(stderr,"build_solution()-errore in malloc() di solution->matrice_pezzi[%d].\n",i);
                 exit(2);
         }
         for(j=0;j<col;j++){
-            solution->matrice_pezzi[i][j]=(char *)malloc(sizeof(char)*2);
+            solution->matrice_pezzi[i][j]=(unsigned char *)malloc(sizeof(unsigned char)*2);
             if(solution->matrice_pezzi[i]==NULL){
                 fprintf(stderr,"build_solution()-errore in malloc() di solution->matrice_pezzi[%d][%d].\n",i,j);
                 exit(2);
@@ -125,7 +126,7 @@ solution_t build_solution(int row,int col){
  * maniera casuale
  */
 void random_solution_generation(solution_t *solution,int *border,int **pieces,int npieces, int row, int col){
-    char *taken, //vettore dei pezzi già inseriti nella soluzione
+    unsigned char *taken, //vettore dei pezzi già inseriti nella soluzione
     n_pieces_taken, // numero di pezzi già inseriti nella soluzione
      random_number, // numero pseudocasuale generato per decidere quale pezzo
             perimetro,//bordo della matrice che rappresenta la soluzione
@@ -136,18 +137,18 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
             corner_taken[4];
     int i,j,k;
     perimetro=(row-1+col-1)*2;
-    taken=(char *)malloc(sizeof(char)*npieces);
+    taken=(unsigned char *)malloc(sizeof(unsigned char)*npieces);
     if(taken==NULL){
         fprintf(stderr,"random_solution_generation()-errore in malloc() di taken.\n");
         exit(2);
     }
     // Perimetro -4 per non considerare gli angoli!
-    border_pieces=(char *)malloc(sizeof(char)*(perimetro-4));
+    border_pieces=(unsigned char *)malloc(sizeof(unsigned char)*(perimetro-4));
     if(border_pieces==NULL){
         fprintf(stderr,"random_solution_generation()-errore in malloc() di border_pieces.\n");
         exit(2);
     }
-    border_taken=(char *)malloc(sizeof(char)*(perimetro-4));
+    border_taken=(unsigned char *)malloc(sizeof(unsigned char)*(perimetro-4));
     if(border_taken==NULL){
         fprintf(stderr,"random_solution_generation()-errore in malloc() di border_taken.\n");
         exit(2);
@@ -243,9 +244,12 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
     for(i=1;i<(row-1);i++)
        for(j=1;j<(col-1);j++){
            random_number = rand() % npieces;
+           random_number= abs(random_number);
+           if (random_number<0)
+               printf("RANDOM NUMBER è minore di zero!!\n");
         if (!taken[random_number]){
             ++taken[random_number];
-            solution->matrice_pezzi[i][j][0]=(char)random_number;
+            solution->matrice_pezzi[i][j][0]=(unsigned char)random_number;
             ++n_pieces_taken;
             random_rotation= rand() % COLN;
             solution->matrice_pezzi[i][j][1]=random_rotation;
@@ -257,7 +261,7 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
             if (random_number>=npieces)
                 random_number=0;
             }
-            solution->matrice_pezzi[i][j][0]=(char)random_number;
+            solution->matrice_pezzi[i][j][0]=random_number;
             random_rotation= rand() % COLN;
             solution->matrice_pezzi[i][j][1]=random_rotation;
             ++taken[random_number];
@@ -318,8 +322,10 @@ int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,in
 */
                 if (a == b)
                         profit++;
+/*
                if (a == GRAY || b == GRAY)
                     printf("Sto confrontando colori di cui uno è GRAY: A--> %d\t B --> %d\n",a,b);
+*/
             }
             // se è l'ultima riga non controlla il profit orizzontale
             if (i<(row-1)){
@@ -331,12 +337,17 @@ int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,in
                     rot_sec=4+rot_sec;
                 a=pieces[solution->matrice_pezzi[i][j][0]][rot_first];
                 b=pieces[solution->matrice_pezzi[i+1][j][0]][rot_sec];
-                //printf("A --> Pezzo Numero: %d,ruotato di %d,A vale %d\n",solution->matrice_pezzi[i][j][0],rot_first,a);
-                //printf("B --> Pezzo Numero: %d,ruotato di %d,B vale %d\n",solution->matrice_pezzi[i+1][j][0],rot_sec,b);
+/*
+                printf("A --> Pezzo Numero: %d,ruotato di %d,A vale %d\n",solution->matrice_pezzi[i][j][0],rot_first,a);
+                printf("B --> Pezzo Numero: %d,ruotato di %d,B vale %d\n",solution->matrice_pezzi[i+1][j][0],rot_sec,b);
+                
+ */
                 if (a==b )
                         profit++;
+/*
                 if (a == GRAY || b == GRAY)
                     printf("Sto confrontando colori di cui uno è GRAY: A--> %d\t B --> %d\n",a,b);
+*/
             }            
         }
     return profit;
@@ -379,7 +390,7 @@ int get_border_fitting_rotation(int **pieces,int border_index, int bordo){
     return rotation;
 }       
 
-void get_right_border(int **pieces,solution_t *solution,char *taken,char *border_taken,char *border_pieces,int perimetro,int i,int j,int posizione){
+void get_right_border(int **pieces,solution_t *solution,unsigned char *taken,unsigned char *border_taken,unsigned char *border_pieces,int perimetro,int i,int j,int posizione){
     int random_rotation,pezzo,random_number,fine; 
     random_number = rand() % perimetro;
     fine=random_number;
@@ -388,7 +399,7 @@ void get_right_border(int **pieces,solution_t *solution,char *taken,char *border
                    pezzo=border_pieces[random_number];
                    ++taken[pezzo];
                    //printf("Preso il pezzo numero %d come bordo %d\n",pezzo,posizione);
-                   solution->matrice_pezzi[i][j][0]=(char)pezzo;;
+                   solution->matrice_pezzi[i][j][0]=(unsigned char)pezzo;;
                    random_rotation=get_border_fitting_rotation(pieces,pezzo,posizione);
                    solution->matrice_pezzi[i][j][1]=random_rotation;
      }
@@ -409,7 +420,7 @@ void get_right_border(int **pieces,solution_t *solution,char *taken,char *border
                    pezzo=border_pieces[random_number];
                    ++taken[pezzo];
                    //printf("Preso il pezzo numero %d come bordo %d\n",pezzo,posizione);
-                   solution->matrice_pezzi[i][j][0]=(char)pezzo;;
+                   solution->matrice_pezzi[i][j][0]=(unsigned char)pezzo;;
                    random_rotation=get_border_fitting_rotation(pieces,pezzo,posizione);
                    solution->matrice_pezzi[i][j][1]=random_rotation;
     }
@@ -417,8 +428,8 @@ void get_right_border(int **pieces,solution_t *solution,char *taken,char *border
 }
 
 
-char get_right_corner(int **pieces,char *corner_taken,char *corners){
-    char random_number;
+unsigned char get_right_corner(int **pieces,unsigned char *corner_taken,unsigned char *corners){
+    unsigned char random_number;
     random_number= rand() % 4;
     while (corner_taken[random_number]){
         random_number= (random_number+1);
@@ -434,9 +445,9 @@ char get_right_corner(int **pieces,char *corner_taken,char *corners){
  * messo nell'angolo, i e j caratterizzano la posizione dell'angolo (alto-destra...)
  */
 
-char get_corner_fitting_rotation(int **pieces,char corner_index,int i,int j){
+unsigned char get_corner_fitting_rotation(int **pieces,unsigned char corner_index,int i,int j){
     int k,l;
-    char rotation;
+    unsigned char rotation;
     rotation=0;
     for(k=0;k<3;k++){
         if (pieces[corner_index][k] == GRAY){
