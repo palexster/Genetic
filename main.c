@@ -11,19 +11,19 @@
 
 int main(int argc, char** argv) {
     /* Dichiarazione variabili */
-    int row,col,a;//numero righe e colonne matrice dei pezzi
+    int row,col;//numero righe e colonne matrice dei pezzi
     int npieces,//numero pezzi
-        stop=1,// flag di fine generazione
         *border,// vettore dei pezzi di bordo di npieces el.per ogni pezzo dice se è di bordo.val è pari al num di trinagoli grigi(0=centro,1=bordo,2=angolo)
         i;
     int **pieces;//vettore dei colori del pezzo
-    solution_t solution,solution1;
+    solution_t best;//contiene migliore soluzione trovata
     population_t *population; // puntatore a popolazione
-    long max_iterations;
+ 
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
     pieces=build_pieces("pieces_10x10.txt",&border,&npieces,&row,&col);
     population=build_population(pieces,border,npieces,row,col);
-
+    const int MAX_PT=(row-1)*col+(col-1)*row;//costante di punti max dipende 
+    printf("Punteggio Massimo: %d\n",MAX_PT);
     
 /*
     i=rand()%POP_DIM;
@@ -41,18 +41,27 @@ int main(int argc, char** argv) {
 */
     sorted_popolation(population,pieces);
     test_evolution(population);
+    best.fitness=population->soluzioni[0].fitness;
+    best.matrice_pezzi=matcp(population->soluzioni[0],row,col);
     if(!(is_best(population,row,col))){
-        for(i=0;i<MAX_ITERATIONS;i++){
-       pop_evolution(pieces,npieces,population,row,col,border);
-       test_evolution(population);
+        for(i=0;(i<MAX_ITERATIONS)&&(best.fitness!=MAX_PT);i++){
+                if(pop_evolution(pieces,npieces,population,row,col,border)>best.fitness){
+                    best.fitness=population->soluzioni[0].fitness;
+                    best.matrice_pezzi=matcp(population->soluzioni[0],row,col);
+                
+                }
+                test_evolution(population);
         }
     }
-    write_best_solution("Output.txt",population,row,col);
+    printf("-----------------------------------\n");
+    printf("Miglior soluzione trovata punti:%d\n",best.fitness);
+    write_best_solution("Output.txt",best,row,col);
     write_evolution(population,"Statistiche.csv");
     //deallocazione memoria heap
-        dealloc_population(population,row,col);
+    dealloc_population(population,row,col);
     free(population);
     dealloc_pieces(pieces,npieces);
+    free(border);
     return (EXIT_SUCCESS);
 }
 

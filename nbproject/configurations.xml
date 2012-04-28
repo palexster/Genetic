@@ -4,6 +4,7 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>evolution.h</itemPath>
       <itemPath>pieces.h</itemPath>
       <itemPath>popolation.h</itemPath>
     </logicalFolder>
@@ -16,6 +17,7 @@
                    projectFiles="true">
       <itemPath>Output.txt</itemPath>
       <itemPath>esempiobaco</itemPath>
+      <itemPath>evolution.c</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>note crossover.txt</itemPath>
       <itemPath>pieces.c</itemPath>

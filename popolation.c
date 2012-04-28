@@ -1,5 +1,6 @@
 
 #include "popolation.h"
+#include"evolution.h"
 
 /*Funzione che crea la popolazione
  *  
@@ -142,9 +143,6 @@ int is_best(population_t* pop,int row,int col){
         inseriti, quindi ogni generazione un 50% degli elementi muore ed è
         sostituito dai figli*/
 int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,int *border){
-    char chosen[POP_DIM];//vettore di flag per tenere conto che la sol i è già 
-                         //estratta (o scelta come genitore o scelta per essere
-                         //come genitore)
     long parents[GEN_N];//vettore dell soluzioni scelte come parenti tra cui
                              //estrarre le coppie di genitori per crossover
                              //la soluzione è memorizzata come indice nel vettore
@@ -154,157 +152,26 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,in
                              //E' usata nche per tenere conto dell'estarazione 
                              //per la scelta degli accoppiamenti se val positivo
                              //allora già estratto
-    long i,tmp,//indice su pop e var temp per memorizzare il val estratto a caso
-            l, //indice per scorrere la matrice di soluizioni nella mutazione
-            cnt;//per generare coppia e distinguere genitori in selez genitori
-                //e come indice di offspring in sostituzione(max val GEN_N-1)
     solution_t offspring[GEN_N];//vettore dei figli
-    char j,k;//indici per fare la free della matrice pezzi nelle sol sostituite
-    //int curr_best;//per normalizzare probabilità in base a miglior sol
-                  //evitando che nelle prime iteraz se fitnessmedia è bassa ci
-                  //sia troppo facile venir sostituiti
-    long gen[2];//vettore dei due indici dei genitori accoppiati da passare 
-                   //alla funzione di crossover
-    double  tmp_rnd,//tmp_rnd per estraz in sostituzione
-            sum_inv_fit,//somma di 1/fitness per sol nella pop
-            pi;// pi=(1/fitness)/sum_inv_fit prob con cui el è sostituito
+    
    //printf("Entro in Pop Evolution\n");
-    /*inizializzazione flag*/
-    for(i=0;i<POP_DIM;i++)
-        chosen[i]=FALSE;
-    /*sceglie i migliori come genitori (sceglie il 25% della popolazione)*/
-    for(i=0;i<ELITE;i++)
-        parents[i]=-i-1;//salva (indice_negato+1) per controllare estraz gen
-    /*estrae un altro 25% a caso*/
-    for(;i<GEN_N;i++){
-        tmp=rand()%(RANGE_CAS)+ELITE;//tira a caso tra il 75% rimanente della pop
-                                    //(esclude il 25% migliore gia selezionato)
-        //se l'el. estratto e già stato scelto come genitore
-        //prova con il successivo finchè non trova un el. non ancora sel.
-        while(chosen[tmp])
-            tmp=((tmp+1)%POP_DIM)+(ELITE*(tmp/POP_DIM));//ultimo addendo per saltare
-                                                    //quando ricomincia
-        parents[i]=-(tmp+1);//segna come genitore in range [1-gen_n] (evita zero)
-                            //perchè cambia segno in estraz gen se selez
-        chosen[tmp]=TRUE;//segna come selezionato
-    }
+    parent_selection(parents);
     /*DEBUG
     for(i=0;i<GEN_N;printf("parent%ld:%ld\n",i,parents[i++]));*/
-    /*Accoppiamento:
-     seleziona 2 genitori a caso e li passa all funz di crossover per generare
-     2 figli*/
-    for(i=0;i<GEN_N;){
-        /*ciclo di selezione genitori*/
-        for(cnt=0;cnt<2;cnt++){
-                tmp=rand()%GEN_N;
-                //se l'el. estratto e già stato accoppiato
-                //prova con il successivo finchè non trova un el.da accoppiare.
-                while(parents[tmp]>0)
-                        tmp=((tmp+1)%GEN_N);
-                gen[cnt]=tmp;
-                parents[tmp]*=-1;
-        }
-        //DEBUG
-        //printf("gen:%ld %ld\n",gen[0],gen[1]);
-        //offspring[i++].fitness=-1;
-        //offspring[i++].fitness=-1;
-        //END DEBUG
-        offspring[i]=build_solution(row,col);
-        offspring[i+1]=build_solution(row,col);
-        crossover(&pop->soluzioni[parents[gen[0]]-1],&pop->soluzioni[parents[gen[1]]-1],&offspring[i],&offspring[i+1],pieces,npieces,row,col);
-        offspring[i].fitness=fitness_solution_evaluation(pieces,&offspring[i],npieces,row,col);
-        //printf("Valore fitness figlio %d: %d\n",i,offspring[i].fitness);
-        i++;
-        offspring[i].fitness=fitness_solution_evaluation(pieces,&offspring[i],npieces,row,col);
-        //printf("Valore fitness figlio %d : %d\n",i,offspring[i].fitness);
-        i++;
-    }
-    /*inizializzazione flag e calcolo somma inversi della fitness*/
-    sum_inv_fit=0;
-    for(i=0;i<POP_DIM;i++){
-        chosen[i]=FALSE;
-        sum_inv_fit+=(double)1/(double)pop->soluzioni[i].fitness;
-    }
-    //SOSTITUZIONE PUÒ ESSERE DA RIPENSARE IN OGNI CASO SOLO 1 DELLE 2 DA USARE!
-    /*Sostituzione: tutti i figli sono inseriti, scegliendo a caso gli elementi
-     da eliminare (di fatto ogni el. da eliminare sostituito con un figlio)
-     Scorre vettore popolazione e per ogni el sostituito con probabilità
-     p(i)=(1/fitness(i)).
-     Se sostituito incrementa cnt che è anche indice su vet figli(figli inseriti
-     in ordine che hanno in vet tanto poi si ordina in base a fitness).
-     continua finchè ci sono figli da inserire, se necessario scorre + volte
-     la popolazione incrementando con modulo su DIM_POP(se molte estraz hanno esito negativo può capitare che a fine
-     di una scansione ci siano ancora figli da inserire)*/
-    cnt=0;
-    for(i=0;cnt<GEN_N;i=((i+1)%POP_DIM)){
-        //vedi ex knapsack di perboli(metaheuristics-ga)
-        tmp_rnd=(double)rand()/(double)RAND_MAX/sum_inv_fit;//=(n_random/rand_max)*(1/sum_inv_fit)
-        pi=((double)1/(double)pop->soluzioni[i].fitness)/sum_inv_fit;//=(1/fitness)*(1/sum_inv_fit)
-        if((!chosen[i])&&(tmp_rnd<pi)){
-            //rilascia la mem per la matrice dei pezzi della sol da sostiutuire
-            dealloc_soluzioni(&pop->soluzioni[i],row,col);
-            pop->soluzioni[i]=offspring[cnt++];
-            chosen[i]=TRUE;
-        }
-    }
+    accoppiamento(pieces,npieces,pop,parents,offspring,row,col);
+    substitution(pop,offspring,row,col);
     //DEBUG
     //test_fitness(pop);
-    /*Varinte
-     Anziché scorrere vecchia pop e sostituire el con p(i)=1/fitness(i)
-     estrae un el a caso lo sostituisce con probabilità p(i)(se non risultato 
-     estraz è non sostituire riestrai un altro el da sost con prob p(i)).
-     Se già scelto muove al successivo finchè non trova uno da sostituire
-     (chosen[i]/=false).
-     Da qui 2 opzioni:sostituirlo in ogni caso al posto del precedente(in questo
-     caso scelta dipendente da fitness di un altro el non di quella dell'el 
-     corrente),oppure ritirare a sorte(rispetta criterio iniziale di scelta 
-     dipendente da fitness dell'el ma + overhead perchè se estraz fallisce
-     probing è stato inutile)
-    */
-    /*for(i=0;i<GEN_N;i++){
-         tmp=rand()%POP_DIM;
-         //usa il long per genitore anche se non ha nulla a che vedere
-         //(evita nuova var tanto solo per prova)
-         tmp_rnd=(double)rand()/(double)RAND_MAX;
-         pi=((double)1/(double)pop->soluzioni[i].fitness)/sum_inv_fit;
-         if(tmp_rnd<pi){
-                //se già sostituito prova col successivo finchè non trova uno vecchio el
-                while(chosen[tmp])
-                         tmp=(tmp+1)%POP_DIM;
-                //rilascia la mem per la matrice dei pezzi della sol da sostiutuire
-                for(j=0;j<row;j++)
-                    free(pop->soluzioni[tmp].matrice_pezzi[j]);
-                free(pop->soluzioni[tmp].matrice_pezzi);
-                //sostituisce in ogni caso(non considera fitness el corrente)
-                pop->soluzioni[tmp]=offspring[i];
-         }     
-    }*/
     sorted_popolation(pop,pieces);
     //MUTATION triggerata solo quando per tre generazioni la varianza è nulla
     if (pop->current_iteration>GEN_N/5){
+        //if(abs(pop->bests[pop->current_iteration-10][MAX]-pop->bests[pop->current_iteration][MAX])<10){
         if (pop->bests[pop->current_iteration][VARIANZA] < 1 && pop->bests[(pop->current_iteration)-1][VARIANZA] < 1 && pop->bests[(pop->current_iteration)-2][VARIANZA] < 1 ){
-            //Scorre la matrice evitando bordi e angoli
-            for(l=POP_DIM/100;l<POP_DIM-1;l++){ // POP
-                //printf("K vale %d\n",l);
-                //for(i=1;i<row-1;i++)
-                //        for(j=1;j<col-1;j++){
-                            //Due alternative
-                            // Ruoto a caso le soluzioni, non dà dei miglioramenti sul lungo periodo, viene riassorbito in fretta   
-                            //pop->soluzioni[k].matrice_pezzi[i][j][1]=rand() % 4; // inserisce una rotazione a caso
-                            // Rigenero a caso una parte della popolazione
-                            random_solution_generation(&(pop->soluzioni[k]),border,pieces,npieces,row,col);   
-                            pop->soluzioni[k].fitness=fitness_solution_evaluation(pieces,&(pop->soluzioni[k]),npieces,row,col);
-                        }
-                //}
-            fprintf(stderr,"C'è stata una mutazione");
+            mutation(pieces,npieces,pop,row,col,border);
+            fprintf(stderr,"mutazione\n");
         }
     }
-    
-    if(is_best(pop,row,col)){
-        return(OPT_SOL);
-    }
-    //printf("Esco da Pop Evolution\n");
-    return(EVOLVI_ANCORA);
+    return(get_best(pop));
 }
 /*realizza crossover. riceve coppia genitori i puntatori ai figli e le dimensioni della soluz(cioè num pezzi) e della matrice(num righe e num col) 
  *si limita a preparare le strutture di appoggio usate e a chiamare le funzioni di crossover_bordo e crossover_centro*/
@@ -1259,7 +1126,7 @@ void crossover_centro(char **kernelPieces,solution_t *sol1, solution_t *sol2, so
     return;
 }
 
-void write_best_solution(char *nomefile,population_t *pop,int row,int col) {
+void write_best_solution(char *nomefile,solution_t sol,int row,int col) {
     int i,j; // contatori nel ciclo 
     FILE *fp;//puntatore al file  di pezzi
      if ((fp=fopen(nomefile,"w")) == NULL){
@@ -1268,7 +1135,8 @@ void write_best_solution(char *nomefile,population_t *pop,int row,int col) {
          }
      for(i=0;i<row;i++)
          for(j=0;j<col;j++)
-                fprintf(fp,"%d %d \n",pop->soluzioni[0].matrice_pezzi[i][j][0],pop->soluzioni[0].matrice_pezzi[i][j][1]);
+                fprintf(fp,"%d %d \n",sol.matrice_pezzi[i][j][0],sol.matrice_pezzi[i][j][1]);
+     fclose(fp);
 }
 
 /* Funzione per visualizzare l'andamento dell'evoluzione durante l'esecuzione del software*/
@@ -1306,5 +1174,6 @@ void write_evolution(population_t *pop,char *nomefile){
                 fprintf(fp,"%d,",(int)pop->bests[i][j]); 
          fprintf(fp,"\n");
        }
+       fclose(fp);
        return;
 }
