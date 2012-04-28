@@ -872,7 +872,7 @@ void crossover_bordo(int **kernelPieces,solution_t *sol1, solution_t *sol2, solu
  * ie indice_riga € [1,row-2] e indice_col€[1,col-2]*/
 void crossover_centro(int **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
     // generazione tagli, contatori e indice righe/colonne
-    int taglio1,taglio2,i,r,c,c1,r1,nval,tmp;
+    int taglio1,taglio2,i,r,c,c1,r1,nval,tmp,q;
     int ker_len_min;//lunghezza minima kernel
     //solution_t *tmp_ptr1,*tmp_ptr2,*tmp_ptr_swap;
     //printf("Entro in Crossover centro\n");
@@ -1085,6 +1085,8 @@ void crossover_centro(int **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                     tmp=kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0];
                     r1 = tmp/col;
                     c1 = tmp % col;
+                    for(q=0;q<npieces;q++)
+                        printf("%d --> %d\n",q,kernelPieces[q][0]);
                     //nelle prossime iteraz controlla che il pezzo sostituito
                     //non sia nel kernel.se si ripete il tutto finche non trova una
                     //sostituzione con un pezzo non nel kernel
