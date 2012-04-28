@@ -56,8 +56,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,in
 int get_best(population_t* pop);
 int is_best(population_t* pop,int row,int col);
 void test_evolution(population_t *pop);
-
-void write_best_solution(char *nomefile,population_t *pop,int row,int col);
+void write_best_solution(char *nomefile,solution_t sol,int row,int col);
 #ifdef	__cplusplus
 }
 #endif

@@ -67,9 +67,6 @@ int **build_pieces(unsigned char* filename, int **border,int* np, int* r, int* c
         }
         //printf("Il pezzo %d ha %d volte il grigio. Ripeto %d volte\n",i,nbordo,border[i]);
      }
-     const int MAX_PT=(row-1)*col+(col-1)*row;//costante di punti max dipende 
-     printf("Punteggio Massimo: %d\n",MAX_PT);
-     //test_pieces(mat,npieces);
      *border=b;
      *np=npieces;
      *r=row;
@@ -337,11 +334,9 @@ int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,in
                     rot_sec=4+rot_sec;
                 a=pieces[solution->matrice_pezzi[i][j][0]][rot_first];
                 b=pieces[solution->matrice_pezzi[i+1][j][0]][rot_sec];
+                //printf("A --> Pezzo Numero: %d,ruotato di %d,A vale %d\n",solution->matrice_pezzi[i][j][0],rot_first,a);
+                //printf("B --> Pezzo Numero: %d,ruotato di %d,B vale %d\n",solution->matrice_pezzi[i+1][j][0],rot_sec,b);
 /*
-                printf("A --> Pezzo Numero: %d,ruotato di %d,A vale %d\n",solution->matrice_pezzi[i][j][0],rot_first,a);
-                printf("B --> Pezzo Numero: %d,ruotato di %d,B vale %d\n",solution->matrice_pezzi[i+1][j][0],rot_sec,b);
-                
- */
                 if (a==b )
                         profit++;
 /*
@@ -471,4 +466,30 @@ unsigned char get_corner_fitting_rotation(int **pieces,unsigned char corner_inde
         ++rotation;
     }
     return rotation;
+}
+/*funzione che copia la matrice di una sol*/
+char***matcp(solution_t sol,int row,int col){
+    char ***m,i,j;
+    m=(char ***)malloc(sizeof(char**)*row);
+    if(m==NULL){
+        fprintf(stderr,"build_solution()-errore in malloc() di solution->matrice_pezzi.\n");
+        exit(2);
+    }
+    for(i=0;i<row;i++){
+        m[i]=(char **)malloc(sizeof(char *)*col);
+        if(m[i]==NULL){
+                fprintf(stderr,"build_solution()-errore in malloc() di solution->matrice_pezzi[%d].\n",i);
+                exit(2);
+        }
+        for(j=0;j<col;j++){
+           m[i][j]=(char *)malloc(sizeof(char)*2);
+            if(m[i][j]==NULL){
+                fprintf(stderr,"build_solution()-errore in malloc() di solution->matrice_pezzi[%d][%d].\n",i,j);
+                exit(2);
+            }
+           m[i][j][0]=sol.matrice_pezzi[i][j][0];
+           m[i][j][1]=sol.matrice_pezzi[i][j][1];
+        }
+    }
+    return(m);
 }
