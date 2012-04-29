@@ -18,29 +18,13 @@ int main(int argc, char** argv) {
     int **pieces;//vettore dei colori del pezzo
     solution_t best;//contiene migliore soluzione trovata
     population_t *population; // puntatore a popolazione
- 
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
-    pieces=build_pieces("pieces_12x12.txt",&border,&npieces,&row,&col);
+    pieces=build_pieces("pieces_10x10.txt",&border,&npieces,&row,&col);
     population=build_population(pieces,border,npieces,row,col);
     const int MAX_PT=(row-1)*col+(col-1)*row;//costante di punti max dipende 
     printf("Punteggio Massimo: %d\n",MAX_PT);
-    
-/*
-    i=rand()%POP_DIM;
-    a=rand()%POP_DIM;
-    printf("%d %d\n",i,a);
-*/
-/*
-    test_solution(&population->soluzioni[i],row,col);
-    test_solution(&population->soluzioni[a],row,col);
-    crossover(&population->soluzioni[i],&population->soluzioni[a],&solution,&solution1,npieces,row,col);
-    test_solution(&solution,row,col);
-    test_solution(&solution1,row,col);
-*/
-/*
-*/
     sorted_popolation(population,pieces);
-    test_evolution(population);
+    test_evolution(population,&best);
     best.fitness=population->soluzioni[0].fitness;
     best.matrice_pezzi=matcp(population->soluzioni[0],row,col);
     if(!(is_best(population,row,col))){
@@ -50,7 +34,7 @@ int main(int argc, char** argv) {
                     best.matrice_pezzi=matcp(population->soluzioni[0],row,col);
                 
                 }
-                test_evolution(population);
+                test_evolution(population,&best);
         }
     }
     printf("-----------------------------------\n");

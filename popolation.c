@@ -167,6 +167,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,in
         //if(abs(pop->bests[pop->current_iteration-10][MAX]-pop->bests[pop->current_iteration][MAX])<10){
         if (pop->bests[pop->current_iteration][VARIANZA] < 1 && pop->bests[(pop->current_iteration)-1][VARIANZA] < 1 && pop->bests[(pop->current_iteration)-2][VARIANZA] < 1 ){
             mutation(pieces,npieces,pop,row,col,border);
+            sorted_popolation(pop,pieces);
             fprintf(stderr,"mutazione\n");
         }
     }
@@ -1085,9 +1086,12 @@ void crossover_centro(int **kernelPieces,solution_t *sol1, solution_t *sol2, sol
                     tmp=kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0];
                     r1 = tmp/col;
                     c1 = tmp % col;
+                    //printf("%d\n",kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]);
+/*
                     for(q=0;q<npieces;q++)
                         printf("%d --> %d\n",q,kernelPieces[q][0]);
                     //nelle prossime iteraz controlla che il pezzo sostituito
+*/
                     //non sia nel kernel.se si ripete il tutto finche non trova una
                     //sostituzione con un pezzo non nel kernel
                 }while(kernelPieces[sol2->matrice_pezzi[r1][c1][0]][0]>0);
@@ -1142,14 +1146,15 @@ void write_best_solution(char *nomefile,solution_t sol,int row,int col) {
 
 /* Funzione per visualizzare l'andamento dell'evoluzione durante l'esecuzione del software*/
 
-void test_evolution(population_t *pop){
+void test_evolution(population_t *pop,solution_t *best){
     test_fitness(pop);
     printf("-----------------------------------------------------------------\n");;
     printf("-----------------------------------------------------------------\n");
     printf("Evoluzione: Generazione %d\n", pop->current_iteration );
     printf("Dimensione popolazione: %d\n", POP_DIM);
     printf("Media Popolazione: %f \t Varianza Popolazione: %f \n",pop->bests[pop->current_iteration][MEDIA],pop->bests[pop->current_iteration][VARIANZA]);
-    printf("Miglior Soluzione punti: %d\n",(int)pop->bests[pop->current_iteration][MAX]);
+    printf("Miglior Soluzione Corrente punti: %d\n",(int)pop->bests[pop->current_iteration][MAX]);
+    printf("Miglior Soluzione Corrente punti: %d\n",(int)best->fitness);
     if (pop->current_iteration  > 0){
                 printf("-----------------------------------------------------------------\n");
                 printf("Evoluzione parametri %d --> %d\n", pop->current_iteration-1, pop->current_iteration );
