@@ -199,13 +199,15 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
         kernelPieces[i][1]=-1;
     }
     crossover_centro(kernelPieces,sol1,sol2,fig1,fig2,npieces,row,col);
+    //test_solution(fig1,row,col);
+    //test_solution(fig2,row,col);
     for(i=0;i<npieces;i++){
         kernelPieces[i][0]=-1;
         kernelPieces[i][1]=-1;
     }
     crossover_bordo(kernelPieces,sol1,sol2,fig1,fig2,pieces,npieces,row,col);
-    //test_solution(fig1,row,col);
-    //test_solution(fig2,row,col);
+    test_solution(fig1,row,col);
+    test_solution(fig2,row,col);
     
     for(i=0;i<npieces;i++){
         free(kernelPieces[i]);
@@ -227,7 +229,7 @@ void crossover_bordo(int **kernelPieces,solution_t *sol1, solution_t *sol2, solu
     const int RIGHT=col-1;
    //printf("Entro in Crossover bordo\n");
     perimetro=(row-1+col-1)*2;
-    ker_len_min=(char)perimetro/10;//10% num pezzi(approx. all'intero inferiore)
+    ker_len_min=perimetro/10;//10% num pezzi(approx. all'intero inferiore)
     taglio1=rand()%(perimetro-ker_len_min-1)+1;
     if((nval=perimetro-taglio1-ker_len_min))
         taglio2=rand()%nval+taglio1+ker_len_min;//se taglio1<max val possibile taglio2 èrandom,cioè lunghezza kernel è casuale
@@ -877,7 +879,7 @@ void crossover_centro(int **kernelPieces,solution_t *sol1, solution_t *sol2, sol
     int ker_len_min;//lunghezza minima kernel
     //solution_t *tmp_ptr1,*tmp_ptr2,*tmp_ptr_swap;
     //printf("Entro in Crossover centro\n");
-    ker_len_min=(char)npieces/10;//10% num pezzi(approx. all'intero inferiore) conta anche bordo anche se lavora su centro
+    ker_len_min=npieces/10;//10% num pezzi(approx. all'intero inferiore) conta anche bordo anche se lavora su centro
     //col+2 fa si che min(taglio1) è 3° el 2^riga per evitare bordo
     //(evita 1^riga e almeno un el prima del taglio) e avere almeno un el prima del taglio
     taglio1=rand()%(npieces-(col+1)-(col+2)-ker_len_min)+(col+2);
@@ -918,11 +920,11 @@ void crossover_centro(int **kernelPieces,solution_t *sol1, solution_t *sol2, sol
     for(;(c<(col-1))&&(i<taglio2);c++,i++){
         fig1->matrice_pezzi[r][c][0]=sol1->matrice_pezzi[r][c][0];
         fig1->matrice_pezzi[r][c][1]=sol1->matrice_pezzi[r][c][1];
-        kernelPieces[sol1->matrice_pezzi[r][c][0]][0]=(char)i;
+        kernelPieces[sol1->matrice_pezzi[r][c][0]][0]=i;
         // figlio 2
         fig2->matrice_pezzi[r][c][0]=sol2->matrice_pezzi[r][c][0];
         fig2->matrice_pezzi[r][c][1]=sol2->matrice_pezzi[r][c][1];
-        kernelPieces[sol2->matrice_pezzi[r][c][0]][1]=(char)i;
+        kernelPieces[sol2->matrice_pezzi[r][c][0]][1]=i;
     }
     //se kernel su + righe continua a scorrere matrice interna fino a taglio2
     i+=2;//considera su matrice linearizzata le posizioni saltate quando finisce
@@ -1003,6 +1005,9 @@ void crossover_centro(int **kernelPieces,solution_t *sol1, solution_t *sol2, sol
         }      
     }
     /*Generazione lato detro della prole*/
+    //DEBUG
+    //test_solution(fig1,row,col);
+    //test_solution(fig2,row,col);
     //prima riga su cui operare a parte come per kernel
     //npieces-col limita ciclo al penultimo el della peunltima riga (evita bordo
     //inferiore e el di bordo destro sull'ultima riga interna)

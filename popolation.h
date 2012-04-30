@@ -26,7 +26,7 @@ extern "C" {
                                //evitando di estrarre le sol tra 0 ed elite 
 #define OPT_SOL 0
 #define EVOLVI_ANCORA 1
-#define MAX_ITERATIONS 10000 // MAX_NUMERO_DI_ITERAZIONI
+#define MAX_ITERATIONS 1000 // MAX_NUMERO_DI_ITERAZIONI
 #define N_MISURE 3 // MAX,MEDIA,VARIANZA 
     
     typedef enum {

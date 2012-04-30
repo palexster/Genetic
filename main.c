@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
     solution_t best;//contiene migliore soluzione trovata
     population_t *population; // puntatore a popolazione
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
-    pieces=build_pieces("pieces_10x10.txt",&border,&npieces,&row,&col);
+    pieces=build_pieces("pieces_12x12.txt",&border,&npieces,&row,&col);
     population=build_population(pieces,border,npieces,row,col);
     const int MAX_PT=(row-1)*col+(col-1)*row;//costante di punti max dipende 
     printf("Punteggio Massimo: %d\n",MAX_PT);
