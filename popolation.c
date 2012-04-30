@@ -206,8 +206,8 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
         kernelPieces[i][1]=-1;
     }
     crossover_bordo(kernelPieces,sol1,sol2,fig1,fig2,pieces,npieces,row,col);
-    test_solution(fig1,row,col);
-    test_solution(fig2,row,col);
+    //test_solution(fig1,row,col);
+    //test_solution(fig2,row,col);
     
     for(i=0;i<npieces;i++){
         free(kernelPieces[i]);
