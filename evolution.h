@@ -23,6 +23,6 @@ extern "C" {
 #endif	/* EVOLUTION_H */
 
 void parent_selection(long parents[]);
-void accoppiamento(int **pieces,int npieces,population_t *pop,long parents[],solution_t offspring[],int row, int col);
+void offspring_generation(int **pieces,int npieces,population_t *pop,long parents[],solution_t offspring[],int row, int col);
 void substitution(population_t *pop,solution_t offspring[],int row, int col);
 void mutation(int **pieces,int npieces,population_t *pop,int row, int col,int *border);

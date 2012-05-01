@@ -157,7 +157,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,in
     parent_selection(parents);
     /*DEBUG
     for(i=0;i<GEN_N;printf("parent%ld:%ld\n",i,parents[i++]));*/
-    accoppiamento(pieces,npieces,pop,parents,offspring,row,col);
+    offspring_generation(pieces,npieces,pop,parents,offspring,row,col);
     substitution(pop,offspring,row,col);
     //DEBUG
     //test_fitness(pop);
@@ -1151,7 +1151,7 @@ void write_best_solution(char *nomefile,solution_t sol,int row,int col) {
 
 /* Funzione per visualizzare l'andamento dell'evoluzione durante l'esecuzione del software*/
 
-void test_evolution(population_t *pop,solution_t *best){
+void test_evolution(population_t *pop,solution_t *best,int MAX_PT){
     test_fitness(pop);
     printf("-----------------------------------------------------------------\n");;
     printf("-----------------------------------------------------------------\n");
@@ -1160,6 +1160,8 @@ void test_evolution(population_t *pop,solution_t *best){
     printf("Media Popolazione: %f \t Varianza Popolazione: %f \n",pop->bests[pop->current_iteration][MEDIA],pop->bests[pop->current_iteration][VARIANZA]);
     printf("Miglior Soluzione Corrente punti: %d\n",(int)pop->bests[pop->current_iteration][MAX]);
     printf("Miglior Soluzione Corrente punti: %d\n",(int)best->fitness);
+    printf("Punteggio Massimo: %d\n",MAX_PT);
+    printf("Percentuale totale: %f\n",(float)best->fitness*100/MAX_PT);
     if (pop->current_iteration  > 0){
                 printf("-----------------------------------------------------------------\n");
                 printf("Evoluzione parametri %d --> %d\n", pop->current_iteration-1, pop->current_iteration );

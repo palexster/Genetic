@@ -30,7 +30,7 @@ void parent_selection(long parents[GEN_N]){
 }
 /*funzione che genera le nuove soluzioni
  ricecve il vettore dei geniori e quello cui salvare i figli*/
-void accoppiamento(int **pieces,int npieces,population_t *pop,long parents[GEN_N],solution_t offspring[GEN_N],int row, int col){
+void offspring_generation(int **pieces,int npieces,population_t *pop,long parents[GEN_N],solution_t offspring[GEN_N],int row, int col){
     long i,tmp;//indice su pop e var temp per memorizzare il val estratto a caso
     long cnt;
     long gen[2];//vettore dei due indici dei genitori accoppiati da passare 
@@ -149,7 +149,7 @@ void mutation(int **pieces,int npieces,population_t *pop,int row, int col,int *b
     long l;//indice per scorrere la matrice di soluizioni nella mutazione 
     
     //Scorre la matrice evitando bordi e angoli
-    for(l=POP_DIM/100;l<POP_DIM;l++){ // POP
+    for(l=5*POP_DIM/10;l<POP_DIM-1;l++){ // POP
         //printf("K vale %d\n",l);
         //for(i=1;i<row-1;i++)
         //        for(j=1;j<col-1;j++){

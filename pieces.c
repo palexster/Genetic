@@ -336,7 +336,6 @@ int fitness_solution_evaluation(int **pieces,solution_t *solution,int npieces,in
                 b=pieces[solution->matrice_pezzi[i+1][j][0]][rot_sec];
                 //printf("A --> Pezzo Numero: %d,ruotato di %d,A vale %d\n",solution->matrice_pezzi[i][j][0],rot_first,a);
                 //printf("B --> Pezzo Numero: %d,ruotato di %d,B vale %d\n",solution->matrice_pezzi[i+1][j][0],rot_sec,b);
-/*
                 if (a==b )
                         profit++;
 /*
