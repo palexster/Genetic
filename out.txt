@@ -1,0 +1,983 @@
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 0
+Dimensione popolazione: 100000
+Media Popolazione: 24.596201 	 Varianza Popolazione: 21.186571 
+Miglior Soluzione Corrente punti: 49
+Miglior Soluzione Corrente punti: -4175
+Punteggio Massimo: 180
+Percentuale totale: -2319.44
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 1
+Dimensione popolazione: 100000
+Media Popolazione: 25.699150 	 Varianza Popolazione: 20.146564 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 49
+Punteggio Massimo: 180
+Percentuale totale: 27.22
+-----------------------------------------------------------------
+Evoluzione parametri 0 --> 1
+Variazione Media Popolazione: 1.102949 	 Variazione Varianza Popolazione: -1.040007 
+Variazione Miglior Soluzione punti: -2
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 2
+Dimensione popolazione: 100000
+Media Popolazione: 26.314569 	 Varianza Popolazione: 20.111773 
+Miglior Soluzione Corrente punti: 44
+Miglior Soluzione Corrente punti: 49
+Punteggio Massimo: 180
+Percentuale totale: 27.22
+-----------------------------------------------------------------
+Evoluzione parametri 1 --> 2
+Variazione Media Popolazione: 0.615419 	 Variazione Varianza Popolazione: -0.034792 
+Variazione Miglior Soluzione punti: -3
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 3
+Dimensione popolazione: 100000
+Media Popolazione: 26.650860 	 Varianza Popolazione: 20.445204 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 49
+Punteggio Massimo: 180
+Percentuale totale: 27.22
+-----------------------------------------------------------------
+Evoluzione parametri 2 --> 3
+Variazione Media Popolazione: 0.336290 	 Variazione Varianza Popolazione: 0.333431 
+Variazione Miglior Soluzione punti: 3
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 4
+Dimensione popolazione: 100000
+Media Popolazione: 26.903021 	 Varianza Popolazione: 20.752275 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 49
+Punteggio Massimo: 180
+Percentuale totale: 27.22
+-----------------------------------------------------------------
+Evoluzione parametri 3 --> 4
+Variazione Media Popolazione: 0.252161 	 Variazione Varianza Popolazione: 0.307072 
+Variazione Miglior Soluzione punti: -1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 5
+Dimensione popolazione: 100000
+Media Popolazione: 27.040760 	 Varianza Popolazione: 21.115532 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 49
+Punteggio Massimo: 180
+Percentuale totale: 27.22
+-----------------------------------------------------------------
+Evoluzione parametri 4 --> 5
+Variazione Media Popolazione: 0.137739 	 Variazione Varianza Popolazione: 0.363256 
+Variazione Miglior Soluzione punti: 0
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 6
+Dimensione popolazione: 100000
+Media Popolazione: 27.104031 	 Varianza Popolazione: 21.323511 
+Miglior Soluzione Corrente punti: 50
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 5 --> 6
+Variazione Media Popolazione: 0.063271 	 Variazione Varianza Popolazione: 0.207979 
+Variazione Miglior Soluzione punti: 4
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 7
+Dimensione popolazione: 100000
+Media Popolazione: 27.194839 	 Varianza Popolazione: 21.392136 
+Miglior Soluzione Corrente punti: 48
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 6 --> 7
+Variazione Media Popolazione: 0.090809 	 Variazione Varianza Popolazione: 0.068624 
+Variazione Miglior Soluzione punti: -2
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 8
+Dimensione popolazione: 100000
+Media Popolazione: 27.268570 	 Varianza Popolazione: 21.299751 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 7 --> 8
+Variazione Media Popolazione: 0.073730 	 Variazione Varianza Popolazione: -0.092384 
+Variazione Miglior Soluzione punti: -1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 9
+Dimensione popolazione: 100000
+Media Popolazione: 27.299330 	 Varianza Popolazione: 21.501514 
+Miglior Soluzione Corrente punti: 48
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 8 --> 9
+Variazione Media Popolazione: 0.030760 	 Variazione Varianza Popolazione: 0.201763 
+Variazione Miglior Soluzione punti: 1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 10
+Dimensione popolazione: 100000
+Media Popolazione: 27.277769 	 Varianza Popolazione: 21.856272 
+Miglior Soluzione Corrente punti: 44
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 9 --> 10
+Variazione Media Popolazione: -0.021561 	 Variazione Varianza Popolazione: 0.354757 
+Variazione Miglior Soluzione punti: -4
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 11
+Dimensione popolazione: 100000
+Media Popolazione: 27.313490 	 Varianza Popolazione: 22.051565 
+Miglior Soluzione Corrente punti: 48
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 10 --> 11
+Variazione Media Popolazione: 0.035721 	 Variazione Varianza Popolazione: 0.195293 
+Variazione Miglior Soluzione punti: 4
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 12
+Dimensione popolazione: 100000
+Media Popolazione: 27.329910 	 Varianza Popolazione: 22.052700 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 11 --> 12
+Variazione Media Popolazione: 0.016420 	 Variazione Varianza Popolazione: 0.001135 
+Variazione Miglior Soluzione punti: -2
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 13
+Dimensione popolazione: 100000
+Media Popolazione: 27.331970 	 Varianza Popolazione: 21.864956 
+Miglior Soluzione Corrente punti: 45
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 12 --> 13
+Variazione Media Popolazione: 0.002060 	 Variazione Varianza Popolazione: -0.187744 
+Variazione Miglior Soluzione punti: -1
+-----------------------------------------------------------------
+-----------------------------------------------------------
+Evoluzione: Generazione 14
+Dimensione popolazione: 100000
+Media Popolazione: 27.366510 	 Varianza Popolazione: 21.993103 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 49
+Punteggio Massimo: 180
+Percentuale totale: 27.22
+-----------------------------------------------------------------
+Evoluzione parametri 13 --> 14
+Variazione Media Popolazione: 0.009781 	 Variazione Varianza Popolazione: 0.001320 
+Variazione Miglior Soluzione punti: 1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 15
+Dimensione popolazione: 100000
+Media Popolazione: 27.357321 	 Varianza Popolazione: 22.238514 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 49
+Punteggio Massimo: 180
+Percentuale totale: 27.22
+-----------------------------------------------------------------
+Evoluzione parametri 14 --> 15
+Variazione Media Popolazione: -0.009190 	 Variazione Varianza Popolazione: 0.245411 
+Variazione Miglior Soluzione punti: 0
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 16
+Dimensione popolazione: 100000
+Media Popolazione: 27.356480 	 Varianza Popolazione: 22.045347 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 49
+Punteggio Massimo: 180
+Percentuale totale: 27.22
+-----------------------------------------------------------------
+Evoluzione parametri 15 --> 16
+Variazione Media Popolazione: -0.000841 	 Variazione Varianza Popolazione: -0.193167 
+Variazione Miglior Soluzione punti: -1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 17
+Dimensione popolazione: 100000
+Media Popolazione: 27.381720 	 Varianza Popolazione: 21.922604 
+Miglior Soluzione Corrente punti: 48
+Miglior Soluzione Corrente punti: 49
+Punteggio Massimo: 180
+Percentuale totale: 27.22
+-----------------------------------------------------------------
+Evoluzione parametri 16 --> 17
+Variazione Media Popolazione: 0.025240 	 Variazione Varianza Popolazione: -0.122744 
+Variazione Miglior Soluzione punti: 2
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 18
+Dimensione popolazione: 100000
+Media Popolazione: 27.373199 	 Varianza Popolazione: 22.135641 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 49
+Punteggio Massimo: 180
+Percentuale totale: 27.22
+-----------------------------------------------------------------
+Evoluzione parametri 17 --> 18
+Variazione Media Popolazione: -0.008520 	 Variazione Varianza Popolazione: 0.213037 
+Variazione Miglior Soluzione punti: -1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 19
+Dimensione popolazione: 100000
+Media Popolazione: 27.369120 	 Varianza Popolazione: 21.995525 
+Miglior Soluzione Corrente punti: 44
+Miglior Soluzione Corrente punti: 49
+Punteggio Massimo: 180
+Percentuale totale: 27.22
+-----------------------------------------------------------------
+Evoluzione parametri 18 --> 19
+Variazione Media Popolazione: -0.004080 	 Variazione Varianza Popolazione: -0.140116 
+Variazione Miglior Soluzione punti: -3
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 20
+Dimensione popolazione: 100000
+Media Popolazione: 27.358179 	 Varianza Popolazione: 22.183390 
+Miglior Soluzione Corrente punti: 48
+Miglior Soluzione Corrente punti: 49
+Punteggio Massimo: 180
+Percentuale totale: 27.22
+-----------------------------------------------------------------
+Evoluzione parametri 19 --> 20
+Variazione Media Popolazione: -0.010941 	 Variazione Varianza Popolazione: 0.187864 
+Variazione Miglior Soluzione punti: 4
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 21
+Dimensione popolazione: 100000
+Media Popolazione: 27.326750 	 Varianza Popolazione: 22.082968 
+Miglior Soluzione Corrente punti: 45
+Miglior Soluzione Corrente punti: 49
+Punteggio Massimo: 180
+Percentuale totale: 27.22
+-----------------------------------------------------------------
+Evoluzione parametri 20 --> 21
+Variazione Media Popolazione: -0.031429 	 Variazione Varianza Popolazione: -0.100422 
+Variazione Miglior Soluzione punti: -3
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 22
+Dimensione popolazione: 100000
+Media Popolazione: 27.320290 	 Varianza Popolazione: 22.154915 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 49
+Punteggio Massimo: 180
+Percentuale totale: 27.22
+-----------------------------------------------------------------
+Evoluzione parametri 21 --> 22
+Variazione Media Popolazione: -0.006460 	 Variazione Varianza Popolazione: 0.071947 
+Variazione Miglior Soluzione punti: 2
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 23
+Dimensione popolazione: 100000
+Media Popolazione: 27.337589 	 Varianza Popolazione: 22.072435 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 49
+Punteggio Massimo: 180
+Percentuale totale: 27.22
+-----------------------------------------------------------------
+Evoluzione parametri 22 --> 23
+Variazione Media Popolazione: 0.017300 	 Variazione Varianza Popolazione: -0.082479 
+Variazione Miglior Soluzione punti: 0
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 24
+Dimensione popolazione: 100000
+Media Popolazione: 27.324120 	 Varianza Popolazione: 21.992340 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 49
+Punteggio Massimo: 180
+Percentuale totale: 27.22
+-----------------------------------------------------------------
+Evoluzione parametri 23 --> 24
+Variazione Media Popolazione: -0.013470 	 Variazione Varianza Popolazione: -0.080095 
+Variazione Miglior Soluzione punti: -1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 25
+Dimensione popolazione: 100000
+Media Popolazione: 27.291340 	 Varianza Popolazione: 22.285030 
+Miglior Soluzione Corrente punti: 50
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 24 --> 25
+Variazione Media Popolazione: -0.032780 	 Variazione Varianza Popolazione: 0.292690 
+Variazione Miglior Soluzione punti: 4
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 26
+Dimensione popolazione: 100000
+Media Popolazione: 27.299980 	 Varianza Popolazione: 22.025778 
+Miglior Soluzione Corrente punti: 45
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 25 --> 26
+Variazione Media Popolazione: 0.008640 	 Variazione Varianza Popolazione: -0.259253 
+Variazione Miglior Soluzione punti: -5
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 27
+Dimensione popolazione: 100000
+Media Popolazione: 27.272230 	 Varianza Popolazione: 22.043190 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 26 --> 27
+Variazione Media Popolazione: -0.027750 	 Variazione Varianza Popolazione: 0.017412 
+Variazione Miglior Soluzione punti: 1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 28
+Dimensione popolazione: 100000
+Media Popolazione: 27.257900 	 Varianza Popolazione: 22.056166 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 27 --> 28
+Variazione Media Popolazione: -0.014330 	 Variazione Varianza Popolazione: 0.012976 
+Variazione Miglior Soluzione punti: 1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 29
+Dimensione popolazione: 100000
+Media Popolazione: 27.252390 	 Varianza Popolazione: 22.092123 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 28 --> 29
+Variazione Media Popolazione: -0.005510 	 Variazione Varianza Popolazione: 0.035957 
+Variazione Miglior Soluzione punti: -1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 30
+Dimensione popolazione: 100000
+Media Popolazione: 27.220980 	 Varianza Popolazione: 22.106380 
+Miglior Soluzione Corrente punti: 48
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 29 --> 30
+Variazione Media Popolazione: -0.031410 	 Variazione Varianza Popolazione: 0.014257 
+Variazione Miglior Soluzione punti: 2
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 31
+Dimensione popolazione: 100000
+Media Popolazione: 27.176020 	 Varianza Popolazione: 22.004221 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 30 --> 31
+Variazione Media Popolazione: -0.044960 	 Variazione Varianza Popolazione: -0.102160 
+Variazione Miglior Soluzione punti: -1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 32
+Dimensione popolazione: 100000
+Media Popolazione: 27.148609 	 Varianza Popolazione: 22.064049 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 31 --> 32
+Variazione Media Popolazione: -0.027411 	 Variazione Varianza Popolazione: 0.059828 
+Variazione Miglior Soluzione punti: 0
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 33
+Dimensione popolazione: 100000
+Media Popolazione: 27.153839 	 Varianza Popolazione: 21.993650 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 32 --> 33
+Variazione Media Popolazione: 0.005230 	 Variazione Varianza Popolazione: -0.070398 
+Variazione Miglior Soluzione punti: 0
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 34
+Dimensione popolazione: 100000
+Media Popolazione: 27.122259 	 Varianza Popolazione: 22.013266 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 33 --> 34
+Variazione Media Popolazione: -0.031580 	 Variazione Varianza Popolazione: 0.019615 
+Variazione Miglior Soluzione punti: -1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 35
+Dimensione popolazione: 100000
+Media Popolazione: 27.139219 	 Varianza Popolazione: 22.062363 
+Miglior Soluzione Corrente punti: 48
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 34 --> 35
+Variazione Media Popolazione: 0.016960 	 Variazione Varianza Popolazione: 0.049097 
+Variazione Miglior Soluzione punti: 2
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 36
+Dimensione popolazione: 100000
+Media Popolazione: 27.134979 	 Varianza Popolazione: 22.058773 
+Miglior Soluzione Corrente punti: 45
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 35 --> 36
+Variazione Media Popolazione: -0.004240 	 Variazione Varianza Popolazione: -0.003590 
+Variazione Miglior Soluzione punti: -3
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 37
+Dimensione popolazione: 100000
+Media Popolazione: 27.122490 	 Varianza Popolazione: 22.086267 
+Miglior Soluzione Corrente punti: 49
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 36 --> 37
+Variazione Media Popolazione: -0.012489 	 Variazione Varianza Popolazione: 0.027494 
+Variazione Miglior Soluzione punti: 4
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 38
+Dimensione popolazione: 100000
+Media Popolazione: 27.127550 	 Varianza Popolazione: 21.862181 
+Miglior Soluzione Corrente punti: 45
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 37 --> 38
+Variazione Media Popolazione: 0.005060 	 Variazione Varianza Popolazione: -0.224087 
+Variazione Miglior Soluzione punti: -4
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 39
+Dimensione popolazione: 100000
+Media Popolazione: 27.119619 	 Varianza Popolazione: 22.145046 
+Miglior Soluzione Corrente punti: 45
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 38 --> 39
+Variazione Media Popolazione: -0.007931 	 Variazione Varianza Popolazione: 0.282866 
+Variazione Miglior Soluzione punti: 0
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 40
+Dimensione popolazione: 100000
+Media Popolazione: 27.085350 	 Varianza Popolazione: 22.001209 
+Miglior Soluzione Corrente punti: 45
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 39 --> 40
+Variazione Media Popolazione: -0.034269 	 Variazione Varianza Popolazione: -0.143837 
+Variazione Miglior Soluzione punti: 0
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 41
+Dimensione popolazione: 100000
+Media Popolazione: 27.103600 	 Varianza Popolazione: 21.931763 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 40 --> 41
+Variazione Media Popolazione: 0.018250 	 Variazione Varianza Popolazione: -0.069447 
+Variazione Miglior Soluzione punti: 1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 42
+Dimensione popolazione: 100000
+Media Popolazione: 27.102890 	 Varianza Popolazione: 21.838194 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 41 --> 42
+Variazione Media Popolazione: -0.000710 	 Variazione Varianza Popolazione: -0.093569 
+Variazione Miglior Soluzione punti: 1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 43
+Dimensione popolazione: 100000
+Media Popolazione: 27.111450 	 Varianza Popolazione: 21.684124 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 42 --> 43
+Variazione Media Popolazione: 0.008560 	 Variazione Varianza Popolazione: -0.154070 
+Variazione Miglior Soluzione punti: -1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 44
+Dimensione popolazione: 100000
+Media Popolazione: 27.096701 	 Varianza Popolazione: 21.668215 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 43 --> 44
+Variazione Media Popolazione: -0.014750 	 Variazione Varianza Popolazione: -0.015909 
+Variazione Miglior Soluzione punti: 0
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 45
+Dimensione popolazione: 100000
+Media Popolazione: 27.088110 	 Varianza Popolazione: 21.837019 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 44 --> 45
+Variazione Media Popolazione: -0.008591 	 Variazione Varianza Popolazione: 0.168804 
+Variazione Miglior Soluzione punti: 0
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 46
+Dimensione popolazione: 100000
+Media Popolazione: 27.063999 	 Varianza Popolazione: 21.483351 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 45 --> 46
+Variazione Media Popolazione: -0.024111 	 Variazione Varianza Popolazione: -0.353668 
+Variazione Miglior Soluzione punti: 0
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 47
+Dimensione popolazione: 100000
+Media Popolazione: 27.032619 	 Varianza Popolazione: 21.492125 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 46 --> 47
+Variazione Media Popolazione: -0.031380 	 Variazione Varianza Popolazione: 0.008774 
+Variazione Miglior Soluzione punti: 0
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 48
+Dimensione popolazione: 100000
+Media Popolazione: 27.022051 	 Varianza Popolazione: 21.671755 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 47 --> 48
+Variazione Media Popolazione: -0.010569 	 Variazione Varianza Popolazione: 0.179630 
+Variazione Miglior Soluzione punti: 0
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 49
+Dimensione popolazione: 100000
+Media Popolazione: 26.995501 	 Varianza Popolazione: 21.747902 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 48 --> 49
+Variazione Media Popolazione: -0.026550 	 Variazione Varianza Popolazione: 0.076147 
+Variazione Miglior Soluzione punti: 1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 50
+Dimensione popolazione: 100000
+Media Popolazione: 27.023750 	 Varianza Popolazione: 21.656778 
+Miglior Soluzione Corrente punti: 48
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 49 --> 50
+Variazione Media Popolazione: 0.028250 	 Variazione Varianza Popolazione: -0.091124 
+Variazione Miglior Soluzione punti: 1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 51
+Dimensione popolazione: 100000
+Media Popolazione: 27.037769 	 Varianza Popolazione: 21.717297 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 50 --> 51
+Variazione Media Popolazione: 0.014019 	 Variazione Varianza Popolazione: 0.060518 
+Variazione Miglior Soluzione punti: -2
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 52
+Dimensione popolazione: 100000
+Media Popolazione: 27.044121 	 Varianza Popolazione: 21.818310 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 51 --> 52
+Variazione Media Popolazione: 0.006351 	 Variazione Varianza Popolazione: 0.101013 
+Variazione Miglior Soluzione punti: 0
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 53
+Dimensione popolazione: 100000
+Media Popolazione: 27.031460 	 Varianza Popolazione: 21.916842 
+Miglior Soluzione Corrente punti: 45
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 52 --> 53
+Variazione Media Popolazione: -0.012661 	 Variazione Varianza Popolazione: 0.098532 
+Variazione Miglior Soluzione punti: -1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 54
+Dimensione popolazione: 100000
+Media Popolazione: 27.029230 	 Varianza Popolazione: 21.864161 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 53 --> 54
+Variazione Media Popolazione: -0.002230 	 Variazione Varianza Popolazione: -0.052681 
+Variazione Miglior Soluzione punti: 2
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 55
+Dimensione popolazione: 100000
+Media Popolazione: 27.047449 	 Varianza Popolazione: 21.886045 
+Miglior Soluzione Corrente punti: 45
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 54 --> 55
+Variazione Media Popolazione: 0.018219 	 Variazione Varianza Popolazione: 0.021885 
+Variazione Miglior Soluzione punti: -2
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 56
+Dimensione popolazione: 100000
+Media Popolazione: 27.043449 	 Varianza Popolazione: 21.942402 
+Miglior Soluzione Corrente punti: 45
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 55 --> 56
+Variazione Media Popolazione: -0.004000 	 Variazione Varianza Popolazione: 0.056356 
+Variazione Miglior Soluzione punti: 0
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 57
+Dimensione popolazione: 100000
+Media Popolazione: 27.024040 	 Varianza Popolazione: 21.677950 
+Miglior Soluzione Corrente punti: 45
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 56 --> 57
+Variazione Media Popolazione: -0.019409 	 Variazione Varianza Popolazione: -0.264452 
+Variazione Miglior Soluzione punti: 0
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 58
+Dimensione popolazione: 100000
+Media Popolazione: 27.032290 	 Varianza Popolazione: 21.699427 
+Miglior Soluzione Corrente punti: 48
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 57 --> 58
+Variazione Media Popolazione: 0.008249 	 Variazione Varianza Popolazione: 0.021477 
+Variazione Miglior Soluzione punti: 3
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 59
+Dimensione popolazione: 100000
+Media Popolazione: 26.991840 	 Varianza Popolazione: 21.832958 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 58 --> 59
+Variazione Media Popolazione: -0.040449 	 Variazione Varianza Popolazione: 0.133532 
+Variazione Miglior Soluzione punti: -2
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 60
+Dimensione popolazione: 100000
+Media Popolazione: 27.015820 	 Varianza Popolazione: 21.749653 
+Miglior Soluzione Corrente punti: 44
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 59 --> 60
+Variazione Media Popolazione: 0.023979 	 Variazione Varianza Popolazione: -0.083305 
+Variazione Miglior Soluzione punti: -2
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 61
+Dimensione popolazione: 100000
+Media Popolazione: 27.040600 	 Varianza Popolazione: 21.921497 
+Miglior Soluzione Corrente punti: 45
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 60 --> 61
+Variazione Media Popolazione: 0.024780 	 Variazione Varianza Popolazione: 0.171844 
+Variazione Miglior Soluzione punti: 1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 62
+Dimensione popolazione: 100000
+Media Popolazione: 27.054440 	 Varianza Popolazione: 21.719791 
+Miglior Soluzione Corrente punti: 45
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 61 --> 62
+Variazione Media Popolazione: 0.013840 	 Variazione Varianza Popolazione: -0.201706 
+Variazione Miglior Soluzione punti: 0
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 63
+Dimensione popolazione: 100000
+Media Popolazione: 27.022810 	 Varianza Popolazione: 22.021925 
+Miglior Soluzione Corrente punti: 48
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 62 --> 63
+Variazione Media Popolazione: -0.031630 	 Variazione Varianza Popolazione: 0.302134 
+Variazione Miglior Soluzione punti: 3
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 64
+Dimensione popolazione: 100000
+Media Popolazione: 27.037821 	 Varianza Popolazione: 22.006836 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 63 --> 64
+Variazione Media Popolazione: 0.015011 	 Variazione Varianza Popolazione: -0.015089 
+Variazione Miglior Soluzione punti: -2
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 65
+Dimensione popolazione: 100000
+Media Popolazione: 27.045750 	 Varianza Popolazione: 21.904022 
+Miglior Soluzione Corrente punti: 48
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 64 --> 65
+Variazione Media Popolazione: 0.007929 	 Variazione Varianza Popolazione: -0.102814 
+Variazione Miglior Soluzione punti: 2
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 66
+Dimensione popolazione: 100000
+Media Popolazione: 27.040020 	 Varianza Popolazione: 21.846617 
+Miglior Soluzione Corrente punti: 45
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 65 --> 66
+Variazione Media Popolazione: -0.005730 	 Variazione Varianza Popolazione: -0.057405 
+Variazione Miglior Soluzione punti: -3
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 67
+Dimensione popolazione: 100000
+Media Popolazione: 27.045019 	 Varianza Popolazione: 21.833786 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 66 --> 67
+Variazione Media Popolazione: 0.004999 	 Variazione Varianza Popolazione: -0.012831 
+Variazione Miglior Soluzione punti: 2
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 68
+Dimensione popolazione: 100000
+Media Popolazione: 27.026979 	 Varianza Popolazione: 21.897306 
+Miglior Soluzione Corrente punti: 45
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 67 --> 68
+Variazione Media Popolazione: -0.018040 	 Variazione Varianza Popolazione: 0.063520 
+Variazione Miglior Soluzione punti: -2
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 69
+Dimensione popolazione: 100000
+Media Popolazione: 27.067129 	 Varianza Popolazione: 21.846405 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 68 --> 69
+Variazione Media Popolazione: 0.040150 	 Variazione Varianza Popolazione: -0.050901 
+Variazione Miglior Soluzione punti: 2
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 70
+Dimensione popolazione: 100000
+Media Popolazione: 27.077591 	 Varianza Popolazione: 21.709234 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 69 --> 70
+Variazione Media Popolazione: 0.010462 	 Variazione Varianza Popolazione: -0.137171 
+Variazione Miglior Soluzione punti: -1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 71
+Dimensione popolazione: 100000
+Media Popolazione: 27.070101 	 Varianza Popolazione: 21.810633 
+Miglior Soluzione Corrente punti: 45
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 70 --> 71
+Variazione Media Popolazione: -0.007490 	 Variazione Varianza Popolazione: 0.101398 
+Variazione Miglior Soluzione punti: -1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 72
+Dimensione popolazione: 100000
+Media Popolazione: 27.068741 	 Varianza Popolazione: 21.641489 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 71 --> 72
+Variazione Media Popolazione: -0.001360 	 Variazione Varianza Popolazione: -0.169144 
+Variazione Miglior Soluzione punti: 1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 73
+Dimensione popolazione: 100000
+Media Popolazione: 27.055059 	 Varianza Popolazione: 21.797443 
+Miglior Soluzione Corrente punti: 47
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 72 --> 73
+Variazione Media Popolazione: -0.013681 	 Variazione Varianza Popolazione: 0.155954 
+Variazione Miglior Soluzione punti: 1
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 74
+Dimensione popolazione: 100000
+Media Popolazione: 27.054689 	 Varianza Popolazione: 21.786953 
+Miglior Soluzione Corrente punti: 44
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 73 --> 74
+Variazione Media Popolazione: -0.000370 	 Variazione Varianza Popolazione: -0.010490 
+Variazione Miglior Soluzione punti: -3
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+Evoluzione: Generazione 75
+Dimensione popolazione: 100000
+Media Popolazione: 27.052610 	 Varianza Popolazione: 21.935417 
+Miglior Soluzione Corrente punti: 46
+Miglior Soluzione Corrente punti: 50
+Punteggio Massimo: 180
+Percentuale totale: 27.78
+-----------------------------------------------------------------
+Evoluzione parametri 74 --> 75
+Variazione Media Popolazi

@@ -40,9 +40,10 @@ void offspring_generation(int **pieces,int npieces,population_t *pop,long parent
      2 figli*/
     #pragma omp parallel default(none) shared(gen,parents,offspring,pop,row,col,npieces,pieces) private(cnt,tmp,i)
 {
-   #pragma omp for 
+   #pragma omp for schedule(runtime)
     for(i=0;i<GEN_N;i=i+2){
         /*ciclo di selezione genitori*/
+#pragma omp flush
         #pragma omp critical
         {
         for(cnt=0;cnt<2;cnt++){
@@ -153,10 +154,14 @@ void substitution(population_t *pop,solution_t offspring[GEN_N],int row, int col
  */
 void mutation(int **pieces,int npieces,population_t *pop,int row, int col,int *border){
     long l;//indice per scorrere la matrice di soluzioni nella mutazione 
+    #pragma omp parallel default(none) shared(pop,border,pieces,npieces,row,col) private(l)
+   {
+        #pragma omp for
     for(l=POP_DIM/10;l<POP_DIM-1;l++){ // POP
                     random_solution_generation(&(pop->soluzioni[l]),border,pieces,npieces,row,col);   
                     pop->soluzioni[l].fitness=fitness_solution_evaluation(pieces,&(pop->soluzioni[l]),npieces,row,col);
                     //elite=POP_DIM/6;
                 }
+   }
     fprintf(stderr,"C'è stata una mutazione");
 }
