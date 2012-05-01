@@ -46,6 +46,12 @@
         <compilerSet>GNU|GNU</compilerSet>
       </toolsSet>
       <compileType>
+        <cTool>
+          <commandLine>-fopenmp</commandLine>
+        </cTool>
+        <linkerTool>
+          <commandLine>-lgomp -pthread</commandLine>
+        </linkerTool>
       </compileType>
     </conf>
     <conf name="Release" type="1">
@@ -54,6 +60,9 @@
         <compilerSet>default</compilerSet>
       </toolsSet>
       <compileType>
+        <cTool>
+          <commandLine>-fopenmp</commandLine>
+        </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
         </ccTool>
@@ -63,6 +72,9 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <linkerTool>
+          <commandLine>-lgomp -pthread</commandLine>
+        </linkerTool>
       </compileType>
     </conf>
   </confs>
