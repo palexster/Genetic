@@ -242,8 +242,10 @@ void random_solution_generation(solution_t *solution,int *border,int **pieces,in
        for(j=1;j<(col-1);j++){
            random_number = rand() % npieces;
            random_number= abs(random_number);
+/*
            if (random_number<0)
                printf("RANDOM NUMBER è minore di zero!!\n");
+*/
         if (!taken[random_number]){
             ++taken[random_number];
             solution->matrice_pezzi[i][j][0]=(unsigned char)random_number;
@@ -467,21 +469,21 @@ unsigned char get_corner_fitting_rotation(int **pieces,unsigned char corner_inde
     return rotation;
 }
 /*funzione che copia la matrice di una sol*/
-char***matcp(solution_t sol,int row,int col){
-    char ***m,i,j;
-    m=(char ***)malloc(sizeof(char**)*row);
+unsigned char***matcp(solution_t sol,int row,int col){
+    unsigned char ***m,i,j;
+    m=(unsigned char ***)malloc(sizeof(unsigned char**)*row);
     if(m==NULL){
         fprintf(stderr,"build_solution()-errore in malloc() di solution->matrice_pezzi.\n");
         exit(2);
     }
     for(i=0;i<row;i++){
-        m[i]=(char **)malloc(sizeof(char *)*col);
+        m[i]=(unsigned char **)malloc(sizeof(unsigned char *)*col);
         if(m[i]==NULL){
                 fprintf(stderr,"build_solution()-errore in malloc() di solution->matrice_pezzi[%d].\n",i);
                 exit(2);
         }
         for(j=0;j<col;j++){
-           m[i][j]=(char *)malloc(sizeof(char)*2);
+           m[i][j]=(unsigned char *)malloc(sizeof(unsigned char)*2);
             if(m[i][j]==NULL){
                 fprintf(stderr,"build_solution()-errore in malloc() di solution->matrice_pezzi[%d][%d].\n",i,j);
                 exit(2);

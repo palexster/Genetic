@@ -1153,15 +1153,17 @@ void write_best_solution(char *nomefile,solution_t sol,int row,int col) {
 
 void test_evolution(population_t *pop,solution_t *best,int MAX_PT){
     test_fitness(pop);
-    printf("-----------------------------------------------------------------\n");;
     printf("-----------------------------------------------------------------\n");
+    printf("-----------------------------------------------------------------\n");
+    if (pop->current_iteration==MAX_ITERATIONS)
+        printf("RISULTATO FINALE\n");
     printf("Evoluzione: Generazione %d\n", pop->current_iteration );
     printf("Dimensione popolazione: %d\n", POP_DIM);
     printf("Media Popolazione: %f \t Varianza Popolazione: %f \n",pop->bests[pop->current_iteration][MEDIA],pop->bests[pop->current_iteration][VARIANZA]);
     printf("Miglior Soluzione Corrente punti: %d\n",(int)pop->bests[pop->current_iteration][MAX]);
     printf("Miglior Soluzione Corrente punti: %d\n",(int)best->fitness);
     printf("Punteggio Massimo: %d\n",MAX_PT);
-    printf("Percentuale totale: %f\n",(float)best->fitness*100/MAX_PT);
+    printf("Percentuale totale: %.2f\n",(float)best->fitness*100/MAX_PT);
     if (pop->current_iteration  > 0){
                 printf("-----------------------------------------------------------------\n");
                 printf("Evoluzione parametri %d --> %d\n", pop->current_iteration-1, pop->current_iteration );

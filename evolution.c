@@ -140,26 +140,17 @@ void sub2(population_t *pop,solution_t offspring[GEN_N],int row, int col){
 /*funzione per sostituire vecchie sol con i figli
  riceve vet pop vet figli, row e col (dim matrice gioco)*/
 void substitution(population_t *pop,solution_t offspring[GEN_N],int row, int col){
-    sub1(pop,offspring,row,col);
+    sub2(pop,offspring,row,col);
 }
 
 /*funzione mutazione
  */
 void mutation(int **pieces,int npieces,population_t *pop,int row, int col,int *border){
-    long l;//indice per scorrere la matrice di soluizioni nella mutazione 
-    
-    //Scorre la matrice evitando bordi e angoli
-    for(l=5*POP_DIM/10;l<POP_DIM-1;l++){ // POP
-        //printf("K vale %d\n",l);
-        //for(i=1;i<row-1;i++)
-        //        for(j=1;j<col-1;j++){
-                    //Due alternative
-                    // Ruoto a caso le soluzioni, non dà dei miglioramenti sul lungo periodo, viene riassorbito in fretta   
-                    //pop->soluzioni[k].matrice_pezzi[i][j][1]=rand() % 4; // inserisce una rotazione a caso
-                    // Rigenero a caso una parte della popolazione
+    long l;//indice per scorrere la matrice di soluzioni nella mutazione 
+    for(l=POP_DIM/10;l<POP_DIM-1;l++){ // POP
                     random_solution_generation(&(pop->soluzioni[l]),border,pieces,npieces,row,col);   
                     pop->soluzioni[l].fitness=fitness_solution_evaluation(pieces,&(pop->soluzioni[l]),npieces,row,col);
+                    //elite=POP_DIM/6;
                 }
-        //}
     fprintf(stderr,"C'è stata una mutazione");
 }

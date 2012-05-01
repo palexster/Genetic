@@ -19,7 +19,11 @@ int main(int argc, char** argv) {
     solution_t best;//contiene migliore soluzione trovata
     population_t *population; // puntatore a popolazione
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
-    pieces=build_pieces("pieces_16x16.txt",&border,&npieces,&row,&col);
+    if (argc != 4){
+        fprintf(stderr,"Usage: %s input_file output_file stats_file",argv[0]);
+        exit(2);
+    }  
+    pieces=build_pieces(argv[1],&border,&npieces,&row,&col);
     population=build_population(pieces,border,npieces,row,col);
     const int MAX_PT=(row-1)*col+(col-1)*row;//costante di punti max dipende 
     //printf("Punteggio Massimo: %d\n",MAX_PT);
@@ -37,10 +41,8 @@ int main(int argc, char** argv) {
                 test_evolution(population,&best,MAX_PT);
         }
     }
-    printf("-----------------------------------\n");
-    printf("Miglior soluzione trovata punti:%d\n",best.fitness);
-    write_best_solution("Output.txt",best,row,col);
-    write_evolution(population,"Statistiche.csv");
+    write_best_solution(argv[2],best,row,col);
+    write_evolution(population,argv[3]);
     //deallocazione memoria heap
     dealloc_population(population,row,col);
     free(population);
