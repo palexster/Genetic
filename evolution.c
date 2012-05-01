@@ -43,9 +43,9 @@ void offspring_generation(int **pieces,int npieces,population_t *pop,long parent
    #pragma omp for schedule(runtime)
     for(i=0;i<GEN_N;i=i+2){
         /*ciclo di selezione genitori*/
-#pragma omp flush
         #pragma omp critical
         {
+        //#pragma omp flush
         for(cnt=0;cnt<2;cnt++){
                 tmp=rand()%GEN_N;
                 //se l'el. estratto e già stato accoppiato
@@ -157,7 +157,7 @@ void mutation(int **pieces,int npieces,population_t *pop,int row, int col,int *b
     #pragma omp parallel default(none) shared(pop,border,pieces,npieces,row,col) private(l)
    {
         #pragma omp for
-    for(l=POP_DIM/10;l<POP_DIM-1;l++){ // POP
+    for(l=POP_DIM/100;l<POP_DIM-1;l++){ // POP
                     random_solution_generation(&(pop->soluzioni[l]),border,pieces,npieces,row,col);   
                     pop->soluzioni[l].fitness=fitness_solution_evaluation(pieces,&(pop->soluzioni[l]),npieces,row,col);
                     //elite=POP_DIM/6;
