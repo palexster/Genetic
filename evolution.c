@@ -43,12 +43,12 @@ void offspring_generation(int **pieces,int npieces,population_t *pop,long parent
    #pragma omp for 
     for(i=0;i<GEN_N;i=i+2){
         /*ciclo di selezione genitori*/
+        #pragma omp critical
+        {
         for(cnt=0;cnt<2;cnt++){
                 tmp=rand()%GEN_N;
                 //se l'el. estratto e già stato accoppiato
                 //prova con il successivo finchè non trova un el.da accoppiare.
-                #pragma omp critical
-                {
                 while(parents[tmp]>0)
                         tmp=((tmp+1)%GEN_N);
                 gen[cnt]=tmp;
