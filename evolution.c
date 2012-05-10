@@ -32,15 +32,21 @@ void parent_selection(long *parents,population_t *pop){
 /*funzione che genera le nuove soluzioni
  ricecve il vettore dei geniori e quello cui salvare i figli*/
 void offspring_generation(int **pieces,int npieces,population_t *pop,long *parents,solution_t *offspring,int row, int col){
-    long i,tmp;//indice su pop e var temp per memorizzare il val estratto a caso
+    long i,j,tmp;//indice su pop e var temp per memorizzare il val estratto a caso
     long cnt;
     long gen[2];//vettore dei due indici dei genitori accoppiati da passare 
                 //alla funzione di crossover
     /*Accoppiamento:
      seleziona 2 genitori a caso e li passa all funz di crossover per generare
      2 figli*/
+    #pragma omp parallel default(none) shared(pieces,npieces,pop,parents,offspring,row,col) firstprivate(i,j,cnt,tmp,gen)
+{
+   #pragma omp for
     for(i=0;i<pop->gen_n;i+=2){
+        j=i+1;
         /*ciclo di selezione genitori*/
+       #pragma omp critical (print_tid)
+      {
         for(cnt=0;cnt<2;cnt++){
                 tmp=rand()%pop->gen_n;
                 //se l'el. estratto e già stato accoppiato
@@ -50,21 +56,21 @@ void offspring_generation(int **pieces,int npieces,population_t *pop,long *paren
                         tmp=((tmp+1)%pop->gen_n);
                 gen[cnt]=tmp;
                 parents[tmp]*=-1;
-     
         }
+      }
         //DEBUG
         //printf("gen:%ld %ld\n",gen[0],gen[1]);
         //offspring[i++].fitness=-1;
         //offspring[i++].fitness=-1;
         //END DEBUG
         offspring[i]=build_solution(row,col);
-        offspring[i+1]=build_solution(row,col);
-        crossover(&pop->soluzioni[parents[gen[0]]-1],&pop->soluzioni[parents[gen[1]]-1],&offspring[i],&offspring[i+1],pieces,npieces,row,col);
+        offspring[j]=build_solution(row,col);
+        crossover(&pop->soluzioni[parents[gen[0]]-1],&pop->soluzioni[parents[gen[1]]-1],&offspring[i],&offspring[j],pieces,npieces,row,col);
         offspring[i].fitness=fitness_solution_evaluation(pieces,&offspring[i],npieces,row,col);
         //printf("Valore fitness figlio %d: %d\n",i,offspring[i].fitness);
-        offspring[i+1].fitness=fitness_solution_evaluation(pieces,&offspring[i+1],npieces,row,col);
+        offspring[j].fitness=fitness_solution_evaluation(pieces,&offspring[j],npieces,row,col);
         //printf("Valore fitness figlio %d : %d\n",i,offspring[i].fitness);
-
+    }
     }
 
     return;

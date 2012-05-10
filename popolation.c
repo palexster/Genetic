@@ -59,12 +59,6 @@ void test_fitness(population_t *pop){
 }
 
 int cmp_fitness(solution_t s1cast,solution_t s2cast){
-/*
-    if (s1cast.fitness>s2cast.fitness)
-        return -1;
-    if (s1cast.fitness<s2cast.fitness)
-        return 1;
-*/
     return s2cast.fitness-s1cast.fitness;
 }
 
@@ -158,7 +152,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,in
     offspring_generation(pieces,npieces,pop,parents,offspring,row,col);
     substitution(pop,offspring,row,col);
     sorted_popolation(pop,pieces);
-    if ((pop->bests[(pop->current_iteration)-1][VARIANZA]< 0.1)||((pop->bests[(pop->current_iteration)-1][VARIANZA]< 1))&&(pop->bests[(pop->current_iteration)-1][MEDIA]>(pop->bests[pop->current_iteration-1][MAX]-1))){
+    if ((pop->bests[(pop->current_iteration)-1][VARIANZA]< 0.1)||((pop->bests[(pop->current_iteration)-1][VARIANZA]< 0.1))&&(pop->bests[(pop->current_iteration)-1][MEDIA]>(pop->bests[pop->current_iteration-1][MAX]-1))){
         mutation(pieces,npieces,pop,row,col,border);
         sorted_popolation(pop,pieces);
         }
@@ -181,17 +175,17 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
     // confronto pezzi dentro il kernel, kernelPieces serve a tenere traccia di quali pezzi
     // sono presenti dentro il kernel dei figli e devono essere rimpiazzati.
     // L'allocazione dei due figli è parallelizzata
-    int **kernelPieces;
+    short signed int **kernelPieces;
     //char pezzoDaControllare;->dovrebbe essere inutile
     //allocazione vettori per il confronto ottimizzato del kernel
     //pezzi di bordo in realtà mai usati quindi alcuni el del vet mai usati
-    kernelPieces=(int  **)malloc(sizeof(int*)*npieces);
+    kernelPieces=(short signed int  **)malloc(sizeof(short signed int*)*npieces);
     if(kernelPieces==NULL){
         fprintf(stderr,"crossover()-errore in malloc() di kernelPieces.\n");
         exit(2);
     }
    for(i=0;i<npieces;i++){
-        kernelPieces[i]=(int *)malloc(sizeof(int)*2);
+        kernelPieces[i]=(short signed int *)malloc(sizeof(short signed int)*2);
         if(kernelPieces[i]==NULL){
                 fprintf(stderr,"crossover()-errore in malloc() di kernelPieces[%d].\n",i);
                 exit(2);
@@ -222,7 +216,7 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
  * riceve 2 soluzioni(genitori) e genera 2 figli
  * bordo linearizzato in senso orario a partire da pos 0,0, cioè:
  * riga0,coln,rigan,col0 conisiderando una matrice n*n.*/
-void crossover_bordo(int **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2,int**pieces, int npieces, int row, int col){
+void crossover_bordo(short signed int **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2,int**pieces, int npieces, int row, int col){
     // generazione tagli, contatori e indice righe/colonne
     int taglio1,taglio2,i,j,c1,r1,perimetro,nval,tmp;
     int ker_len_min;//lunghezza minima kernel
@@ -874,7 +868,7 @@ void crossover_bordo(int **kernelPieces,solution_t *sol1, solution_t *sol2, solu
 
 /*funzione per il crossover tra i pezzi della matrice che non sono di bordo 
  * ie indice_riga € [1,row-2] e indice_col€[1,col-2]*/
-void crossover_centro(int **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
+void crossover_centro(short signed int **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
     // generazione tagli, contatori e indice righe/colonne
     int taglio1,taglio2,i,r,c,c1,r1,nval,tmp,q;
     int ker_len_min;//lunghezza minima kernel

@@ -504,11 +504,12 @@ solution_t solution_copy(solution_t source,int row,int col){
 
  void random_rotate(solution_t *sol,int row,int col){
      int i,j;
-     char a;
+     //char a;
      for(i=1;i<row-1;i++)
          for(j=1;j<col-1;j++){
-             a=rand()%4;
-             sol->matrice_pezzi[i][j][1]= a;
+             if(!(rand()%4));{//decide se rutare o no (prob un quarto)
+                 sol->matrice_pezzi[i][j][1]= rand()%4;//tira rotazione a caso
+             }
         }
      return;
  }

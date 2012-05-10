@@ -8,11 +8,25 @@
 #include <stdlib.h>
 #include "pieces.h"
 #include "popolation.h"
-#define SOGLIA_ESCALATION 2000
+#define SOGLIA_ESCALATION 20
 #define MAXLENGTH 30
+
+#define TRUE  1
+#define FALSE 0
+
+#ifdef _OPENMP
+  #include <omp.h>
+#else
+  #define omp_get_thread_num() 0
+#endif
 
 int main(int argc, char** argv) {
     /* Dichiarazione variabili */
+    #ifdef _OPENMP
+   (void) omp_set_dynamic(FALSE);
+   if (omp_get_dynamic()) {printf("Warning: dynamic adjustment of threads has been set\n");}
+   (void) omp_set_num_threads(2);
+#endif
     int row,col;//numero righe e colonne matrice dei pezzi
     int npieces,//numero pezzi
         *border,// vettore dei pezzi di bordo di npieces el.per ogni pezzo dice se è di bordo.val è pari al num di trinagoli grigi(0=centro,1=bordo,2=angolo)
@@ -25,6 +39,9 @@ int main(int argc, char** argv) {
     char file[MAXLENGTH]; // stringa dove comporre il nome del nuovo file di record
     solution_t best;//contiene migliore soluzione trovata
     population_t *population; // puntatore a popolazione
+    char filename[50];
+    FILE*fp;//scrivere file utili per i test per test
+    
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
     if (argc != 5){
         fprintf(stderr,"Usage: %s input_file output_file record max_dim_pop",argv[0]);
@@ -46,9 +63,11 @@ int main(int argc, char** argv) {
         for(i=0;(i<MAX_ITERATIONS)&&(best.fitness!=MAX_PT);i++){
             temp=pop_evolution(pieces,npieces,population,row,col,border);
                 if(temp>best.fitness){
+                    dealloc_soluzioni(&best,row,col);
                     best.fitness=population->soluzioni[0].fitness;
                     best.matrice_pezzi=matcp(population->soluzioni[0],row,col);
                     escalation=0;
+                    population->mutation=0;
                     if (best.fitness>record){
                         //printf("NEW RECORD!\n");
                         sprintf(file,"Solution_%dx%d_%d.txt",row,col,best.fitness);
@@ -57,11 +76,12 @@ int main(int argc, char** argv) {
                 }
                 else {
                     escalation++;
-                    if (escalation>SOGLIA_ESCALATION){
+                    if (population->mutation>SOGLIA_ESCALATION){
                          sprintf(file,"Stats_%dx%d_%ld.txt",row,col,population->pop_dim);
                         write_evolution(population,file);
                         expand_population(pieces,npieces,population,row,col,border);
                         population->current_iteration=0;
+                        population->mutation=0;
                         escalation=0;
                         break;
                     }
