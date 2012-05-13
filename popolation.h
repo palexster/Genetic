@@ -25,7 +25,7 @@ extern "C" {
 #define RANGE_CAS (POP_DIM-ELITE)//numero di valori tra cui estrarre gli el casuali
                                //evitando di estrarre le sol tra 0 ed elite 
 #define N_MISURE 3 // MAX,MEDIA,VARIANZA 
-#define MAX_ITERATIONS  10000// MAX_NUMERO_DI_ITERAZIONI in realtà se continua a migliorare best potrebbe essere di
+#define MAX_ITERATIONS  50000// MAX_NUMERO_DI_ITERAZIONI in realtà se continua a migliorare best potrebbe essere di
  
     typedef enum {
                 MAX,
