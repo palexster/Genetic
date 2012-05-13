@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include "pieces.h"
 #include "popolation.h"
-#define SOGLIA_ESCALATION 20
+#define SOGLIA_ESCALATION 10
 #define MAXLENGTH 30
 
 #define TRUE  1
@@ -39,7 +39,6 @@ int main(int argc, char** argv) {
     char file[MAXLENGTH]; // stringa dove comporre il nome del nuovo file di record
     solution_t best;//contiene migliore soluzione trovata
     population_t *population; // puntatore a popolazione
-    char filename[50];
     FILE*fp;//scrivere file utili per i test per test
     
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
