@@ -46,8 +46,8 @@ unsigned char get_corner_fitting_rotation(int **pieces,unsigned char corner_inde
 unsigned char get_right_corner(int **pieces,unsigned char *corner_taken,unsigned char *corners);
 void get_right_border(int **pieces,solution_t *solution,unsigned char *taken,unsigned char *border_taken,unsigned char* border_pieces,int perimetro,int i,int j,int posizione);
 int get_border_fitting_rotation(int **pieces,int border_index, int bordo);
-unsigned char***matcp(solution_t sol,int row,int col);
-solution_t solution_copy(solution_t source,int row,int col);
+unsigned char***matalloc(int row,int col);
+void solution_copy(solution_t source,solution_t *dest,int row,int col);
 void random_rotate(solution_t *sol,int row,int col);
 
 #ifdef	__cplusplus

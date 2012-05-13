@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include "pieces.h"
 #include "popolation.h"
-#define SOGLIA_ESCALATION 10
+#define SOGLIA_ESCALATION 1
 #define MAXLENGTH 30
 
 #define TRUE  1
@@ -54,17 +54,17 @@ int main(int argc, char** argv) {
     escalation=0;
     //printf("Punteggio Massimo: %d\n",MAX_PT);
     sorted_popolation(population,pieces);
-    test_evolution(population,&best,MAX_PT);
     best.fitness=population->soluzioni[0].fitness;
-    best.matrice_pezzi=matcp(population->soluzioni[0],row,col);
+    best.matrice_pezzi=matalloc(row,col);
+    solution_copy(population->soluzioni[0],&best,row,col);
+    test_evolution(population,&best,MAX_PT);
     if(!(is_best(population,row,col))){
         while(population->pop_dim<=max_pop_dim)
         for(i=0;(i<MAX_ITERATIONS)&&(best.fitness!=MAX_PT);i++){
             temp=pop_evolution(pieces,npieces,population,row,col,border);
                 if(temp>best.fitness){
-                    dealloc_soluzioni(&best,row,col);
                     best.fitness=population->soluzioni[0].fitness;
-                    best.matrice_pezzi=matcp(population->soluzioni[0],row,col);
+                    solution_copy(population->soluzioni[0],&best,row,col);
                     escalation=0;
                     population->mutation=0;
                     if (best.fitness>record){

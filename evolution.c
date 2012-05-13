@@ -63,8 +63,8 @@ void offspring_generation(int **pieces,int npieces,population_t *pop,long *paren
         //offspring[i++].fitness=-1;
         //offspring[i++].fitness=-1;
         //END DEBUG
-        offspring[i]=build_solution(row,col);
-        offspring[j]=build_solution(row,col);
+        offspring[i].matrice_pezzi=matalloc(row,col);
+        offspring[j].matrice_pezzi=matalloc(row,col);
         crossover(&pop->soluzioni[parents[gen[0]]-1],&pop->soluzioni[parents[gen[1]]-1],&offspring[i],&offspring[j],pieces,npieces,row,col);
         offspring[i].fitness=fitness_solution_evaluation(pieces,&offspring[i],npieces,row,col);
         //printf("Valore fitness figlio %d: %d\n",i,offspring[i].fitness);
@@ -80,7 +80,7 @@ void sub1(population_t *pop,solution_t *offspring,int row, int col){
     char *chosen=(char *)malloc(sizeof(char)*pop->pop_dim);//vettore di flag per tenere conto che la sol i è già 
                          //estratta (già sostituita
     long i,cnt;//i indice vettore soluz cnt indice di offspring in sostituzione(max val GEN_N-1))
-    double  tmp_rnd,//tmp_rnd per estraz in sostituzione
+    float  tmp_rnd,//tmp_rnd per estraz in sostituzione
             sum_inv_fit,//somma di 1/fitness per sol nella pop
             pi;// pi=(1/fitness)/sum_inv_fit prob con cui el è sostituito
     
@@ -88,7 +88,7 @@ void sub1(population_t *pop,solution_t *offspring,int row, int col){
     sum_inv_fit=0;
     for(i=0;i<pop->pop_dim;i++){
         chosen[i]=FALSE;
-        sum_inv_fit+=(double)1/(double)pop->soluzioni[i].fitness;
+        sum_inv_fit+=(float)1/(float)pop->soluzioni[i].fitness;
     }
     //SOSTITUZIONE PUÒ ESSERE DA RIPENSARE IN OGNI CASO SOLO 1 DELLE 2 DA USARE!
     /*Sostituzione: tutti i figli sono inseriti, scegliendo a caso gli elementi
@@ -103,8 +103,8 @@ void sub1(population_t *pop,solution_t *offspring,int row, int col){
     cnt=0;
     for(i=0;cnt<pop->gen_n;i=((i+1)%pop->pop_dim)){
         //vedi ex knapsack di perboli(metaheuristics-ga)
-        tmp_rnd=(double)rand()/(double)RAND_MAX;//=(n_random/rand_max)*(1/sum_inv_fit)
-        pi=((double)1/(double)pop->soluzioni[i].fitness);//=(1/fitness)*(1/sum_inv_fit)
+        tmp_rnd=(float)rand()/(float)RAND_MAX;//=(n_random/rand_max)*(1/sum_inv_fit)
+        pi=((float)1/(float)pop->soluzioni[i].fitness);//=(1/fitness)*(1/sum_inv_fit)
         if((!chosen[i])&&(tmp_rnd<pi)){
             //rilascia la mem per la matrice dei pezzi della sol da sostiutuire
             dealloc_soluzioni(&pop->soluzioni[i],row,col);

@@ -20,7 +20,7 @@ population_t *build_population(int **pieces,int *border,int npieces,int row,int 
         exit(2);
     }
     for(i=0;i<POP_DIM;i++){
-        popolazione_start->soluzioni[i]=build_solution(row,col);
+        popolazione_start->soluzioni[i].matrice_pezzi=matalloc(row,col);
         //genera una popolazione di soluzioni casuali
         //printf("Allocazione soluzione numero %d\n",i);
         random_solution_generation(&popolazione_start->soluzioni[i],border,pieces,row*col,row,col);
@@ -1208,7 +1208,7 @@ void expand_population(int **pieces,int npieces,population_t *pop,int row,int co
 */
     }
     for(i=old;i<pop->pop_dim;i++){
-         sol_array[i]= build_solution(row,col);
+         sol_array[i].matrice_pezzi= matalloc(row,col);
         random_solution_generation(&sol_array[i],border,pieces,npieces,row,col);
          sol_array[i].fitness=fitness_solution_evaluation(pieces,&(sol_array[i]),npieces,row,col);
     }

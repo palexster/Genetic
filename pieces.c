@@ -469,7 +469,7 @@ unsigned char get_corner_fitting_rotation(int **pieces,unsigned char corner_inde
     return rotation;
 }
 /*funzione che copia la matrice di una sol*/
-unsigned char***matcp(solution_t sol,int row,int col){
+unsigned char***matalloc(int row,int col){
     unsigned char ***m,i,j;
     m=(unsigned char ***)malloc(sizeof(unsigned char**)*row);
     if(m==NULL){
@@ -488,18 +488,21 @@ unsigned char***matcp(solution_t sol,int row,int col){
                 fprintf(stderr,"build_solution()-errore in malloc() di solution->matrice_pezzi[%d][%d].\n",i,j);
                 exit(2);
             }
-           m[i][j][0]=sol.matrice_pezzi[i][j][0];
-           m[i][j][1]=sol.matrice_pezzi[i][j][1];
         }
     }
     return(m);
 }
 
-solution_t solution_copy(solution_t source,int row,int col){
-    solution_t dest;
-    dest.fitness=source.fitness;
-    dest.matrice_pezzi=matcp(source,row,col);
-    return (dest);
+void solution_copy(solution_t source,solution_t *dest,int row,int col){
+    int i,j;
+    dest->fitness=source.fitness;
+    //dest.matrice_pezzi=matcp(source,row,col);
+      for(i=0;i<row;i++)
+            for(j=0;j<col;j++){
+           dest->matrice_pezzi[i][j][0]=source.matrice_pezzi[i][j][0];
+           dest->matrice_pezzi[i][j][1]=source.matrice_pezzi[i][j][1];
+      }
+    return;
 }
 
  void random_rotate(solution_t *sol,int row,int col){
