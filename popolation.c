@@ -92,7 +92,9 @@ void quick_sort(solution_t *array, int l, int r, int (*cmp)(solution_t lv, solut
 }
 
 void dealloc_population(population_t *pop,int row,int col){
-    dealloc_soluzioni(pop->soluzioni,row,col);
+    int i;
+    for(i=0;i<pop->pop_dim;i++)
+        dealloc_soluzioni(&pop->soluzioni[i],row,col);
     free(pop->soluzioni);
     //free(pop);
     return;

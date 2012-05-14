@@ -162,8 +162,8 @@ void mutation(int **pieces,int npieces,population_t *pop,int row, int col,int *b
     int caso;
     int ordine,starting;
     if (rand()%2){
-    ordine=(int)log10(pop->pop_dim);
-    starting=pow(10,ordine);
+        ordine=(int)log10(pop->pop_dim);
+        starting=pow(10,ordine);
     }
     else
     {

@@ -65,7 +65,8 @@
       </toolsSet>
       <compileType>
         <cTool>
-          <developmentMode>5</developmentMode>
+          <developmentMode>0</developmentMode>
+          <commandLine>-fopenmp</commandLine>
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
@@ -76,6 +77,12 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerLibStdlibItem>Mathematics</linkerLibStdlibItem>
+          </linkerLibItems>
+          <commandLine>-lgomp -pthread</commandLine>
+        </linkerTool>
       </compileType>
     </conf>
   </confs>
