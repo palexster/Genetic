@@ -6,6 +6,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "pieces.h"
 #include "popolation.h"
 #define SOGLIA_ESCALATION 25
@@ -48,8 +49,8 @@ int main(int argc, char** argv) {
         fprintf(stderr,"Usage: %s input_file output_file record max_dim_pop [--debug]",argv[0]);
         exit(2);
     } 
-    if (argv[6] != NULL){
-        if (argv[6] == "--debug")
+    if (argc==6){
+        if (!strcmp(argv[5],"--debug"))
             debug=TRUE;
     }
     max_pop_dim=atoi(argv[4]);
@@ -85,7 +86,10 @@ int main(int argc, char** argv) {
                     if (population->mutation>SOGLIA_ESCALATION){
                          sprintf(file,"Stats_%dx%d_%ld.txt",row,col,population->pop_dim);
                         write_evolution(population,file);
+			printf("----------------------\n");
+			printf("Population Expanded\n");
                         expand_population(pieces,npieces,population,row,col,border);
+			printf("New Population is %ld\n",population->pop_dim);
                         population->current_iteration=0;
                         population->mutation=0;
                         escalation=0;
@@ -95,7 +99,7 @@ int main(int argc, char** argv) {
                 test_evolution(population,&best,MAX_PT,debug);
                 if (new_best && !debug){
                     printf("--------\n");
-                        printf(" New best solution found: %d\n Population Dimension: %ld\n Iteration %d\n Average Population %.2f \n", best.fitness,population->pop_dim,population->current_iteration,population->bests[1][MEDIA]);
+                        printf(" New best solution found: %ld\n Population Dimension: %ld\n Iteration %d\n Average Population %.2f \n", best.fitness,population->pop_dim,population->current_iteration,population->bests[1][MEDIA]);
                         new_best=FALSE;
                 }
        }

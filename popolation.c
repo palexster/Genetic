@@ -37,7 +37,7 @@ population_t *build_population(int **pieces,int *border,int npieces,int row,int 
 
 void test_fitness(population_t *pop){
     int i,max=0,idmax=0;
-    float media,varianza,totale;
+    double media,varianza,totale;
     //printf("Qual è la miglior soluzione?\n");
     if (pop->current_iteration){
          pop->bests[0][MAX]=pop->bests[1][MAX];
@@ -52,11 +52,11 @@ void test_fitness(population_t *pop){
         totale+=pop->soluzioni[i].fitness;
        // printf("Soluzione %d --> %d\n",i,pop->soluzioni[i].fitness);
     }
-    media =(float) totale / pop->pop_dim;
+    media =(double) totale / pop->pop_dim;
     for(i=0;i<pop->pop_dim;i++){
         varianza += pow((pop->soluzioni[i].fitness - media),2); 
     }
-    varianza =sqrt((float)varianza / (pop->pop_dim-1));
+    varianza =sqrt((double)varianza / (pop->pop_dim-1));
     pop->bests[1][MAX]=max;
     pop->bests[1][MEDIA]=media;
     pop->bests[1][VARIANZA]=varianza;  
@@ -159,7 +159,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,in
     offspring_generation(pieces,npieces,pop,parents,offspring,row,col);
     substitution(pop,offspring,row,col);
     sorted_popolation(pop,pieces);
-    if ((pop->bests[0][VARIANZA]< 0.1)||((pop->bests[1][VARIANZA]< 0.1))&&(pop->bests[0][MEDIA]>(pop->bests[0][MAX]-1))){
+    if ((pop->bests[0][VARIANZA]< 1)&&((pop->bests[1][VARIANZA]< 0.1))){//&&(pop->bests[0][MEDIA]>(pop->bests[0][MAX]-1))){
         mutation(pieces,npieces,pop,row,col,border);
         sorted_popolation(pop,pieces);
         }

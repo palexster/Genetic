@@ -35,8 +35,8 @@ extern "C" {
     
 typedef struct population_s {
     solution_t *soluzioni;
-    float bests[2][N_MISURE]; // Vettore per registrare i valore dei massimi durante l'evoluzione
-    int current_iteration; // numero dell'iterazione corrente
+    double bests[2][N_MISURE]; // Vettore per registrare i valore dei massimi durante l'evoluzione
+    long current_iteration; // numero dell'iterazione corrente
     long pop_dim;// dimensione popolazione
     long gen_n;//numero genitori è metà della popolazione
                                    //deve essere pari percui se è dispari somma 1
