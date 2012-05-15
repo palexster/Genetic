@@ -84,12 +84,12 @@ int main(int argc, char** argv) {
                 else {
                     escalation++;
                     if (population->mutation>SOGLIA_ESCALATION){
-                         sprintf(file,"Stats_%dx%d_%ld.txt",row,col,population->pop_dim);
-                        write_evolution(population,file);
-			printf("----------------------\n");
-			printf("Population Expanded\n");
+                         //sprintf(file,"Stats_%dx%d_%ld.txt",row,col,population->pop_dim);
+                        //write_evolution(population,file);
+	printf("--------\n");
+	printf("Population will be expanded\n");
                         expand_population(pieces,npieces,population,row,col,border);
-			printf("New Population is %ld\n",population->pop_dim);
+	printf("New Population is %ld\n",population->pop_dim);
                         population->current_iteration=0;
                         population->mutation=0;
                         escalation=0;
@@ -100,12 +100,12 @@ int main(int argc, char** argv) {
                 if (new_best && !debug){
                     printf("--------\n");
                         printf(" New best solution found: %ld\n Population Dimension: %ld\n Iteration %d\n Average Population %.2f \n", best.fitness,population->pop_dim,population->current_iteration,population->bests[1][MEDIA]);
+                        printf(" Percentage: %.2f\n", (float)100*best.fitness/MAX_PT);
                         new_best=FALSE;
                 }
        }
     }
     write_best_solution(argv[2],best,row,col);
-    //write_evolution(population,argv[3]);
     //deallocazione memoria heap
     dealloc_population(population,row,col);
     dealloc_soluzioni(&best,row,col);
