@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=GeneticReloaded
+PROJECTNAME=Genetic
 
 # Active Configuration
 DEFAULTCONF=Debug

@@ -58,11 +58,11 @@ LDLIBSOPTIONS=-lm
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/geneticreloaded
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/genetic
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/geneticreloaded: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/genetic: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.c} -lgomp -pthread -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/geneticreloaded ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	${LINK.c} -lgomp -pthread -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/genetic ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/pieces.o: pieces.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -90,7 +90,7 @@ ${OBJECTDIR}/popolation.o: popolation.c
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/geneticreloaded
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/genetic
 
 # Subprojects
 .clean-subprojects:
