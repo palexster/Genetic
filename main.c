@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include "pieces.h"
 #include "popolation.h"
-#define SOGLIA_ESCALATION 20
+#define SOGLIA_ESCALATION 25
 #define MAXLENGTH 30
 
 #define TRUE  1

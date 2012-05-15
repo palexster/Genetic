@@ -159,7 +159,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,in
     offspring_generation(pieces,npieces,pop,parents,offspring,row,col);
     substitution(pop,offspring,row,col);
     sorted_popolation(pop,pieces);
-    if ((pop->bests[0][VARIANZA]< 0.1)||((pop->bests[1][VARIANZA]< 0.1))){//&&(pop->bests[0][MEDIA]>(pop->bests[0][MAX]-1))){
+    if ((pop->bests[0][VARIANZA]< 0.1)||((pop->bests[1][VARIANZA]< 0.1))&&(pop->bests[0][MEDIA]>(pop->bests[0][MAX]-1))){
         mutation(pieces,npieces,pop,row,col,border);
         sorted_popolation(pop,pieces);
         }
