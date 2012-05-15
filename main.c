@@ -28,7 +28,9 @@ int main(int argc, char** argv) {
    (void) omp_set_num_threads(2);
 #endif
     int row,col;//numero righe e colonne matrice dei pezzi
-    int npieces,//numero pezzi
+    int new_best, 
+        debug=FALSE, // flag per attivare le stampe nella funzione di test 
+        npieces,//numero pezzi
         *border,// vettore dei pezzi di bordo di npieces el.per ogni pezzo dice se è di bordo.val è pari al num di trinagoli grigi(0=centro,1=bordo,2=angolo)
             temp, // massimo di una generazione
             escalation, // contiene il numero di iterazioni non miglioranti consecutive
@@ -42,10 +44,14 @@ int main(int argc, char** argv) {
     FILE*fp;//scrivere file utili per i test per test
     
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
-    if (argc != 5){
-        fprintf(stderr,"Usage: %s input_file output_file record max_dim_pop",argv[0]);
+    if (argc<6 && argc >5){
+        fprintf(stderr,"Usage: %s input_file output_file record max_dim_pop [--debug]",argv[0]);
         exit(2);
     } 
+    if (argv[6] != NULL){
+        if (argv[6] == "--debug")
+            debug=TRUE;
+    }
     max_pop_dim=atoi(argv[4]);
     record=atoi(argv[3]);
     pieces=build_pieces(argv[1],&border,&npieces,&row,&col);
@@ -57,7 +63,7 @@ int main(int argc, char** argv) {
     best.fitness=population->soluzioni[0].fitness;
     best.matrice_pezzi=matalloc(row,col);
     solution_copy(population->soluzioni[0],&best,row,col);
-    test_evolution(population,&best,MAX_PT);
+    test_evolution(population,&best,MAX_PT,debug);
     if(!(is_best(population,row,col))){
         while(population->pop_dim<=max_pop_dim)
         for(i=0;(i<MAX_ITERATIONS)&&(best.fitness!=MAX_PT);i++){
@@ -65,6 +71,7 @@ int main(int argc, char** argv) {
                 if(temp>best.fitness){
                     best.fitness=population->soluzioni[0].fitness;
                     solution_copy(population->soluzioni[0],&best,row,col);
+                    new_best=TRUE;
                     escalation=0;
                     population->mutation=0;
                     if (best.fitness>record){
@@ -85,8 +92,13 @@ int main(int argc, char** argv) {
                         break;
                     }
                 }
-                test_evolution(population,&best,MAX_PT);
-        }
+                test_evolution(population,&best,MAX_PT,debug);
+                if (new_best && !debug){
+                    printf("--------\n");
+                        printf(" New best solution found: %d\n Population Dimension: %ld\n Iteration %d\n Average Population %.2f \n", best.fitness,population->pop_dim,population->current_iteration,population->bests[1][MEDIA]);
+                        new_best=FALSE;
+                }
+       }
     }
     write_best_solution(argv[2],best,row,col);
     //write_evolution(population,argv[3]);

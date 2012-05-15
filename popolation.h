@@ -35,7 +35,7 @@ extern "C" {
     
 typedef struct population_s {
     solution_t *soluzioni;
-    float bests[MAX_ITERATIONS+1][N_MISURE]; // Vettore per registrare i valore dei massimi durante l'evoluzione
+    float bests[2][N_MISURE]; // Vettore per registrare i valore dei massimi durante l'evoluzione
     int current_iteration; // numero dell'iterazione corrente
     long pop_dim;// dimensione popolazione
     long gen_n;//numero genitori è metà della popolazione
@@ -59,7 +59,7 @@ void crossover_bordo(short signed int **kernelPieces,solution_t *sol1, solution_
 int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,int *border);
 int get_best(population_t* pop);
 int is_best(population_t* pop,int row,int col);
-void test_evolution(population_t *pop,solution_t *best,const int MAX_PT);
+void test_evolution(population_t *pop,solution_t *best,const int MAX_PT,int debug);
 void write_best_solution(char *nomefile,solution_t sol,int row,int col);
 
 #ifdef	__cplusplus
