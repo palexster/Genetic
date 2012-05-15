@@ -49,6 +49,7 @@
       <compileType>
         <cTool>
           <commandLine>-fopenmp</commandLine>
+          <warningLevel>0</warningLevel>
         </cTool>
         <linkerTool>
           <linkerLibItems>

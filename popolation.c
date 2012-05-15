@@ -37,8 +37,13 @@ population_t *build_population(int **pieces,int *border,int npieces,int row,int 
 
 void test_fitness(population_t *pop){
     int i,max=0,idmax=0;
-    float media,varianza,totale;
+    double media,varianza,totale;
     //printf("Qual è la miglior soluzione?\n");
+    if (pop->current_iteration){
+         pop->bests[0][MAX]=pop->bests[1][MAX];
+        pop->bests[0][MEDIA]=pop->bests[1][MEDIA];
+        pop->bests[0][VARIANZA]=pop->bests[1][VARIANZA];
+    }
     for(i=0;i<pop->pop_dim;i++){
         if ((pop->soluzioni[i].fitness)>max){
             max=pop->soluzioni[i].fitness;
@@ -47,14 +52,14 @@ void test_fitness(population_t *pop){
         totale+=pop->soluzioni[i].fitness;
        // printf("Soluzione %d --> %d\n",i,pop->soluzioni[i].fitness);
     }
-    media =(float) totale / pop->pop_dim;
+    media =(double) totale / pop->pop_dim;
     for(i=0;i<pop->pop_dim;i++){
         varianza += pow((pop->soluzioni[i].fitness - media),2); 
     }
-    varianza =sqrt((float)varianza / (pop->pop_dim-1));
-    pop->bests[pop->current_iteration][MAX]=max;
-    pop->bests[pop->current_iteration][MEDIA]=media;
-    pop->bests[pop->current_iteration][VARIANZA]=varianza;  
+    varianza =sqrt((double)varianza / (pop->pop_dim-1));
+    pop->bests[1][MAX]=max;
+    pop->bests[1][MEDIA]=media;
+    pop->bests[1][VARIANZA]=varianza;  
     //printf("MAX  --> %f\n", pop->bests[pop->current_iteration][MAX]);
 }
 
@@ -154,7 +159,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,in
     offspring_generation(pieces,npieces,pop,parents,offspring,row,col);
     substitution(pop,offspring,row,col);
     sorted_popolation(pop,pieces);
-    if ((pop->bests[(pop->current_iteration)-1][VARIANZA]< 0.1)||((pop->bests[(pop->current_iteration)-1][VARIANZA]< 0.1))&&(pop->bests[(pop->current_iteration)-1][MEDIA]>(pop->bests[pop->current_iteration-1][MAX]-1))){
+    if ((pop->bests[0][VARIANZA]< 1)&&((pop->bests[1][VARIANZA]< 0.1))){//&&(pop->bests[0][MEDIA]>(pop->bests[0][MAX]-1))){
         mutation(pieces,npieces,pop,row,col,border);
         sorted_popolation(pop,pieces);
         }
@@ -1148,24 +1153,22 @@ void write_best_solution(char *nomefile,solution_t sol,int row,int col) {
 
 /* Funzione per visualizzare l'andamento dell'evoluzione durante l'esecuzione del software*/
 
-void test_evolution(population_t *pop,solution_t *best,int MAX_PT){
+void test_evolution(population_t *pop,solution_t *best,int MAX_PT,int debug){
     test_fitness(pop);
-    printf("-----------------------------------------------------------------\n");
-    printf("-----------------------------------------------------------------\n");
-    if (pop->current_iteration==MAX_ITERATIONS)
-        printf("RISULTATO FINALE\n");
-    printf("Evoluzione: Generazione %d\n", pop->current_iteration );
-    printf("Dimensione popolazione: %ld\n", pop->pop_dim);
-    printf("Media Popolazione: %.2f \t Varianza Popolazione: %.2f \n",pop->bests[pop->current_iteration][MEDIA],pop->bests[pop->current_iteration][VARIANZA]);
-    printf("Miglior Soluzione Corrente punti: %d\n",(int)pop->bests[pop->current_iteration][MAX]);
-    printf("Miglior Soluzione Corrente punti: %d\n",(int)best->fitness);
-    printf("Punteggio Massimo: %d\n",MAX_PT);
-    printf("Percentuale totale: %.2f\n",(float)best->fitness*100/MAX_PT);
-    if (pop->current_iteration  > 0){
+    if (debug){
+    printf("Evolution: Generation %d\n", pop->current_iteration );
+    printf("Population dimension: %ld\n", pop->pop_dim);
+    printf("Population average: %.2f \tStandard deviation: %.2f \n",pop->bests[1][MEDIA],pop->bests[1][VARIANZA]);
+    printf("Current best solution: %d points\n",(int)pop->bests[1][MAX]);
+    printf("Best solution: %d points\n",(int)best->fitness);
+    printf("Max score: %d\n",MAX_PT);
+    printf("Solution percentage: %.2f\n",(float)best->fitness*100/MAX_PT);
+    if (pop->current_iteration){
                 printf("-----------------------------------------------------------------\n");
-                printf("Evoluzione parametri %d --> %d\n", pop->current_iteration-1, pop->current_iteration );
-                printf("Variazione Media Popolazione: %.2f \t Variazione Varianza Popolazione: %.2f \n",(pop->bests[pop->current_iteration][MEDIA]-pop->bests[pop->current_iteration-1][MEDIA]),(pop->bests[pop->current_iteration][VARIANZA]-pop->bests[pop->current_iteration-1][VARIANZA]));
-                printf("Variazione Miglior Soluzione punti: %d\n",(int)pop->bests[pop->current_iteration][MAX]-(int)pop->bests[pop->current_iteration-1][MAX]);
+                printf("Evolution parametrers %d --> %d\n", pop->current_iteration-1, pop->current_iteration );
+                printf("Average variation: %.2f \t :Standard deviation %.2f \n",(pop->bests[1][MEDIA]-pop->bests[0][MEDIA]),(pop->bests[1][VARIANZA]-pop->bests[0][VARIANZA]));
+                printf("Best variation: %d\n",(int)pop->bests[1][MAX]-(int)pop->bests[0][MAX]);
+    }
     }
     ++pop->current_iteration;
 }
