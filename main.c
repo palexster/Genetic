@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
     FILE*fp;//scrivere file utili per i test per test
     
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
-    if (argc<6 && argc >5){
+    if (argc<5 ||  argc >6){
         fprintf(stderr,"Usage: %s input_file output_file record max_dim_pop [--debug]",argv[0]);
         exit(2);
     } 
