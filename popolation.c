@@ -1163,7 +1163,7 @@ void test_evolution(population_t *pop,solution_t *best,int MAX_PT,int debug){
     printf("Best solution: %d points\n",(int)best->fitness);
     printf("Max score: %d\n",MAX_PT);
     printf("Solution percentage: %.2f\n",(float)best->fitness*100/MAX_PT);
-      printf("Mutation attempt: %d",population->mutation);
+      printf("Mutation attempt: %d",pop->mutation);
     if (pop->current_iteration){
                 printf("-----------------------------------------------------------------\n");
                 printf("Evolution parametrers %d --> %d\n", pop->current_iteration-1, pop->current_iteration );
