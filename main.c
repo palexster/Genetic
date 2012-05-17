@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
     test_evolution(population,&best,MAX_PT,debug);
     if(!(is_best(population,row,col))){
         while(population->pop_dim<=max_pop_dim)
-        for(i=0;(i<MAX_ITERATIONS)&&(best.fitness!=MAX_PT);i++){
+        for(i=0;best.fitness!=MAX_PT;i++){
             temp=pop_evolution(pieces,npieces,population,row,col,border,mutation_elite);
                 if(temp>best.fitness){
                     best.fitness=population->soluzioni[0].fitness;

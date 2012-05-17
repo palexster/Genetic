@@ -24,9 +24,8 @@ extern "C" {
 //#define CASUALI (GEN_N-ELITE)//genitori da scegliere a caso (sol 0-elite)
 #define RANGE_CAS (POP_DIM-ELITE)//numero di valori tra cui estrarre gli el casuali
                                //evitando di estrarre le sol tra 0 ed elite 
-#define N_MISURE 3 // MAX,MEDIA,VARIANZA 
-#define MAX_ITERATIONS  50000// MAX_NUMERO_DI_ITERAZIONI in realtà se continua a migliorare best potrebbe essere di
- 
+#define N_MISURE 3 // MAX,MEDIA,VARIANZA  
+    
     typedef enum {
                 MAX,
                 MEDIA,
@@ -42,7 +41,6 @@ typedef struct population_s {
                                    //deve essere pari percui se è dispari somma 1
     long elite; //numero di migliori tra i genitori
     long mutation;
-    long soglia_escaltion;
 } population_t;
 
 //boolean val
