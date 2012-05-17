@@ -17,10 +17,10 @@ extern "C" {
 #include "pieces.h"
 
     
-#define POP_DIM 5000
+#define POP_DIM 100
 #define GEN_N (POP_DIM/2+(POP_DIM/2)%2)//numero genitori è metà della popolazione
                                    //deve essere pari percui se è dispari somma 1
-#define ELITE (POP_DIM/3)//numero di migliori tra i genitori (è pari)
+#define ELITE (POP_DIM/2)//numero di migliori tra i genitori (è pari)
 //#define CASUALI (GEN_N-ELITE)//genitori da scegliere a caso (sol 0-elite)
 #define RANGE_CAS (POP_DIM-ELITE)//numero di valori tra cui estrarre gli el casuali
                                //evitando di estrarre le sol tra 0 ed elite 
@@ -56,7 +56,7 @@ void dealloc_population(population_t *pop,int row,int col);
 void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2,int**pieces, int npieces, int row, int col);
 void crossover_centro(short signed int **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col);
 void crossover_bordo(short signed int **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2,int**pieces, int npieces, int row, int col);
-int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,int *border);
+int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,int *border,float *mutation_elite);
 int get_best(population_t* pop);
 int is_best(population_t* pop,int row,int col);
 void test_evolution(population_t *pop,solution_t *best,const int MAX_PT,int debug);

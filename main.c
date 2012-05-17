@@ -9,9 +9,9 @@
 #include <string.h>
 #include "pieces.h"
 #include "popolation.h"
-#define SOGLIA_ESCALATION 25
+#define SOGLIA_ESCALATION 10
 #define MAXLENGTH 30
-
+#define NUMERO_THREAD 2
 #define TRUE  1
 #define FALSE 0
 
@@ -26,8 +26,9 @@ int main(int argc, char** argv) {
     #ifdef _OPENMP
    (void) omp_set_dynamic(FALSE);
    if (omp_get_dynamic()) {printf("Warning: dynamic adjustment of threads has been set\n");}
-   (void) omp_set_num_threads(2);
+   (void) omp_set_num_threads(NUMERO_THREAD);
 #endif
+   float mutation_elite[5]={0.5,0.10,0.10,0.45,0.5};;
     int row,col;//numero righe e colonne matrice dei pezzi
     int new_best, 
         debug=FALSE, // flag per attivare le stampe nella funzione di test 
@@ -68,7 +69,7 @@ int main(int argc, char** argv) {
     if(!(is_best(population,row,col))){
         while(population->pop_dim<=max_pop_dim)
         for(i=0;(i<MAX_ITERATIONS)&&(best.fitness!=MAX_PT);i++){
-            temp=pop_evolution(pieces,npieces,population,row,col,border);
+            temp=pop_evolution(pieces,npieces,population,row,col,border,mutation_elite);
                 if(temp>best.fitness){
                     best.fitness=population->soluzioni[0].fitness;
                     solution_copy(population->soluzioni[0],&best,row,col);
@@ -92,8 +93,7 @@ int main(int argc, char** argv) {
 	printf("New Population is %ld\n",population->pop_dim);
                         population->current_iteration=0;
                         population->mutation=0;
-                        if (population->elite<24/50)
-                                population->elite+=1/10;
+                        population->elite=mutation_elite[5]*population->pop_dim; // imposto l'elite iniziale ( solo le soluzioni migliori)
                         escalation=0;
                         break;
                     }
