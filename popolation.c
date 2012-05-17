@@ -142,7 +142,7 @@ int is_best(population_t* pop,int row,int col){
  3)    Sostituzione:la dim della pop rimane costante e tutti i figli vengono
         inseriti, quindi ogni generazione un 50% degli elementi muore ed è
         sostituito dai figli*/
-int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,int *border){
+int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,int *border,float *mutation_elite){
     long *parents=(long *)malloc(sizeof(long)*pop->gen_n);//vettore dell soluzioni scelte come parenti tra cui
                              //estrarre le coppie di genitori per crossover
                              //la soluzione è memorizzata come indice nel vettore
@@ -152,14 +152,17 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,in
                              //E' usata nche per tenere conto dell'estarazione 
                              //per la scelta degli accoppiamenti se val positivo
                              //allora già estratto
-    solution_t *offspring=(solution_t *)malloc(sizeof(solution_t)*pop->gen_n);;//vettore dei figli
-    
-   //printf("Entro in Pop Evolution\n");
+    solution_t *offspring=(solution_t *)malloc(sizeof(solution_t)*pop->gen_n);//vettore dei figli
     parent_selection(parents,pop);
     offspring_generation(pieces,npieces,pop,parents,offspring,row,col);
     substitution(pop,offspring,row,col);
     sorted_popolation(pop,pieces);
-    if ((pop->bests[0][VARIANZA]< 1)&&((pop->bests[1][VARIANZA]< 0.1))){//&&(pop->bests[0][MEDIA]>(pop->bests[0][MAX]-1))){
+    //Setting up mutation
+    if (pop->bests[1][VARIANZA] >= 6 || pop->bests[1][VARIANZA] <= 0 )
+        pop->elite=mutation_elite[5]*pop->pop_dim;
+    else
+        pop->elite=mutation_elite[(int)pop->bests[1][VARIANZA]]*pop->pop_dim;
+    if ((pop->bests[0][VARIANZA]< 1)&&((pop->bests[1][VARIANZA]< 0.1))){
         mutation(pieces,npieces,pop,row,col,border);
         sorted_popolation(pop,pieces);
         }
@@ -1163,12 +1166,13 @@ void test_evolution(population_t *pop,solution_t *best,int MAX_PT,int debug){
     printf("Best solution: %d points\n",(int)best->fitness);
     printf("Max score: %d\n",MAX_PT);
     printf("Solution percentage: %.2f\n",(float)best->fitness*100/MAX_PT);
-      printf("Mutation attempt: %d",population->mutation);
+    printf("Mutation attempt: %d\n",pop->mutation);
     if (pop->current_iteration){
                 printf("-----------------------------------------------------------------\n");
                 printf("Evolution parametrers %d --> %d\n", pop->current_iteration-1, pop->current_iteration );
                 printf("Average variation: %.2f \t :Standard deviation %.2f \n",(pop->bests[1][MEDIA]-pop->bests[0][MEDIA]),(pop->bests[1][VARIANZA]-pop->bests[0][VARIANZA]));
                 printf("Best variation: %d\n",(int)pop->bests[1][MAX]-(int)pop->bests[0][MAX]);
+                printf("-----------------------------------------------------------------\n");
     }
     }
     ++pop->current_iteration;
