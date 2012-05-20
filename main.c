@@ -98,8 +98,8 @@ int main(int argc, char** argv) {
                 test_evolution(population,&best,MAX_PT,debug);
                 if (new_best && !debug){
                     printf("--------\n");
-                        printf(" New best solution found: %d\n Population Dimension: %ld\n Iteration %ld\n Average Population %.2f \n", best.fitness,population->pop_dim,population->current_iteration,population->bests[1][MEDIA]);
-                        printf(" Percentage: %.2f\n", (float)100*best.fitness/MAX_PT);
+                        printf(" New best solution found: %d\n Population Dimension: %ld\n Iteration %ld\n Average Population %3.2f \n", best.fitness,population->pop_dim,population->current_iteration,population->bests[1][MEDIA]);
+                        printf(" Percentage: %3.2f\n", (float)100*best.fitness/MAX_PT);
                         printf("Mutation attempt: %ld",population->mutation);
                         new_best=FALSE;
                 }
