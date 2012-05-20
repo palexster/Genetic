@@ -58,11 +58,6 @@ void offspring_generation(int **pieces,int npieces,population_t *pop,long *paren
                 parents[tmp]*=-1;
         }
       }
-        //DEBUG
-        //printf("gen:%ld %ld\n",gen[0],gen[1]);
-        //offspring[i++].fitness=-1;
-        //offspring[i++].fitness=-1;
-        //END DEBUG
         offspring[i].matrice_pezzi=matalloc(row,col);
         offspring[j].matrice_pezzi=matalloc(row,col);
         crossover(&pop->soluzioni[parents[gen[0]]-1],&pop->soluzioni[parents[gen[1]]-1],&offspring[i],&offspring[j],pieces,npieces,row,col);
@@ -120,8 +115,7 @@ void sub2(population_t *pop,solution_t *offspring,int row, int col){
                          //estratta (già sostituita
     long i,cnt;//i indice vettore soluz cnt indice di offspring in sostituzione(max val GEN_N-1))
     double  tmp_rnd,//tmp_rnd per estraz in sostituzione
-            sum_inv_fit,//somma di 1/fitness per sol nella pop
-            pi;// pi=(1/fitness)/sum_inv_fit prob con cui el è sostituito
+            sum_inv_fit;//somma di 1/fitness per sol nella pop
     double *distribution=(double *)malloc(sizeof(double)*pop->pop_dim);;//contiene distrib di probabilità della pop per decidere che el sostituire 
     
     /*inizializzazione flag e calcolo somma inversi della fitness*/
@@ -159,7 +153,6 @@ void substitution(population_t *pop,solution_t *offspring,int row, int col){
  */
 void mutation(int **pieces,int npieces,population_t *pop,int row, int col,int *border){
     long l;//indice per scorrere la matrice di soluzioni nella mutazione
-    int caso;
     int ordine,starting;
     if (rand()%2){
         ordine=(int)log10(pop->pop_dim);
@@ -177,28 +170,11 @@ void mutation(int **pieces,int npieces,population_t *pop,int row, int col,int *b
     //fprintf(stderr,"C'è stata una mutazione");
 }
 
-/*
-void light_mutation(int **pieces,int npieces,population_t *pop,int row, int col,int *border){
-    long l;//indice per scorrere la matrice di soluzioni nella mutazione 
-    for(l=pop->pop_dim/10;l<pop->pop_dim-1;l++){ // POP
-        random_rotate(&(pop->soluzioni[l]),row,col);
-                }
-}
-*/
-
 void light_mutation(int **pieces,int npieces,population_t *pop,int row, int col,int *border){
     long i;//i indice vettore soluz cnt indice di offspring in sostituzione(max val GEN_N-1))
     double  tmp_rnd,//tmp_rnd per estraz in sostituzione
-            sum_inv_fit,//somma di 1/fitness per sol nella pop
             pi;
     
-    //elite=POP_DIM/6;
-/*
-    sum_inv_fit=0;
-    for(i=0;i<pop->pop_dim;i++){
-        sum_inv_fit+=(double)1/(double)pop->soluzioni[i].fitness;
-    }
-*/
     for(i=0;i<pop->pop_dim;i++){
         //vedi ex knapsack di perboli(metaheuristics-ga)
         tmp_rnd=(double)rand()/(double)RAND_MAX;//=(n_random/rand_max)*(1/sum_inv_fit)

@@ -61,6 +61,8 @@ int get_best(population_t* pop);
 int is_best(population_t* pop,int row,int col);
 void test_evolution(population_t *pop,solution_t *best,const int MAX_PT,int debug);
 void write_best_solution(char *nomefile,solution_t sol,int row,int col);
+void sorted_popolation(population_t *pop);
+void expand_population(int **pieces,int npieces,population_t *pop,int row,int col,int *border);
 
 #ifdef	__cplusplus
 }

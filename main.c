@@ -43,7 +43,6 @@ int main(int argc, char** argv) {
     char file[MAXLENGTH]; // stringa dove comporre il nome del nuovo file di record
     solution_t best;//contiene migliore soluzione trovata
     population_t *population; // puntatore a popolazione
-    FILE*fp;//scrivere file utili per i test per test
     
     srand(time(NULL)); // randomizzazione del generatore di numeri pseudocasuali
     if (argc<5 || argc >6){
@@ -61,42 +60,40 @@ int main(int argc, char** argv) {
     const int MAX_PT=(row-1)*col+(col-1)*row;//costante di punti max dipende 
     escalation=0;
     //printf("Punteggio Massimo: %d\n",MAX_PT);
-    sorted_popolation(population,pieces);
+    sorted_popolation(population);
     best.fitness=population->soluzioni[0].fitness;
     best.matrice_pezzi=matalloc(row,col);
     solution_copy(population->soluzioni[0],&best,row,col);
     test_evolution(population,&best,MAX_PT,debug);
     if(!(is_best(population,row,col))){
         while(population->pop_dim<=max_pop_dim)
-        for(i=0;(i<MAX_ITERATIONS)&&(best.fitness!=MAX_PT);i++){
-            temp=pop_evolution(pieces,npieces,population,row,col,border,mutation_elite);
-                if(temp>best.fitness){
-                    best.fitness=population->soluzioni[0].fitness;
-                    solution_copy(population->soluzioni[0],&best,row,col);
-                    new_best=TRUE;
-                    escalation=0;
-                    population->mutation=0;
-                    if (best.fitness>record){
-                        //printf("NEW RECORD!\n");
-                        sprintf(file,"Solution_%dx%d_%d.txt",row,col,best.fitness);
-                        write_best_solution(file,best,row,col);
-                    }
-                }
-                else {
-                    escalation++;
-                    if (population->mutation>SOGLIA_ESCALATION){
-                         //sprintf(file,"Stats_%dx%d_%ld.txt",row,col,population->pop_dim);
-                        //write_evolution(population,file);
-	printf("--------\n");
-	printf("Population will be expanded\n");
-                        expand_population(pieces,npieces,population,row,col,border);
-	printf("New Population is %ld\n",population->pop_dim);
-                        population->current_iteration=0;
-                        population->mutation=0;
-                        population->elite=mutation_elite[5]*population->pop_dim; // imposto l'elite iniziale ( solo le soluzioni migliori)
+            for(i=0;best.fitness!=MAX_PT;i++){
+                temp=pop_evolution(pieces,npieces,population,row,col,border,mutation_elite);
+                    if(temp>best.fitness){
+                        best.fitness=population->soluzioni[0].fitness;
+                        solution_copy(population->soluzioni[0],&best,row,col);
+                        new_best=TRUE;
                         escalation=0;
-                        break;
+                        population->mutation=0;
+                        if (best.fitness>record){
+                            //printf("NEW RECORD!\n");
+                            sprintf(file,"Solution_%dx%d_%d.txt",row,col,best.fitness);
+                            write_best_solution(file,best,row,col);
+                        }
                     }
+                    else {
+                        escalation++;
+                        if (population->mutation>SOGLIA_ESCALATION){
+                            printf("--------\n");
+                            printf("Population will be expanded\n");
+                            expand_population(pieces,npieces,population,row,col,border);
+                            printf("New Population is %ld\n",population->pop_dim);
+                            population->current_iteration=0;
+                            population->mutation=0;
+                            population->elite=mutation_elite[5]*population->pop_dim; // imposto l'elite iniziale ( solo le soluzioni migliori)
+                            escalation=0;
+                            break;
+                        }
                 }
                 test_evolution(population,&best,MAX_PT,debug);
                 if (new_best && !debug){
@@ -106,15 +103,17 @@ int main(int argc, char** argv) {
                         printf("Mutation attempt: %ld",population->mutation);
                         new_best=FALSE;
                 }
-       }
+           }
     }
     write_best_solution(argv[2],best,row,col);
+    printf("Final result:\n");
+    test_evolution(population,&best,MAX_PT,debug);
     //deallocazione memoria heap
     dealloc_population(population,row,col);
     dealloc_soluzioni(&best,row,col);
     free(population);
     dealloc_pieces(pieces,npieces);
     free(border);
-    return best.fitness ;
+    return(0);
 }
 

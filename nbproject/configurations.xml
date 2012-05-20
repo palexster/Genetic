@@ -68,6 +68,7 @@
         <cTool>
           <developmentMode>0</developmentMode>
           <commandLine>-fopenmp</commandLine>
+          <warningLevel>2</warningLevel>
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>

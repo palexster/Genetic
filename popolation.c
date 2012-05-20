@@ -7,7 +7,7 @@
  */
 
 population_t *build_population(int **pieces,int *border,int npieces,int row,int col){
-    int i,fit;
+    int i;
     population_t *popolazione_start;
     popolazione_start=(population_t *)malloc(sizeof(population_t));
     if(popolazione_start==NULL){
@@ -22,9 +22,7 @@ population_t *build_population(int **pieces,int *border,int npieces,int row,int 
     for(i=0;i<POP_DIM;i++){
         popolazione_start->soluzioni[i].matrice_pezzi=matalloc(row,col);
         //genera una popolazione di soluzioni casuali
-        //printf("Allocazione soluzione numero %d\n",i);
         random_solution_generation(&popolazione_start->soluzioni[i],border,pieces,row*col,row,col);
-        //test_solution(&popolazione_start->soluzioni[i],row,col);
         popolazione_start->soluzioni[i].fitness=fitness_solution_evaluation(pieces,&popolazione_start->soluzioni[i],npieces,row,col);
     }
     popolazione_start->current_iteration=0;
@@ -36,9 +34,8 @@ population_t *build_population(int **pieces,int *border,int npieces,int row,int 
 }
 
 void test_fitness(population_t *pop){
-    int i,max=0,idmax=0;
+    int i,max=0;
     double media,varianza,totale;
-    //printf("Qual è la miglior soluzione?\n");
     if (pop->current_iteration){
          pop->bests[0][MAX]=pop->bests[1][MAX];
         pop->bests[0][MEDIA]=pop->bests[1][MEDIA];
@@ -47,10 +44,8 @@ void test_fitness(population_t *pop){
     for(i=0;i<pop->pop_dim;i++){
         if ((pop->soluzioni[i].fitness)>max){
             max=pop->soluzioni[i].fitness;
-            idmax=i;
         }
         totale+=pop->soluzioni[i].fitness;
-       // printf("Soluzione %d --> %d\n",i,pop->soluzioni[i].fitness);
     }
     media =(double) totale / pop->pop_dim;
     for(i=0;i<pop->pop_dim;i++){
@@ -60,14 +55,13 @@ void test_fitness(population_t *pop){
     pop->bests[1][MAX]=max;
     pop->bests[1][MEDIA]=media;
     pop->bests[1][VARIANZA]=varianza;  
-    //printf("MAX  --> %f\n", pop->bests[pop->current_iteration][MAX]);
 }
 
 int cmp_fitness(solution_t s1cast,solution_t s2cast){
     return s2cast.fitness-s1cast.fitness;
 }
 
-void sorted_popolation(population_t *pop,int **pieces){
+void sorted_popolation(population_t *pop){
   quick_sort(pop->soluzioni,0,pop->pop_dim-1,cmp_fitness);  
 }
 
@@ -156,7 +150,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,in
     parent_selection(parents,pop);
     offspring_generation(pieces,npieces,pop,parents,offspring,row,col);
     substitution(pop,offspring,row,col);
-    sorted_popolation(pop,pieces);
+    sorted_popolation(pop);
     //Setting up mutation
     if (pop->bests[1][VARIANZA] >= 6 || pop->bests[1][VARIANZA] <= 0 )
         pop->elite=mutation_elite[5]*pop->pop_dim;
@@ -164,7 +158,7 @@ int pop_evolution(int **pieces,int npieces,population_t *pop,int row, int col,in
         pop->elite=mutation_elite[(int)pop->bests[1][VARIANZA]]*pop->pop_dim;
     if ((pop->bests[0][VARIANZA]< 1)&&((pop->bests[1][VARIANZA]< 0.1))){
         mutation(pieces,npieces,pop,row,col,border);
-        sorted_popolation(pop,pieces);
+        sorted_popolation(pop);
         }
 /*
       if (rand()%5){
@@ -204,21 +198,15 @@ void crossover(solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *
         kernelPieces[i][1]=-1;
     }
     crossover_centro(kernelPieces,sol1,sol2,fig1,fig2,npieces,row,col);
-    //test_solution(fig1,row,col);
-    //test_solution(fig2,row,col);
     for(i=0;i<npieces;i++){
         kernelPieces[i][0]=-1;
         kernelPieces[i][1]=-1;
     }
     crossover_bordo(kernelPieces,sol1,sol2,fig1,fig2,pieces,npieces,row,col);
-    //test_solution(fig1,row,col);
-    //test_solution(fig2,row,col);
-    
     for(i=0;i<npieces;i++){
         free(kernelPieces[i]);
     }
     free(kernelPieces);
-    //printf("Esco da Crossover\n");
     return;
 }
 
@@ -232,7 +220,6 @@ void crossover_bordo(short signed int **kernelPieces,solution_t *sol1, solution_
     int ker_len_min;//lunghezza minima kernel
     const int BOTTOM=row-1;
     const int RIGHT=col-1;
-   //printf("Entro in Crossover bordo\n");
     perimetro=(row-1+col-1)*2;
     ker_len_min=perimetro/10;//10% num pezzi(approx. all'intero inferiore)
     taglio1=rand()%(perimetro-ker_len_min-1)+1;
@@ -240,8 +227,6 @@ void crossover_bordo(short signed int **kernelPieces,solution_t *sol1, solution_
         taglio2=rand()%nval+taglio1+ker_len_min;//se taglio1<max val possibile taglio2 èrandom,cioè lunghezza kernel è casuale
     else
         taglio2=taglio1+ker_len_min;//se taglio1 è val max possibile taglio2 è vincolato da kerlenmin
-    //DEBUG
-    //printf("t1=%d,t2=%d,kerlenmin=%d\n",taglio1,taglio2,ker_len_min);
     /*generazione kernel
      *i indice del bordo linearizzato
      *j indice degli elementi di bordo nella matrice*/
@@ -309,9 +294,6 @@ void crossover_bordo(short signed int **kernelPieces,solution_t *sol1, solution_
         fig2->matrice_pezzi[j][0][1]=sol2->matrice_pezzi[j][0][1];
         kernelPieces[sol2->matrice_pezzi[j][0][0]][1]=j*col;//linearizzo indici row col
     }
-    //DEBUG
-    //test_solution(fig1,row,col);
-    //test_solution(fig2,row,col);
     /*lato sinistro prole*/
     for(i=j=0;(i<taglio1)&&(j<RIGHT);i++,j++){
         if (kernelPieces[sol2->matrice_pezzi[0][j][0]][0]<0){
@@ -585,9 +567,6 @@ void crossover_bordo(short signed int **kernelPieces,solution_t *sol1, solution_
                     fig2->matrice_pezzi[j][0][1]=get_border_fitting_rotation(pieces,sol1->matrice_pezzi[r1][c1][0],SINISTRA);
             }
     }
-    //DEBUG
-    //test_solution(fig1,row,col);
-    //test_solution(fig2,row,col);
     /*lato destro prole*/
     for(i=j=taglio2;j<RIGHT;i++,j++){
         if (kernelPieces[sol2->matrice_pezzi[0][j][0]][0]<0){
@@ -872,7 +851,6 @@ void crossover_bordo(short signed int **kernelPieces,solution_t *sol1, solution_
                     fig2->matrice_pezzi[j][0][1]=get_border_fitting_rotation(pieces,sol1->matrice_pezzi[r1][c1][0],SINISTRA);
             }
     }
-    //printf("Esco da Crossover bordo\n");
     return;
 }
 
@@ -880,10 +858,8 @@ void crossover_bordo(short signed int **kernelPieces,solution_t *sol1, solution_
  * ie indice_riga € [1,row-2] e indice_col€[1,col-2]*/
 void crossover_centro(short signed int **kernelPieces,solution_t *sol1, solution_t *sol2, solution_t *fig1,solution_t *fig2, int npieces, int row, int col){
     // generazione tagli, contatori e indice righe/colonne
-    int taglio1,taglio2,i,r,c,c1,r1,nval,tmp,q;
+    int taglio1,taglio2,i,r,c,c1,r1,nval,tmp;
     int ker_len_min;//lunghezza minima kernel
-    //solution_t *tmp_ptr1,*tmp_ptr2,*tmp_ptr_swap;
-    //printf("Entro in Crossover centro\n");
     ker_len_min=npieces/10;//10% num pezzi(approx. all'intero inferiore) conta anche bordo anche se lavora su centro
     //col+2 fa si che min(taglio1) è 3° el 2^riga per evitare bordo
     //(evita 1^riga e almeno un el prima del taglio) e avere almeno un el prima del taglio
@@ -903,14 +879,6 @@ void crossover_centro(short signed int **kernelPieces,solution_t *sol1, solution
     //successiva) contano nella distanza tra i tagli quindi per garantire min 
     //aumenta taglio2 del n° pezzi inclusi (2*ogni salto di riga)
     //taglio2+=2*(taglio2-taglio1+1)/col;
-    //DEBUG
-    //printf("t1=%d,t2=%d,kerlenmin=%d\n",taglio1,taglio2,ker_len_min);
-    //così vincoli il kernel sempre a cavallo della metà.
-    /*taglio1=rand() % npieces/2 +(col+1);
-    taglio2=rand() % (npieces/2-(col+1)) + npieces/2;
-    if (taglio2=taglio1)
-        taglio2=taglio2 + npieces/10;*/
-    
     /*Generazione kernel della prole
      i tagli operano su matrice linearizzata:i indice della mat linearizzata
      r e c sono gli indici della mat delle sol in realtà scorrono solo sulla parte
@@ -948,9 +916,6 @@ void crossover_centro(short signed int **kernelPieces,solution_t *sol1, solution
             kernelPieces[sol2->matrice_pezzi[r][c][0]][1]=i;
         }
     }
-    //DEBUG
-    //test_solution(fig1,row,col);
-    //test_solution(fig2,row,col);
     /*Generazione lato sinistro della prole*/
     i=col+1;//i=r*col+c,r=c=1
     for(r=1;(r<(row-1))&&(i<taglio1);r++,i+=2){
@@ -1010,9 +975,6 @@ void crossover_centro(short signed int **kernelPieces,solution_t *sol1, solution
         }      
     }
     /*Generazione lato detro della prole*/
-    //DEBUG
-    //test_solution(fig1,row,col);
-    //test_solution(fig2,row,col);
     //prima riga su cui operare a parte come per kernel
     //npieces-col limita ciclo al penultimo el della peunltima riga (evita bordo
     //inferiore e el di bordo destro sull'ultima riga interna)
@@ -1137,7 +1099,6 @@ void crossover_centro(short signed int **kernelPieces,solution_t *sol1, solution
             }
         }
     }
-    //printf("Esco da Crossover centro\n");
     return;
 }
 
@@ -1187,7 +1148,7 @@ void write_evolution(population_t *pop,char *nomefile){
                  fprintf(stderr,"Errore nell'apertura del file %s\n",nomefile);
                  exit(2);
          }
-       fprintf(fp,"GENERAZIONE,MAX,MEDIA,VARIANZA\n",nomefile);
+       fprintf(fp,"GENERAZIONE,MAX,MEDIA,VARIANZA\n");
        for(i=0;i<pop->current_iteration;i++){
             fprintf(fp,"%d,",i);
          for(j=0;j<N_MISURE;j=j+5)
@@ -1212,10 +1173,6 @@ void expand_population(int **pieces,int npieces,population_t *pop,int row,int co
     }
     for(i=0;i<old;i++){
         sol_array[i]=pop->soluzioni[i];
-/*
-        sol_array[i]=solution_copy(pop->soluzioni[i],row,col);
-        dealloc_soluzioni(&(pop->soluzioni[i]),row,col);
-*/
     }
     for(i=old;i<pop->pop_dim;i++){
          sol_array[i].matrice_pezzi= matalloc(row,col);
@@ -1225,4 +1182,4 @@ void expand_population(int **pieces,int npieces,population_t *pop,int row,int co
     free(pop->soluzioni);
     pop->soluzioni=sol_array;
     return;
-    }
+}
